@@ -1,0 +1,42 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+    
+jobs:
+  simple_deployment_pipeline:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install backend's dependencies
+        working-directory: backend
+        run: npm install
+      - name: Install frontend's dependencies
+        working-directory: frontend
+        run: npm install
+      - name: lint backend
+        working-directory: backend 
+        run: npm run lint
+      - name: lint frontend
+        working-directory: frontend 
+        run: npm run lint
+      - name: build
+        working-directory: frontend 
+        run: npm run build:ui
+
+      - name: Trigger deployment
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ''), '#skip') }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+
+       
+
+
