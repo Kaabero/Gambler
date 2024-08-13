@@ -4,4 +4,5 @@
 | :---------:|:-----| :----------|
 | 12.8.2024. | 2    | frontendin ja backendin alustus ja raakile |
 | 12.8.2024. | 1    | eslint asetuksia |
-| yht        | 3    |            | 
+| 13.8.2024. | 1    | mongon käyttöönotto ja middlewareja |
+| yht        | 4    |            | 
