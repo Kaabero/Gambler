@@ -2,5 +2,5 @@
 
 echo "Install script"
 
-npm run install:backend
-npm run install:frontend
+cd backend && npm install
+cd frontend && npm install
