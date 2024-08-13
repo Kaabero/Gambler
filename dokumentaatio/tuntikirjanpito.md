@@ -6,4 +6,5 @@
 | 12.8.2024. | 1    | eslint asetuksia |
 | 13.8.2024. | 1    | mongon käyttöönotto ja middlewareja |
 | 13.8.2024. | 1    | renderin käyttöönotto ja korjauksia |
-| yht        | 5    |            | 
+| 13.8.2024. | 1    | pipelinen käyttöönotto ja rakennemuutoksia |
+| yht        | 6    |            | 
