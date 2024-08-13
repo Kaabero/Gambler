@@ -6,20 +6,33 @@ mongoose.set('strictQuery', false)
 const url = process.env.MONGODB_URI
 
 
-console.log('connecting to', url)
+console.log('Connecting to', url)
 mongoose.connect(url)
 
-  .then(result => {
-    console.log('connected to MongoDB')
+  .then(result => {  // eslint-disable-line no-unused-vars
+    console.log('Connected to MongoDB')
   })
   .catch((error) => {
-    console.log('error connecting to MongoDB:', error.message)
+    console.log('Error connecting to MongoDB:', error.message)
   })
 
 const gameSchema = new mongoose.Schema({
-  home_team: String,
-  visitor_team: String,
-  date: String,
+  home_team: {
+    type: String,
+    minlength: 3,
+    maxlength: 3,
+    required: true
+  },
+  visitor_team: {
+    type: String,
+    minlength: 3,
+    maxlength: 3,
+    required: true
+  },
+  date: {
+    type: String,
+    required: true
+  },
   outcome_added: Boolean,
 })
 
