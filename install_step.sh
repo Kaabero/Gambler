@@ -10,5 +10,5 @@ cd ./backend
 npm install
 
 
-cd ../frontend 
+cd ../gambler 
 npm install

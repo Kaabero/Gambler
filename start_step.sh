@@ -6,7 +6,7 @@ set -e
 echo "Start script"
 
 
-cd ./frontend
+cd ./gambler
 
 
 if [ -d dist ]; then

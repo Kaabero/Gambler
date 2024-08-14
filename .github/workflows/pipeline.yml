@@ -21,13 +21,13 @@ jobs:
         working-directory: backend
         run: npm install
       - name: Install frontend's dependencies
-        working-directory: frontend
+        working-directory: gambler
         run: npm install
       - name: lint backend
         working-directory: backend 
         run: npm run lint
       - name: lint frontend
-        working-directory: frontend 
+        working-directory: gambler 
         run: npm run lint
       - name: test backend
         env:
@@ -36,7 +36,7 @@ jobs:
         working-directory: backend 
         run: npm run test
       - name: build
-        working-directory: frontend 
+        working-directory: gambler 
         run: npm run build:ui
 
       - name: Trigger deployment
