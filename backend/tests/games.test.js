@@ -9,7 +9,7 @@ const helper = require('./test_helper')
 const Game = require('../models/game')
 
 
-describe('returning initialGames', () => {
+describe('returning initial games', () => {
   beforeEach(async () => {
     await Game.deleteMany({})
     await Game.insertMany(helper.initialGames)
@@ -130,6 +130,51 @@ describe('returning initialGames', () => {
       assert(!ids.includes(gameToDelete.id))
 
       assert.strictEqual(gamesAtEnd.length, helper.initialGames.length - 1)
+    })
+  })
+
+  describe('modification of a game', () => {
+    test('succeeds with status code 200 with valid data and valid id', async () => {
+      const gamesAtStart = await helper.gamesInDb()
+
+      const gameToModify = gamesAtStart[0]
+
+      const modifiedGame = {
+        visitor_team: 'TUR',
+      }
+
+      const resultGame = await api
+        .put(`/api/games/${gameToModify.id}`)
+        .send(modifiedGame)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      assert.deepStrictEqual(resultGame.body.id, gameToModify.id)
+      assert.deepStrictEqual(resultGame.body.home_team, gameToModify.home_team)
+      assert.deepStrictEqual(resultGame.body.date, gameToModify.date)
+      assert.notEqual(resultGame.body.visitor_team, gameToModify.visitor_team)
+
+    })
+
+    test('fails with status code 400 if data invalid', async () => {
+      const gamesAtStart = await helper.gamesInDb()
+
+      const gameToModify = gamesAtStart[0]
+
+      const modifiedGame = {
+        visitor_team: 'HUNGARY',
+      }
+      await api
+        .put(`/api/games/${gameToModify.id}`)
+        .send(modifiedGame)
+        .expect(400)
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      const visitor_teams = gamesAtEnd.map(g => g.visitor_team)
+      assert(!visitor_teams.includes(modifiedGame.visitor_team))
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+
     })
   })
 
