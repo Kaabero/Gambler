@@ -3,14 +3,13 @@ const Game = require('../models/game')
 
 
 
+gamesRouter.get('/', async (request, response) => {
+  const games = await Game.find({})
+  response.json(games)
 
-gamesRouter.get('/', (request, response) => {
-  Game.find({}).then(games => {
-    response.json(games)
-  })
 })
 
-gamesRouter.post('/', (request, response, next) => {
+gamesRouter.post('/', async (request, response) => {
   const body = request.body
 
   const game = new Game({
@@ -20,38 +19,28 @@ gamesRouter.post('/', (request, response, next) => {
     outcome_added: body.outcome_added || false,
   })
 
-  game.save()
-    .then(savedGame => {
-      response.json(savedGame)
-    })
-    .catch(error => next(error))
+  const savedGame = await game.save()
+  response.status(201).json(savedGame)
+
 })
 
-gamesRouter.get('/:id', (request, response, next) => {
-  Game.findById(request.params.id)
-    .then(game => {
-      if (game) {
-        response.json(game)
-      } else {
-        response.status(404).end()
-      }
-    })
-    .catch(error => next(error))
+gamesRouter.get('/:id', async (request, response) => {
+  const game = await Game.findById(request.params.id)
+  if (game) {
+    response.json(game)
+  } else {
+    response.status(404).end()
+  }
 })
 
-gamesRouter.delete('/:id', (request, response, next) => {
-  Game.findByIdAndDelete(request.params.id)
-    .then(result => {  // eslint-disable-line no-unused-vars
-      response.status(204).end()
-    })
-    .catch(error => next(error))
+gamesRouter.delete('/:id', async (request, response) => {
+  await Game.findByIdAndDelete(request.params.id)
+  response.status(204).end()
 })
 
 
 gamesRouter.put('/:id', (request, response, next) => {
   const { home_team, visitor_team, date, outcome_added } = request.body
-
-
 
   Game.findByIdAndUpdate(
     request.params.id,
