@@ -10,22 +10,7 @@ export const getAllGames = () => {
  
 }
 
-export const createGame = async (object: NewGame) => {
-  try {
-    return await axios
-      .post<Game>(baseUrl, object)
-      .then(response => response.data)
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log('axios error')
-      if (error.response) {
-        console.log('errordata', error.response.data)
-        console.log(typeof(error.response.data))
-        throw new Error(error.response.data)
-      }
-      throw new Error('Something went wrong')
-    } else {
-      throw new Error('Something went wrong')
-    }
-  }
+export const createGame = async (newObject: NewGame) => {
+  const request = await axios.post<Game>(baseUrl, newObject)
+  return request.data
 }
