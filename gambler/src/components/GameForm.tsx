@@ -6,9 +6,9 @@ import React from 'react';
 interface GameFormProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  }
+}
   
-  const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
   const [date, setDate] = useState('');
   const [visitorTeam, setVisitorTeam] = useState('');
   const [homeTeam, setHomeTeam] = useState('');
