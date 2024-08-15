@@ -8,4 +8,5 @@
 | 14.8.2024. | 4    | testauksen alustus, ensimmäiset testit, pipeline toimimaan testauksen osalta, refaktorointia  |
 | 14.8.2024. | 4    | frontend sittenkin typescriptillä, ensimmäiset toiminnot |
 | 15.8.2024. | 4    | buildauksen ja tuotantoversion ongelmia, routeja |
-| yht        | 18    |            | 
+| 15.8.2024. | 4    | betseille ja usereille modelit ja controllerit, mongoyhteyden korjaus |
+| yht        | 22    |            | 
