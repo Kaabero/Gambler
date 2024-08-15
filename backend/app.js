@@ -4,6 +4,7 @@ require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const gamesRouter = require('./controllers/games')
+const usersRouter = require('./controllers/users')
 const betsRouter = require('./controllers/bets')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
@@ -11,11 +12,13 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
+console.log('app.js mongo url', config.MONGODB_URI)
+console.log('app.js envi', process.env.NODE_ENV)
 logger.info('Connecting to', config.MONGODB_URI)
 
 mongoose.connect(config.MONGODB_URI)
   .then(() => {
-    logger.info('Connected to MongoDB')
+    logger.info(`Connected to MongoDB ${config.MONGODB_URI}`)
   })
   .catch((error) => {
     logger.error('Error connection to MongoDB:', error.message)
@@ -28,6 +31,7 @@ app.use(middleware.requestLogger)
 
 app.use('/api/games', gamesRouter)
 app.use('/api/bets', betsRouter)
+app.use('/api/users', usersRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

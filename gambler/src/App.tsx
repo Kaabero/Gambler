@@ -19,7 +19,7 @@ const App = () => {
   const [errormessage, setErrorMessage] = useState('');
   const [notificationmessage, setNotificationMessage] = useState('');
   const [games, setGames] = useState<Game[]>([
-    { id: 1, date: '2023-02-13', home_team: 'SWW', visitor_team: 'KLL', outcome_added: true }
+    { id: 1, date: '1.1.2023', home_team: 'HomeTeam', visitor_team: 'VisitorTeam', outcome_added: true }
   ]);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const App = () => {
     });
   }, []);
 
-  const user='Katri'
+  const user= null
 
   const padding = {
     padding: 5

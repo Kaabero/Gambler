@@ -2,7 +2,6 @@ const gamesRouter = require('express').Router()
 const Game = require('../models/game')
 
 
-
 gamesRouter.get('/', async (request, response) => {
   const games = await Game.find({})
   response.json(games)

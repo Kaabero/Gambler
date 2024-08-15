@@ -1,5 +1,6 @@
 const betsRouter = require('express').Router()
 const Bet = require('../models/bet')
+const User = require('../models/user')
 
 
 
@@ -12,14 +13,20 @@ betsRouter.get('/', async (request, response) => {
 betsRouter.post('/', async (request, response) => {
   const body = request.body
 
+  const user = await User.findById(body.user)
+
   const bet = new Bet({
     goals_home: Number(body.goals_home),
     goals_visitor: Number(body.goals_visitor),
     game: body.game,
-    user: body.user
+    user: user._id
   })
 
   const savedBet = await bet.save()
+
+  user.bets = user.bets.concat(savedBet._id)
+  await user.save()
+
   response.status(201).json(savedBet)
 
 })
