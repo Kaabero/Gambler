@@ -19,12 +19,12 @@ mongoose.connect(url)
 const gameSchema = new mongoose.Schema({
   home_team: {
     type: String,
-    minlength: 4,
+    minlength: 3,
     required: true
   },
   visitor_team: {
     type: String,
-    minlength: 4,
+    minlength: 3,
     required: true
   },
   date: {

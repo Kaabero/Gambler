@@ -162,7 +162,7 @@ describe('returning initial games', () => {
       const gameToModify = gamesAtStart[0]
 
       const modifiedGame = {
-        visitor_team: 'HUNGARY',
+        visitor_team: 'HU',
       }
       await api
         .put(`/api/games/${gameToModify.id}`)
@@ -182,19 +182,5 @@ describe('returning initial games', () => {
     await mongoose.connection.close()
   })
 
-
-
-
-
-
-
-
-
-
-
-
 })
 
-after(async () => {
-  await mongoose.connection.close()
-})
