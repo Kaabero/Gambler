@@ -4,7 +4,7 @@ import '../index.css';
 interface NotificationProps {
     errormessage: string;
     notificationmessage: string
-  }
+}
   
   const Notification = ({ errormessage, notificationmessage }: NotificationProps) => {
     if (errormessage === '' && notificationmessage === '') {

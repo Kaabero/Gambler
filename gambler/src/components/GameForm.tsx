@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Game } from "../types";
-import { getAllGames, createGame } from '../gameService';
+import { getAllGames, createGame } from '../services/gameService';
 import React from 'react';
 
 interface GameFormProps {

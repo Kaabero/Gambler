@@ -29,6 +29,9 @@ export interface Game {
     outcome?: Outcome
   }
 
+export type NewGame = Omit<Game, 'id'>
 
-  
-  export type NewGame = Omit<Game, 'id'>
+export type Credentials = {
+  username: string,
+  token: string
+}

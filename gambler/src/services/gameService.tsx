@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { Game, NewGame } from "./types";
+import { Game, NewGame } from "../types";
 
 const baseUrl = '/api/games'
+
 
 export const getAllGames = () => {
   return axios

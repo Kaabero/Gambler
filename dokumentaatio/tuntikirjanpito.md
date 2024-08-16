@@ -9,5 +9,5 @@
 | 14.8.2024. | 4    | frontend sittenkin typescriptillä, ensimmäiset toiminnot |
 | 15.8.2024. | 4    | buildauksen ja tuotantoversion ongelmia, routeja |
 | 15.8.2024. | 4    | betseille ja usereille modelit ja controllerit, mongoyhteyden korjaus |
-| 16.8.2024. | 4    | mongoose skeemojen kanssa taistelua |
-| yht        | 26    |            | 
+| 16.8.2024. | 8    | mongoose skeemojen kanssa taistelua, sisäänkirjautuminen |
+| yht        | 30    |            | 
