@@ -4,8 +4,25 @@ const Game = require('../models/game')
 
 gamesRouter.get('/', async (request, response) => {
   // await Game.deleteMany({})
+  /*
   const games = await Game.find({})
-    .populate('bets')
+    .populate('outcome', { goals_home: 1, goals_visitor:1 })
+    .populate('bets', { goals_home: 1, goals_visitor:1, user: 1 })
+*/
+
+  const games = await Game.find({})
+    .populate({
+      path: 'outcome',
+      select: 'goals_home goals_visitor',
+    })
+    .populate({
+      path: 'bets',
+      select: 'goals_home goals_visitor user',
+      populate: {
+        path: 'user',
+        select: 'username'
+      }
+    })
 
   response.json(games)
 })

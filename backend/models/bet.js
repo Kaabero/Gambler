@@ -19,6 +19,8 @@ const betSchema = mongoose.Schema({
   }
 })
 
+betSchema.index({ user: 1, game: 1 }, { unique: true })
+
 betSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()

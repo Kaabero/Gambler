@@ -123,6 +123,24 @@ describe('addition of a new game', () => {
 
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
   })
+
+  test('fails with status code 400 if home_team = visitor_team', async () => {
+    const newGame = {
+      home_team: 'team',
+      visitor_team: 'team',
+      date: '1.1.2025'
+    }
+
+    await api
+      .post('/api/games')
+      .send(newGame)
+      .expect(400)
+
+
+    const gamesAtEnd = await helper.gamesInDb()
+
+    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+  })
 })
 
 describe('deletion of a game', () => {

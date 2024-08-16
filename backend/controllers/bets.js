@@ -1,11 +1,12 @@
 const betsRouter = require('express').Router()
 const Bet = require('../models/bet')
 const User = require('../models/user')
+const Game = require('../models/game')
 
 
 
 betsRouter.get('/', async (request, response) => {
-  // await Bet.deleteMany({})
+  //await Bet.deleteMany({})
   const bets = await Bet.find({})
     .populate('user', { username: 1 })
     .populate('game', { home_team: 1, visitor_team: 1 })
@@ -17,17 +18,28 @@ betsRouter.post('/', async (request, response) => {
 
   const user = await User.findById(body.user)
 
+  const game = await Game.findById(body.game)
+
+  const existingBet = await Bet.findOne({ user, game })
+
+  if (existingBet) {
+    return response.status(400).json({ error: 'User has already placed a bet on this game' })
+  }
+
+
   const bet = new Bet({
     goals_home: Number(body.goals_home),
     goals_visitor: Number(body.goals_visitor),
-    game: body.game,
+    game: game._id,
     user: user._id
   })
 
   const savedBet = await bet.save()
+  game.bets = game.bets.concat(savedBet._id)
 
   user.bets = user.bets.concat(savedBet._id)
   await user.save()
+  await game.save()
 
   response.status(201).json(savedBet)
 

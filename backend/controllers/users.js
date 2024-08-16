@@ -5,7 +5,15 @@ const User = require('../models/user')
 
 usersRouter.get('/', async (request, response) => {
   // await User.deleteMany({})
-  const users = await User.find({}).populate('bets', { goals_home: 1, goals_visitor:1, game: 1 })
+  const users = await User.find({})
+    .populate({
+      path: 'bets',
+      select: 'goals_home goals_visitor game',
+      populate: {
+        path: 'game',
+        select: 'home_team visitor_team date'
+      }
+    })
   response.json(users)
 })
 

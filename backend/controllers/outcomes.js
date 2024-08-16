@@ -1,10 +1,24 @@
 const outcomesRouter = require('express').Router()
 const Outcome = require('../models/outcome')
+const Game = require('../models/game')
 
 
 outcomesRouter.get('/', async (request, response) => {
 //await Outcome.deleteMany({})
-  const outcomes = await Outcome.find({}).populate('game', { home_team: 1, visitor_team: 1, date: 1, bets: 1 })
+  const outcomes = await Outcome.find({})
+    .populate({
+      path: 'game',
+      select: 'home_team visitor_team date bets',
+      populate: {
+        path: 'bets',
+        select: 'goals_home goals_visitor user',
+        populate: {
+          path: 'user',
+          select: 'username'
+        }
+      }
+    })
+
   response.json(outcomes)
 
 })
@@ -12,13 +26,17 @@ outcomesRouter.get('/', async (request, response) => {
 outcomesRouter.post('/', async (request, response) => {
   const body = request.body
 
+  const game = await Game.findById(body.game)
+
   const outcome = new Outcome({
     goals_home: Number(body.goals_home),
     goals_visitor:Number(body.goals_visitor),
-    game: body.game,
+    game: game._id,
   })
 
   const savedOutcome = await outcome.save()
+  game.outcome = outcome._id
+  await game.save()
   response.status(201).json(savedOutcome)
 
 })
