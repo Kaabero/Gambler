@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const betSchema = mongoose.Schema({
+const outcomeSchema = mongoose.Schema({
   goals_home: {
     type: Number,
     required: true
@@ -11,15 +11,12 @@ const betSchema = mongoose.Schema({
   },
   game: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Game'
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'Game',
+    unique: true
   }
 })
 
-betSchema.set('toJSON', {
+outcomeSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -27,6 +24,7 @@ betSchema.set('toJSON', {
   }
 })
 
-const Bet = mongoose.model('Bet', betSchema)
 
-module.exports = Bet
+const Outcome = mongoose.model('Outcome', outcomeSchema)
+
+module.exports = Outcome

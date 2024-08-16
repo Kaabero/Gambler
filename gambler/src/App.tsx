@@ -19,7 +19,7 @@ const App = () => {
   const [errormessage, setErrorMessage] = useState('');
   const [notificationmessage, setNotificationMessage] = useState('');
   const [games, setGames] = useState<Game[]>([
-    { id: 1, date: '1.1.2023', home_team: 'HomeTeam', visitor_team: 'VisitorTeam', outcome_added: true }
+    { id: 1, date: '1.1.2023', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
   ]);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const gameSchema = new mongoose.Schema({
+const gameSchema = mongoose.Schema({
   home_team: {
     type: String,
     minlength: 3,
@@ -15,8 +15,20 @@ const gameSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  outcome_added: Boolean,
+  bets: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Bet'
+    }
+  ],
+  outcome: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Outcome'
+  }
 })
+
+
+gameSchema.index({ home_team: 1, visitor_team: 1, date: 1 }, { unique: true })
 
 gameSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -27,4 +39,6 @@ gameSchema.set('toJSON', {
 })
 
 
-module.exports = mongoose.model('Game', gameSchema)
+const Game = mongoose.model('Game', gameSchema)
+
+module.exports = Game

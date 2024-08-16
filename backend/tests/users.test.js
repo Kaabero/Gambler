@@ -55,7 +55,7 @@ describe('when there is initially one user at db', () => {
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
-    assert(result.body.error.includes('expected `username` to be unique'))
+    assert(result.body.error.includes('some of the fields is required to be unique'))
 
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })

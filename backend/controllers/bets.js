@@ -5,9 +5,11 @@ const User = require('../models/user')
 
 
 betsRouter.get('/', async (request, response) => {
+  // await Bet.deleteMany({})
   const bets = await Bet.find({})
+    .populate('user', { username: 1 })
+    .populate('game', { home_team: 1, visitor_team: 1 })
   response.json(bets)
-
 })
 
 betsRouter.post('/', async (request, response) => {

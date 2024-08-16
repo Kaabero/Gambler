@@ -13,7 +13,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
   const [visitorTeam, setVisitorTeam] = useState('');
   const [homeTeam, setHomeTeam] = useState('');
   const [games, setGames] = useState<Game[]>([
-    { id: 1, date: '2023-02-13', home_team: 'SWW', visitor_team: 'KLL', outcome_added: true }
+    { id: 1, date: '2023-02-13', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
   ]);
 
   useEffect(() => {
@@ -30,7 +30,6 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
         date,
         home_team: homeTeam,
         visitor_team: visitorTeam,
-        outcome_added: false,
         id: 0
       };
 

@@ -5,14 +5,12 @@ const initialGames = [
   {
     home_team: 'FIN',
     visitor_team: 'SWE',
-    date: '1.1.2023',
-    outcome_added: true,
+    date: '1.1.2023'
   },
   {
     home_team: 'USA',
     visitor_team: 'DEU',
-    date: '1.1.2025',
-    outcome_added: false,
+    date: '1.1.2025'
   },
 ]
 
