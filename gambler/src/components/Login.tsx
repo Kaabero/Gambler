@@ -25,7 +25,7 @@ const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessa
         username, password,
       })
       window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
+        'loggedGamblerappUser', JSON.stringify(user)
       ) 
       setToken(user.token)
       setUser(user)

@@ -1,19 +1,20 @@
 export interface Outcome {
-  id: number,
+  id: string,
   goals_home: number,
   goals_visitor: number,
   game?: Game
 }
 
 export interface User {
-  id: number,
+  id: string,
   username: string,
   password: string,
+  admin: boolean,
   bets?: Bet[],
 }
 
 export interface Bet {
-  id: number,
+  id: string,
   goals_home: number,
   goals_visitor: number,
   game?: Game,
@@ -21,7 +22,7 @@ export interface Bet {
 }
 
 export interface Game {
-    id: number,
+    id: string,
     home_team: string,
     visitor_team: string,
     date: string,
@@ -30,8 +31,11 @@ export interface Game {
   }
 
 export type NewGame = Omit<Game, 'id'>
+export type NewUser = Omit<User, 'id'>
 
 export type Credentials = {
   username: string,
-  token: string
+  token: string,
+  admin: boolean
 }
+

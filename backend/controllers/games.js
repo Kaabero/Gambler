@@ -37,7 +37,7 @@ gamesRouter.post('/', async (request, response) => {
 
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
+    return response.status(400).end()
   }
 
 
@@ -66,6 +66,10 @@ gamesRouter.get('/:id', async (request, response) => {
 })
 
 gamesRouter.delete('/:id', async (request, response) => {
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(400).end()
+  }
   await Game.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })

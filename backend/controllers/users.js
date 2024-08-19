@@ -28,6 +28,7 @@ usersRouter.post('/', async (request, response) => {
   const user = new User({
     username,
     passwordHash,
+    admin: false,
   })
 
   const savedUser = await user.save()

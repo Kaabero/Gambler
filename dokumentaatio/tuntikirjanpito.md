@@ -11,4 +11,5 @@
 | 15.8.2024. | 4    | betseille ja usereille modelit ja controllerit, mongoyhteyden korjaus |
 | 16.8.2024. | 8    | mongoose skeemojen kanssa taistelua, sisäänkirjautuminen |
 | 19.8.2024. | 3    | parannellut routet, uuden käyttäjän luominen, token perusteinen pelin lisäys |
-| yht        | 33    |            | 
+| 19.8.2024. | 4    | admin, adminille näkyvät toiminnot, pelin poisto |
+| yht        | 37    |            | 

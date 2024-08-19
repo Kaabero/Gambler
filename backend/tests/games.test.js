@@ -104,8 +104,8 @@ describe('addition of a new game', () => {
 
   test('succeeds with valid data', async () => {
     const newGame = {
-      home_team: 'CZE',
-      visitor_team: 'FRA',
+      home_team: 'valid',
+      visitor_team: 'data',
       date: '1.1.2025',
     }
 
@@ -122,12 +122,35 @@ describe('addition of a new game', () => {
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
 
     const home_teams = gamesAtEnd.map(r => r.home_team)
-    assert(home_teams.includes('CZE'))
+    assert(home_teams.includes('valid'))
   })
+
+  test('fails with status code 401 and proper message if token is invalid', async () => {
+
+    const newGame = {
+      home_team: 'token',
+      visitor_team: 'invalid',
+      date: '1.1.2025'
+    }
+
+    const result = await api
+      .post('/api/games')
+      .send(newGame)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+
+    const gamesAtEnd = await helper.gamesInDb()
+    assert(result.body.error.includes('token missing or invalid'))
+
+    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+  })
+
+
 
   test('fails with status code 400 if data invalid', async () => {
     const newGame = {
-      visitor_team: 'HUN',
+      visitor_team: 'data invalid',
       date: '1.1.2025'
     }
 
@@ -197,7 +220,7 @@ describe('modification of a game', () => {
     const gameToModify = gamesAtStart[0]
 
     const modifiedGame = {
-      visitor_team: 'TUR',
+      visitor_team: 'modified visitor_team',
     }
 
     const resultGame = await api
@@ -219,7 +242,7 @@ describe('modification of a game', () => {
     const gameToModify = gamesAtStart[0]
 
     const modifiedGame = {
-      visitor_team: 'HU',
+      visitor_team: 1,
     }
     await api
       .put(`/api/games/${gameToModify.id}`)

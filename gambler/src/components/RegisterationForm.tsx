@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import registerationService from '../services/registerationService'
+import { createUser } from '../services/userService';
 import { AxiosError } from "axios";
 
 
@@ -19,8 +19,8 @@ const RegisterationForm: React.FC<RegisterationProps> = ({ setErrorMessage, setN
     event.preventDefault()
     
     try {
-      const user = await registerationService.register({
-        username, password,
+      const user = await createUser({
+        username, password, admin: false
       })
       setUsername('')
       setPassword('')

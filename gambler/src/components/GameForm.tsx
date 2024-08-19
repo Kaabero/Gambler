@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Game } from "../types";
+import { useNavigate } from 'react-router-dom';
 import { getAllGames, createGame } from '../services/gameService';
 import React from 'react';
 
@@ -12,8 +13,9 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
   const [date, setDate] = useState('');
   const [visitorTeam, setVisitorTeam] = useState('');
   const [homeTeam, setHomeTeam] = useState('');
+  const navigate = useNavigate();
   const [games, setGames] = useState<Game[]>([
-    { id: 1, date: '2023-02-13', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
+    { id: '1', date: '2023-02-13', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
   ]);
 
   useEffect(() => {
@@ -30,7 +32,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
         date,
         home_team: homeTeam,
         visitor_team: visitorTeam,
-        id: 0
+        id: '0'
       };
 
       const savedGame = await createGame(newGame);
@@ -39,11 +41,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-
-    
-      setDate('');
-      setHomeTeam('');
-      setVisitorTeam('');
+      navigate('/')
     } catch (error) {
       if (error instanceof Error) {
         setErrorMessage(error.message);

@@ -28,11 +28,12 @@ const App = () => {
   }
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedGamblerappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       setToken(user.token)
+      console.log('user', user.admin)
     }
   }, [])
 
@@ -44,7 +45,7 @@ const App = () => {
         <Routes>
           <Route path="/bets" element={user ? <Bets />: <Navigate replace to="/login" />} />
           <Route path="/players" element={user ? <Users /> : <Navigate replace to="/login" />} />
-          <Route path="/addGame" element={user ? <GameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
+          <Route path="/addGame" element={(user && user.admin) ? <GameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/" element={user ? <Games /> : <Navigate replace to="/login" />} />
           <Route path="/register" element={!user ? <CreateAccount setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/login" element={!user ? <Login setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} setUser={setUser}/>: <Navigate replace to="/" />} />
@@ -54,7 +55,7 @@ const App = () => {
         
           {user && (
             <>
-              <Link style={padding} to="/addGame">Add game</Link>
+              {user.admin ? <Link style={padding} to="/addGame">Add game</Link> : <></>} 
               <Link style={padding} to="/bets">Bets</Link>
               <Link style={padding} to="/players">Players</Link>
               <Link style={padding} to="/">Home</Link>
@@ -100,4 +101,6 @@ const LogoutButton: React.FC<LogoutProps> = ({ setNotificationMessage, setUser }
 }
 
 export default App;
+
+
 

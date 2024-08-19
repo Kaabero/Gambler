@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  admin: Boolean,
   bets: [
     {
       type: mongoose.Schema.Types.ObjectId,

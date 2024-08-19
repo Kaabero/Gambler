@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Game } from "../types";
-import { getAllGames } from '../services/gameService';
+import { getAllGames, removeGame } from '../services/gameService';
 import React from 'react';
 
 
 const Games = () => {
 
   const [games, setGames] = useState<Game[]>([
-    { id: 1, date: '1.1.2023', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
+    { id: '1', date: '1.1.2023', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
   ]);
 
   useEffect(() => {
@@ -16,9 +16,13 @@ const Games = () => {
     });
   }, []);
 
+  const handleRemoveGame = (id: string) => {
+    removeGame(id).then(() => {
+      setGames(games.filter(game => game.id !== id));
+    });
+  };
 
-
-  return (
+    return (
     <div>
       <h2>Games</h2>
       <ul>
@@ -27,6 +31,7 @@ const Games = () => {
             <strong>{game.date}</strong><br />
             Home Team: {game.home_team} <br />
             Visitor Team: {game.visitor_team} <br />
+            <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
             <br />
           </li>
         )}

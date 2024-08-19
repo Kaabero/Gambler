@@ -9,7 +9,6 @@ export const setToken = (newToken: string) => {
   token = `Bearer ${newToken}`
 }
 
-
 export const getAllGames = () => {
   return axios
     .get<Game[]>(baseUrl)
@@ -25,5 +24,18 @@ export const createGame = async (newObject: NewGame) => {
   const response = await axios.post<Game>(baseUrl, newObject, config)
   return response.data
 }
+
+
+export const removeGame = (id: string) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const request = axios.delete(`${ baseUrl }/${id}`, config)
+  return request.then(response => response.data)
+}
+
+
+
+
 
 
