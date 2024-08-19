@@ -3,6 +3,12 @@ import { Game, NewGame } from "../types";
 
 const baseUrl = '/api/games'
 
+let token: string | null = null
+
+export const setToken = (newToken: string) => {
+  token = `Bearer ${newToken}`
+}
+
 
 export const getAllGames = () => {
   return axios
@@ -12,6 +18,12 @@ export const getAllGames = () => {
 }
 
 export const createGame = async (newObject: NewGame) => {
-  const request = await axios.post<Game>(baseUrl, newObject)
-  return request.data
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const response = await axios.post<Game>(baseUrl, newObject, config)
+  return response.data
 }
+
+

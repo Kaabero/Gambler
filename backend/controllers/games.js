@@ -1,14 +1,19 @@
 const gamesRouter = require('express').Router()
 const Game = require('../models/game')
+const jwt = require('jsonwebtoken')
+
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 
 gamesRouter.get('/', async (request, response) => {
   // await Game.deleteMany({})
-  /*
-  const games = await Game.find({})
-    .populate('outcome', { goals_home: 1, goals_visitor:1 })
-    .populate('bets', { goals_home: 1, goals_visitor:1, user: 1 })
-*/
 
   const games = await Game.find({})
     .populate({
@@ -29,6 +34,12 @@ gamesRouter.get('/', async (request, response) => {
 
 gamesRouter.post('/', async (request, response) => {
   const body = request.body
+
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
 
   if (body.home_team === body.visitor_team) {
     return response.status(400).json({ error: 'Home team and visitor team must be different' })

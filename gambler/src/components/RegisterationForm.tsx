@@ -1,55 +1,51 @@
 import React, { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import loginService from '../services/loginService'
-import { Credentials } from "../types";
-import { setToken } from "../services/gameService";
+import registerationService from '../services/registerationService'
+import { AxiosError } from "axios";
 
 
-interface LoginFormProps {
+interface RegisterationProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  setUser: React.Dispatch<React.SetStateAction<Credentials | null | undefined>>;
 }
 
-const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessage, setUser }) => {
+const RegisterationForm: React.FC<RegisterationProps> = ({ setErrorMessage, setNotificationMessage }) => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const navigate = useNavigate();
     
 
-  const handleLogin = async (event: { preventDefault: () => void; }) => {
+  const handleRegisteration = async (event: { preventDefault: () => void; }) => {
     event.preventDefault()
     
     try {
-      const user = await loginService.login({
+      const user = await registerationService.register({
         username, password,
       })
-      window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
-      ) 
-      setToken(user.token)
-      setUser(user)
       setUsername('')
       setPassword('')
-      setNotificationMessage('Login successfully!');
+      setNotificationMessage(`New user ${user.username} created successfully!`);
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-      navigate('/')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (exception) {
-      setErrorMessage('wrong credentials')
-      setUsername('')
-      setPassword('')
-      setTimeout(() => {
-        setErrorMessage('')
-      }, 5000)
+      navigate('/login')
+    } catch (error) {
+        if (error instanceof AxiosError) {
+          setErrorMessage(`${error.response?.data.error}`);
+        } else {
+          setErrorMessage('An unknown error occurred');
+        }
+        setUsername('');
+        setPassword('');
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 5000);
     }
   }
     return (
       <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <h2>Create account</h2>
+      <form onSubmit={handleRegisteration}>
         <div>
           Username: 
             <input
@@ -69,7 +65,7 @@ const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessa
             />
         </div>
         <br />
-        <button type="submit">Login</button>
+        <button type="submit">Create account</button>
         <br />
         <br />
       </form>
@@ -77,4 +73,4 @@ const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessa
     );
 };
   
-export default Login;
+export default RegisterationForm;

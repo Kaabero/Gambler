@@ -2,6 +2,16 @@ const betsRouter = require('express').Router()
 const Bet = require('../models/bet')
 const User = require('../models/user')
 const Game = require('../models/game')
+const jwt = require('jsonwebtoken')
+
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 
 
@@ -16,7 +26,11 @@ betsRouter.get('/', async (request, response) => {
 betsRouter.post('/', async (request, response) => {
   const body = request.body
 
-  const user = await User.findById(body.user)
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
 
   const game = await Game.findById(body.game)
 

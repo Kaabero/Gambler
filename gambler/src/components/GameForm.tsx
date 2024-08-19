@@ -56,10 +56,11 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
 
   return (
     <div>
-      <h2>Add New Game</h2>
+      <h2>Add new game</h2>
       <form onSubmit={gameCreation}>
         <div>
-          Date: 
+          Date:
+          <br />
           <input
             type='date'
             value={date}
@@ -68,7 +69,8 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
         </div>
         <br />
         <div>
-          Home Team:
+          Home Team: 
+          <br />
           <input
             value={homeTeam}
             onChange={({ target }) => setHomeTeam(target.value)}
@@ -77,13 +79,16 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
         <br />
         <div>
           Visitor Team:
+          <br />
           <input
             value={visitorTeam}
             onChange={({ target }) => setVisitorTeam(target.value)}
           />
         </div>
-        
+        <br />
         <button type="submit">Add</button>
+        <br />
+        <br />
       </form>
     </div>
   );
