@@ -28,7 +28,7 @@ const errorHandler = (error, request, response, next) => {
   } else {
     response.status(500).json({ error: 'an unexpected error occurred' })
   }
-  next()
+  next(error)
 }
 
 

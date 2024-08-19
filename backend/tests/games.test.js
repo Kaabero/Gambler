@@ -8,6 +8,13 @@ const helper = require('./test_helper')
 
 const Game = require('../models/game')
 
+const testUser = {
+  username: 'testuser',
+  password: 'password'
+}
+
+let token
+
 
 describe('returning initial games', () => {
   beforeEach(async () => {
@@ -85,6 +92,14 @@ describe('addition of a new game', () => {
   beforeEach(async () => {
     await Game.deleteMany({})
     await Game.insertMany(helper.initialGames)
+    await api
+      .post('/api/users')
+      .send(testUser)
+    const response = await api
+      .post('/api/login')
+      .send(testUser)
+
+    token = response.body.token
   })
 
   test('succeeds with valid data', async () => {
@@ -99,6 +114,9 @@ describe('addition of a new game', () => {
       .send(newGame)
       .expect(201)
       .expect('Content-Type', /application\/json/)
+      .set('Authorization', `Bearer ${token}`)
+
+
 
     const gamesAtEnd = await helper.gamesInDb()
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
