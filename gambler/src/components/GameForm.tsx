@@ -61,7 +61,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
           Date and time:
           <br />
           <input
-            type='date'
+            type='datetime-local'
             value={date}
             onChange={({ target }) => setDate(target.value)}
           />
