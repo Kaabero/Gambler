@@ -1,22 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Game } from "../types";
-import { getAllGames, removeGame } from '../services/gameService';
-import { User } from '../types'
+import { Game, User } from "../types";
+import { getAllGames, removeGame, editGame } from '../services/gameService';
 import React from 'react';
-
+import EditGameForm from './EditGameForm';
 
 interface GamesProps {
   user: User;
 }
 
 const Games: React.FC<GamesProps> = ({ user }) => {
+  const [games, setGames] = useState<Game[]>([]);
+  const [editingGame, setEditingGame] = useState<Game | null>(null);
 
-  const [games, setGames] = useState<Game[]>([
-    { id: '1', date: '1.1.2023', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
-  ]);
 
   useEffect(() => {
-    getAllGames().then((data: React.SetStateAction<Game[]>) => {
+    getAllGames().then((data) => {
       setGames(data);
     });
   }, []);
@@ -27,7 +25,13 @@ const Games: React.FC<GamesProps> = ({ user }) => {
     });
   };
 
-    return (
+    const handleUpdateGame = async (updatedGame: Game) => {
+    const editedGame = await editGame(updatedGame.id, updatedGame);
+    setGames(games.map(game => game.id === updatedGame.id ? editedGame : game));
+    setEditingGame(null); 
+  };
+
+  return (
     <div>
       <h2>Games</h2>
       <ul>
@@ -36,13 +40,23 @@ const Games: React.FC<GamesProps> = ({ user }) => {
             <strong>{game.date}</strong><br />
             Home Team: {game.home_team} <br />
             Visitor Team: {game.visitor_team} <br />
-            {user.admin ? <button onClick={() => handleRemoveGame(game.id)}>Delete</button> : <></>}             
+            {user.admin && (
+              <>
+                <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
+                <button onClick={() => setEditingGame(game)}>Edit</button>
+              </>
+            )}
             <br />
           </li>
         )}
       </ul>
+
+      {editingGame && (
+        <EditGameForm game={editingGame} onSave={handleUpdateGame} onCancel={() => setEditingGame(null)} />
+      )}
     </div>
   );
 };
 
 export default Games;
+

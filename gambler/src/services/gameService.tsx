@@ -16,6 +16,13 @@ export const getAllGames = () => {
  
 }
 
+export const getGameById = (id: string) => {
+  return axios
+    .get<Game[]>(`${ baseUrl }/${id}`)
+    .then(response => response.data)
+ 
+}
+
 export const createGame = async (newObject: NewGame) => {
   const config = {
     headers: { Authorization: token },
@@ -34,6 +41,14 @@ export const removeGame = (id: string) => {
   return request.then(response => response.data)
 }
 
+
+export const editGame = (id: string, newObject: Game) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const request = axios.put(`${baseUrl}/${id}`, newObject, config)
+  return request.then(response => response.data)
+}
 
 
 

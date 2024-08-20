@@ -76,11 +76,15 @@ gamesRouter.delete('/:id', async (request, response) => {
 
 
 gamesRouter.put('/:id', (request, response, next) => {
-  const { home_team, visitor_team, date, outcome } = request.body
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(400).end()
+  }
+  const { home_team, visitor_team, date } = request.body
 
   Game.findByIdAndUpdate(
     request.params.id,
-    { home_team, visitor_team, date, outcome },
+    { home_team, visitor_team, date },
     { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedGame => {

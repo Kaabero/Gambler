@@ -225,6 +225,16 @@ describe('modification of a game', () => {
   })
 
   test('succeeds with status code 200 with valid data and valid id', async () => {
+    await api
+      .post('/api/users')
+      .send(testUser)
+    const response = await api
+      .post('/api/login')
+      .send(testUser)
+
+
+    token = response.body.token
+
     const gamesAtStart = await helper.gamesInDb()
 
     const gameToModify = gamesAtStart[0]
@@ -236,6 +246,7 @@ describe('modification of a game', () => {
     const resultGame = await api
       .put(`/api/games/${gameToModify.id}`)
       .send(modifiedGame)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
