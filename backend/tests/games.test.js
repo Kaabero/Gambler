@@ -189,6 +189,15 @@ describe('deletion of a game', () => {
   beforeEach(async () => {
     await Game.deleteMany({})
     await Game.insertMany(helper.initialGames)
+    await api
+      .post('/api/users')
+      .send(testUser)
+    const response = await api
+      .post('/api/login')
+      .send(testUser)
+
+
+    token = response.body.token
   })
 
   test('succeeds with status code 204 if id is valid', async () => {
@@ -197,6 +206,7 @@ describe('deletion of a game', () => {
 
     await api
       .delete(`/api/games/${gameToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const gamesAtEnd = await helper.gamesInDb()
