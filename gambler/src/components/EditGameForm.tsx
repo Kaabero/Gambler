@@ -7,9 +7,11 @@ interface EditGameFormProps {
   game: Game;
   onSave: (updatedGame: Game) => void;
   onCancel: () => void;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel }) => {
+const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, setErrorMessage, setNotificationMessage }) => {
   const [date, setDate] = useState(game.date);
   const [visitorTeam, setVisitorTeam] = useState(game.visitor_team);
   const [homeTeam, setHomeTeam] = useState(game.home_team);
@@ -17,15 +19,29 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel }) =
 
   const gameEdition = (event: React.SyntheticEvent) => {
     event.preventDefault();
+
+    if (homeTeam.trim().toLowerCase() === visitorTeam.trim().toLowerCase()) {
+        setErrorMessage('Home team and visitor team cannot be the same.');
+        setTimeout(() => {
+            setErrorMessage('');
+        }, 3000);
+        return;
+    }
+
     const updatedGame: Game = {
       ...game,
       date: date || game.date,
       home_team: homeTeam || game.home_team,
       visitor_team: visitorTeam || game.visitor_team,
     };
-
-    onSave(updatedGame);  // Call onSave with the updated game
-    navigate('/');  // Optionally navigate away after saving
+    
+    setErrorMessage('');
+    onSave(updatedGame);
+    setNotificationMessage('Game edited succesfully!')
+    setTimeout(() => {
+        setNotificationMessage('');
+    }, 3000);
+    navigate('/');  
   };
 
   return (

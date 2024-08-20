@@ -15,7 +15,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
   const [homeTeam, setHomeTeam] = useState('');
   const navigate = useNavigate();
   const [games, setGames] = useState<Game[]>([
-    { id: '1', date: '2023-02-13', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
+    { id: '1', date: '2023-02-13' , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
   ]);
 
   useEffect(() => {
@@ -28,6 +28,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
     event.preventDefault();
 
     try {
+    
       const newGame: Game = {
         date,
         home_team: homeTeam,
@@ -57,10 +58,10 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
       <h2>Add new game</h2>
       <form onSubmit={gameCreation}>
         <div>
-          Date:
+          Date and time:
           <br />
           <input
-            type='date'
+            type='datetime-local'
             value={date}
             onChange={({ target }) => setDate(target.value)}
           />

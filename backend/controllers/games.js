@@ -28,7 +28,7 @@ gamesRouter.get('/', async (request, response) => {
         select: 'username'
       }
     })
-
+  games.sort((a, b) => new Date(a.date) - new Date(b.date))
   response.json(games)
 })
 
@@ -41,8 +41,15 @@ gamesRouter.post('/', async (request, response) => {
   }
 
 
-  if (body.home_team === body.visitor_team) {
+  if (body.home_team.toLowerCase() === body.visitor_team.toLowerCase()) {
     return response.status(400).json({ error: 'Home team and visitor team must be different' })
+  }
+
+  const date = new Date(body.date)
+  const now = new Date()
+
+  if (date < now) {
+    return response.status(400).json({ error: 'The game date can not be in the past.' })
   }
 
   const game = new Game({

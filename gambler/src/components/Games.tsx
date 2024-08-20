@@ -6,9 +6,11 @@ import EditGameForm from './EditGameForm';
 
 interface GamesProps {
   user: User;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Games: React.FC<GamesProps> = ({ user }) => {
+const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
 
@@ -22,6 +24,10 @@ const Games: React.FC<GamesProps> = ({ user }) => {
   const handleRemoveGame = (id: string) => {
     removeGame(id).then(() => {
       setGames(games.filter(game => game.id !== id));
+      setNotificationMessage('Game deleted successfully!')
+      setTimeout(() => {
+        setNotificationMessage('');
+    }, 3000);
     });
   };
 
@@ -52,7 +58,7 @@ const Games: React.FC<GamesProps> = ({ user }) => {
       </ul>
 
       {editingGame && (
-        <EditGameForm game={editingGame} onSave={handleUpdateGame} onCancel={() => setEditingGame(null)} />
+        <EditGameForm game={editingGame} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} onSave={handleUpdateGame} onCancel={() => setEditingGame(null)} />
       )}
     </div>
   );

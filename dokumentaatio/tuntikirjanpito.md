@@ -12,4 +12,5 @@
 | 16.8.2024. | 8    | mongoose skeemojen kanssa taistelua, sisäänkirjautuminen |
 | 19.8.2024. | 3    | parannellut routet, uuden käyttäjän luominen, token perusteinen pelin lisäys |
 | 19.8.2024. | 4    | admin, adminille näkyvät toiminnot, pelin poisto |
-| yht        | 37    |            | 
+| 20.8.2024. | 3    | pelin muokkaus, pelien järjestäminen, testien muokkaus |
+| yht        | 40    |            | 
