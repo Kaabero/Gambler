@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Game } from "../types";
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { parseDate, formatDate } from '../utils/dateUtils'; // Use the updated utility functions
 
 interface EditGameFormProps {
   game: Game;
@@ -12,7 +13,7 @@ interface EditGameFormProps {
 }
 
 const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, setErrorMessage, setNotificationMessage }) => {
-  const [date, setDate] = useState(game.date);
+  const [date, setDate] = useState(formatDate(new Date(game.date)));
   const [visitorTeam, setVisitorTeam] = useState(game.visitor_team);
   const [homeTeam, setHomeTeam] = useState(game.home_team);
   const navigate = useNavigate();
@@ -21,27 +22,27 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, set
     event.preventDefault();
 
     if (homeTeam.trim().toLowerCase() === visitorTeam.trim().toLowerCase()) {
-        setErrorMessage('Home team and visitor team cannot be the same.');
-        setTimeout(() => {
-            setErrorMessage('');
-        }, 3000);
-        return;
+      setErrorMessage('Home team and visitor team cannot be the same.');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return;
     }
 
     const updatedGame: Game = {
       ...game,
-      date: date || game.date,
+      date: parseDate(date),
       home_team: homeTeam || game.home_team,
       visitor_team: visitorTeam || game.visitor_team,
     };
-    
+
     setErrorMessage('');
     onSave(updatedGame);
-    setNotificationMessage('Game edited succesfully!')
+    setNotificationMessage('Game edited successfully!');
     setTimeout(() => {
-        setNotificationMessage('');
+      setNotificationMessage('');
     }, 3000);
-    navigate('/');  
+    navigate('/');
   };
 
   return (
@@ -59,7 +60,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, set
         </div>
         <br />
         <div>
-          Home Team: 
+          Home Team:
           <br />
           <input
             value={homeTeam}
@@ -86,5 +87,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, set
 };
 
 export default EditGameForm;
+
+
 
 

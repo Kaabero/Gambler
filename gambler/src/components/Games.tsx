@@ -3,6 +3,7 @@ import { Game, User } from "../types";
 import { getAllGames, removeGame, editGame } from '../services/gameService';
 import React from 'react';
 import EditGameForm from './EditGameForm';
+import { formatDate } from '../utils/dateUtils';
 
 interface GamesProps {
   user: User;
@@ -14,7 +15,6 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
 
-
   useEffect(() => {
     getAllGames().then((data) => {
       setGames(data);
@@ -24,26 +24,29 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
   const handleRemoveGame = (id: string) => {
     removeGame(id).then(() => {
       setGames(games.filter(game => game.id !== id));
-      setNotificationMessage('Game deleted successfully!')
+      setNotificationMessage('Game deleted successfully!');
       setTimeout(() => {
         setNotificationMessage('');
-    }, 3000);
+      }, 3000);
     });
   };
 
-    const handleUpdateGame = async (updatedGame: Game) => {
+  const handleUpdateGame = async (updatedGame: Game) => {
     const editedGame = await editGame(updatedGame.id, updatedGame);
     setGames(games.map(game => game.id === updatedGame.id ? editedGame : game));
-    setEditingGame(null); 
+    setEditingGame(null);
   };
+
+ 
+  const sortedGames = [...games].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
     <div>
       <h2>Games</h2>
       <ul>
-        {games.map(game =>
+        {sortedGames.map(game =>
           <li key={game.id}>
-            <strong>{game.date}</strong><br />
+            <strong>{formatDate(new Date(game.date))}</strong><br />
             Home Team: {game.home_team} <br />
             Visitor Team: {game.visitor_team} <br />
             {user.admin && (
@@ -58,11 +61,16 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
       </ul>
 
       {editingGame && (
-        <EditGameForm game={editingGame} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} onSave={handleUpdateGame} onCancel={() => setEditingGame(null)} />
+        <EditGameForm
+          game={editingGame}
+          setErrorMessage={setErrorMessage}
+          setNotificationMessage={setNotificationMessage}
+          onSave={handleUpdateGame}
+          onCancel={() => setEditingGame(null)}
+        />
       )}
     </div>
   );
 };
 
 export default Games;
-

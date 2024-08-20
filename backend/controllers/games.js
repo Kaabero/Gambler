@@ -28,7 +28,7 @@ gamesRouter.get('/', async (request, response) => {
         select: 'username'
       }
     })
-  games.sort((a, b) => new Date(a.date) - new Date(b.date))
+
   response.json(games)
 })
 

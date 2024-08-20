@@ -13,4 +13,5 @@
 | 19.8.2024. | 3    | parannellut routet, uuden käyttäjän luominen, token perusteinen pelin lisäys |
 | 19.8.2024. | 4    | admin, adminille näkyvät toiminnot, pelin poisto |
 | 20.8.2024. | 3    | pelin muokkaus, pelien järjestäminen, testien muokkaus |
-| yht        | 40    |            | 
+| 20.8.2024. | 1    | päivämäärän muotoilu |
+| yht        | 41   |            | 

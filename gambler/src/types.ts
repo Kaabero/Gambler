@@ -25,7 +25,7 @@ export interface Game {
     id: string,
     home_team: string,
     visitor_team: string,
-    date: string,
+    date: Date,
     bets?: Bet[]
     outcome?: Outcome
   }
