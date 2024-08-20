@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Game } from "../types";
 import { getAllGames, removeGame } from '../services/gameService';
+import { User } from '../types'
 import React from 'react';
 
 
-const Games = () => {
+interface GamesProps {
+  user: User;
+}
+
+const Games: React.FC<GamesProps> = ({ user }) => {
 
   const [games, setGames] = useState<Game[]>([
     { id: '1', date: '1.1.2023', home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
@@ -31,7 +36,7 @@ const Games = () => {
             <strong>{game.date}</strong><br />
             Home Team: {game.home_team} <br />
             Visitor Team: {game.visitor_team} <br />
-            <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
+            {user.admin ? <button onClick={() => handleRemoveGame(game.id)}>Delete</button> : <></>}             
             <br />
           </li>
         )}

@@ -36,6 +36,8 @@ export type NewUser = Omit<User, 'id'>
 export type Credentials = {
   username: string,
   token: string,
-  admin: boolean
+  admin: boolean,
+  id: string,
+  password: string
 }
 

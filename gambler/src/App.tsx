@@ -33,7 +33,6 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       setToken(user.token)
-      console.log('user', user.admin)
     }
   }, [])
 
@@ -46,7 +45,7 @@ const App = () => {
           <Route path="/bets" element={user ? <Bets />: <Navigate replace to="/login" />} />
           <Route path="/players" element={user ? <Users /> : <Navigate replace to="/login" />} />
           <Route path="/addGame" element={(user && user.admin) ? <GameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
-          <Route path="/" element={user ? <Games /> : <Navigate replace to="/login" />} />
+          <Route path="/" element={user ? <Games user={user}/> : <Navigate replace to="/login" />} />
           <Route path="/register" element={!user ? <CreateAccount setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/login" element={!user ? <Login setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} setUser={setUser}/>: <Navigate replace to="/" />} />
         </Routes>
