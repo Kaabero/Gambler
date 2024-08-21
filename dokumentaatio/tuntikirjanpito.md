@@ -15,4 +15,5 @@
 | 20.8.2024. | 3    | pelin muokkaus, pelien järjestäminen, testien muokkaus |
 | 20.8.2024. | 2    | päivämäärien muotoilu ja editointi |
 | 21.8.2024. | 3    | lopputuloksen lisäys |
-| yht        | 45   |            | 
+| 21.8.2024. | 3    | vedon lisäys, MongoDB Triggereitä |
+| yht        | 48   |            | 

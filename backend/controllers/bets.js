@@ -16,7 +16,6 @@ const getTokenFrom = request => {
 
 
 betsRouter.get('/', async (request, response) => {
-  //await Bet.deleteMany({})
   const bets = await Bet.find({})
     .populate('user', { username: 1 })
     .populate('game', { home_team: 1, visitor_team: 1 })
@@ -33,6 +32,13 @@ betsRouter.post('/', async (request, response) => {
   const user = await User.findById(decodedToken.id)
 
   const game = await Game.findById(body.game)
+
+  const date = new Date(game.date)
+  const now = new Date()
+
+  if (date < now) {
+    return response.status(400).json({ error: 'Bet can not be added for past games' })
+  }
 
   const existingBet = await Bet.findOne({ user, game })
 
@@ -69,12 +75,20 @@ betsRouter.get('/:id', async (request, response) => {
 })
 
 betsRouter.delete('/:id', async (request, response) => {
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(400).end()
+  }
   await Bet.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 
 
 betsRouter.put('/:id', (request, response, next) => {
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(400).end()
+  }
   const { goals_home, goals_visitor, game, user } = request.body
 
   Bet.findByIdAndUpdate(

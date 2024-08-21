@@ -15,10 +15,10 @@ export interface User {
 
 export interface Bet {
   id: string,
-  goals_home: number,
-  goals_visitor: number,
-  game?: Game,
-  user?: User
+  goals_home: string,
+  goals_visitor: string,
+  game: Game,
+  user: User
 }
 
 export interface Game {
@@ -40,6 +40,14 @@ export interface NewOutcome {
   game: string; 
 }
 
+export interface NewBet {
+  goals_home: string;
+  goals_visitor: string;
+  game: string; 
+  user?: string;
+}
+
+
 export type Credentials = {
   username: string,
   token: string,
@@ -47,4 +55,3 @@ export type Credentials = {
   id: string,
   password: string
 }
-

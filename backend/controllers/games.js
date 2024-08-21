@@ -13,7 +13,6 @@ const getTokenFrom = request => {
 
 
 gamesRouter.get('/', async (request, response) => {
-  // await Game.deleteMany({})
 
   const games = await Game.find({})
     .populate({

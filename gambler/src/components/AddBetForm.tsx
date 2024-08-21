@@ -1,46 +1,50 @@
 import { useState, useEffect } from 'react';
-import { Outcome, Game, NewOutcome } from "../types";
+import { Bet, NewBet, Game, User } from "../types";
 import React from 'react';
-import { getAllOutcomes, addOutcome } from '../services/outcomeService';
+import { getAllBets, addBet } from '../services/betService';
 import { AxiosError } from 'axios';
 
 
-interface AddOutcomeFormProps {
+interface AddBetFormProps {
   game: Game;
+  user: User;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  setPlayedGame: React.Dispatch<React.SetStateAction<Game | null>>;
+  setGameForBet: React.Dispatch<React.SetStateAction<Game | null>>;
 }
 
-const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, setErrorMessage, setNotificationMessage, setPlayedGame }) => {
+const AddBetForm: React.FC<AddBetFormProps> = ({ game, setErrorMessage, setNotificationMessage, setGameForBet }) => {
         
     const [visitorGoals, setVisitorGoals] = useState('');
     const [homeGoals, setHomeGoals] = useState('');
-    const [outcomes, setOutcomes] = useState<Outcome[]>([]);
+    const [bets, setBets] = useState<Bet[]>([]);
       
         useEffect(() => {
-          getAllOutcomes().then(data => {
-            setOutcomes(data);
+          getAllBets().then(data => {
+            setBets(data);
           });
         }, []);
       
-        const outcomeCreation = async (event: React.SyntheticEvent) => {
+        const betCreation = async (event: React.SyntheticEvent) => {
           event.preventDefault();
-      
+         
+
           try {
           
-            const newOutcome: NewOutcome = {
+            const newBet: NewBet = {
                 goals_home: homeGoals,
                 goals_visitor: visitorGoals,
                 game: game.id,
             };
-            const savedOutcome = await addOutcome(newOutcome);
-            setOutcomes(outcomes.concat(savedOutcome));
-            setNotificationMessage('Outcome added successfully!');
+          
+            const savedBet = await addBet(newBet);
+        
+            setBets(bets.concat(savedBet));
+            setNotificationMessage('Bet added successfully!');
             setTimeout(() => {
               setNotificationMessage('');
             }, 3000);
-            setPlayedGame(null);
+            setGameForBet(null)
             
           } catch (error) {
             if (error instanceof AxiosError) {
@@ -48,15 +52,15 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, setErrorMessage, 
               setTimeout(() => {
                 setErrorMessage('');
               }, 3000);
-              setPlayedGame(null);
+              setGameForBet(null)
             }
           }
         };
       
         return (
           <div>
-            <h2>Add a new outcome</h2>
-            <form onSubmit={outcomeCreation}>
+            <h2>Add a new bet</h2>
+            <form onSubmit={betCreation}>
               <div>
                 Goals for {game.home_team}: 
                 <br />
@@ -75,7 +79,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, setErrorMessage, 
                 />
               </div>
               <br />
-              <button type="submit">Add outcome</button>
+              <button type="submit">Add bet</button>
               <br />
               <br />
             </form>
@@ -83,5 +87,4 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, setErrorMessage, 
         );
       };
       
-    export default AddOutcomeForm;
-      
+    export default AddBetForm;

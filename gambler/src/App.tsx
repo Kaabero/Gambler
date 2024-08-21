@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Credentials } from "./types";
 import React from 'react';
-import { setToken } from './services/gameService';
+import { setToken } from './utils/setToken';
 import Notification from './components/Notification'
 import GameForm from './components/GameForm';
 import Bets from './components/Bets';
@@ -88,8 +88,8 @@ const LogoutButton: React.FC<LogoutProps> = ({ setNotificationMessage, setUser }
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.log('logging out')
     setUser(null)
+    setToken('')
 
     window.localStorage.clear()
     setNotificationMessage('You are logged out')

@@ -4,7 +4,6 @@ const User = require('../models/user')
 
 
 usersRouter.get('/', async (request, response) => {
-  // await User.deleteMany({})
   const users = await User.find({})
     .populate({
       path: 'bets',

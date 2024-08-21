@@ -16,4 +16,5 @@ export const createUser = async (newObject: NewUser) => {
     const response = await axios.post<User>(baseUrl, newObject)
     return response.data
     
-  }
+}
+

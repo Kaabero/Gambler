@@ -4,6 +4,7 @@ import { getAllGames, removeGame, editGame } from '../services/gameService';
 import React from 'react';
 import EditGameForm from './EditGameForm';
 import AddOutcomeForm from './AddOutcomeForm';
+import AddBetForm from './AddBetForm';
 import { formatDate } from '../utils/dateUtils';
 
 interface GamesProps {
@@ -16,6 +17,7 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [playedGame, setPlayedGame] = useState<Game | null>(null);
+  const [gameForBet, setGameForBet] = useState<Game | null>(null);
 
   useEffect(() => {
     getAllGames().then((data) => {
@@ -51,13 +53,25 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             <strong>{formatDate(new Date(game.date))}</strong><br />
             Home Team: {game.home_team} <br />
             Visitor Team: {game.visitor_team} <br />
-            {user.admin && (
+            {user && game.outcome && (
+            <>
+            <br />
+            Outcome:<br />
+            {game.outcome.goals_home} - {game.outcome.goals_visitor} <br />
+            </>
+            )}
+            {user && !game.outcome &&(
+              <>
+            <button onClick={() => setGameForBet(game)}>Add bet</button>
+            </>
+            )}
+            {user.admin && !game.outcome &&(
               <>
                 <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
                 <button onClick={() => setEditingGame(game)}>Edit</button>
                 <button onClick={() => setPlayedGame(game)}>Add outcome</button>
               </>
-            )}
+            )}       
             <br />
           </li>
         )}
@@ -77,6 +91,16 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
           game={playedGame}
           setErrorMessage={setErrorMessage}
           setNotificationMessage={setNotificationMessage}
+          setPlayedGame={setPlayedGame}
+        />
+      )}
+      {gameForBet && (
+        <AddBetForm
+          game={gameForBet}
+          setErrorMessage={setErrorMessage}
+          setNotificationMessage={setNotificationMessage}
+          setGameForBet={setGameForBet}
+          user={user}
         />
       )}
     </div>

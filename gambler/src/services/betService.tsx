@@ -1,27 +1,27 @@
 import axios from 'axios';
-import { Outcome, NewOutcome } from "../types";
+import { Bet, NewBet } from "../types";
 import { token } from '../utils/setToken';
+const baseUrl = '/api/bets'
 
-const baseUrl = '/api/outcomes'
 
-
-export const getAllOutcomes = () => {
+export const getAllBets = () => {
   return axios
-    .get<Outcome[]>(baseUrl)
+    .get<Bet[]>(baseUrl)
     .then(response => response.data)
  
 }
 
-export const addOutcome = async (newObject: NewOutcome) => {
+export const addBet = async (newObject: NewBet) => {
+    
   const config = {
-    headers: { Authorization: token },
+        headers: { Authorization: token },
   }
-  const response = await axios.post<Outcome>(baseUrl, newObject, config)
+  const response = await axios.post<Bet>(baseUrl, newObject, config)
   return response.data
 }
 
 
-export const removeOutcome = (id: string) => {
+export const removeBet = (id: string) => {
     const config = {
         headers: { Authorization: token },
       }
@@ -31,7 +31,7 @@ export const removeOutcome = (id: string) => {
 }
 
 
-export const editOutcome = (id: string, newObject: Outcome) => {
+export const editBet = (id: string, newObject: Bet) => {
     const config = {
         headers: { Authorization: token },
       }
