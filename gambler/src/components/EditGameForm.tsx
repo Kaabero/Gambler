@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Game } from "../types";
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
-import { formatDateForInput } from '../utils/dateUtils'; // Use the updated utility functions
+import { formatDateForInput } from '../utils/dateUtils';
 
 interface EditGameFormProps {
   game: Game;

@@ -5,6 +5,7 @@ import { setToken } from './services/gameService';
 import Notification from './components/Notification'
 import GameForm from './components/GameForm';
 import Bets from './components/Bets';
+import Outcomes from './components/Outcomes';
 import Login from './components/Login';
 import Games from './components/Games';
 import Users from './components/Users';
@@ -43,6 +44,7 @@ const App = () => {
 
         <Routes>
           <Route path="/bets" element={user ? <Bets />: <Navigate replace to="/login" />} />
+          <Route path="/outcomes" element={user ? <Outcomes />: <Navigate replace to="/login" />} />
           <Route path="/players" element={user ? <Users /> : <Navigate replace to="/login" />} />
           <Route path="/addGame" element={(user && user.admin) ? <GameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/" element={user ? <Games user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
@@ -56,6 +58,7 @@ const App = () => {
             <>
               {user.admin ? <Link style={padding} to="/addGame">Add game</Link> : <></>} 
               <Link style={padding} to="/bets">Bets</Link>
+              <Link style={padding} to="/outcomes">Outcomes</Link>
               <Link style={padding} to="/players">Players</Link>
               <Link style={padding} to="/">Home</Link>
             </>

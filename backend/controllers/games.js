@@ -49,7 +49,7 @@ gamesRouter.post('/', async (request, response) => {
   const now = new Date()
 
   if (date < now) {
-    return response.status(400).json({ error: 'The game date can not be in the past.' })
+    return response.status(400).json({ error: 'Set a future date' })
   }
 
   const game = new Game({

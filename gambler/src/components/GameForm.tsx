@@ -3,6 +3,7 @@ import { Game } from "../types";
 import { useNavigate } from 'react-router-dom';
 import { getAllGames, createGame } from '../services/gameService';
 import React from 'react';
+import { AxiosError } from 'axios';
 
 interface GameFormProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -44,8 +45,8 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
       }, 3000);
       navigate('/')
     } catch (error) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
+      if (error instanceof AxiosError) {
+        setErrorMessage(`${error.response?.data.error}`);
         setTimeout(() => {
           setErrorMessage('');
         }, 3000);

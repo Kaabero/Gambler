@@ -14,4 +14,5 @@
 | 19.8.2024. | 4    | admin, adminille näkyvät toiminnot, pelin poisto |
 | 20.8.2024. | 3    | pelin muokkaus, pelien järjestäminen, testien muokkaus |
 | 20.8.2024. | 2    | päivämäärien muotoilu ja editointi |
-| yht        | 42   |            | 
+| 21.8.2024. | 3    | lopputuloksen lisäys |
+| yht        | 45   |            | 

@@ -16,7 +16,6 @@ const Users = () => {
     });
   }, []);
 
-  console.log('users', users)
   return (
     <div>
       <h2>Players</h2>

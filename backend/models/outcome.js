@@ -12,7 +12,8 @@ const outcomeSchema = mongoose.Schema({
   game: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Game',
-    unique: true
+    unique: true,
+    required: true
   }
 })
 

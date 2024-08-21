@@ -1,8 +1,8 @@
 export interface Outcome {
   id: string,
-  goals_home: number,
-  goals_visitor: number,
-  game?: Game
+  goals_home: string,
+  goals_visitor: string,
+  game: Game
 }
 
 export interface User {
@@ -32,6 +32,13 @@ export interface Game {
 
 export type NewGame = Omit<Game, 'id'>
 export type NewUser = Omit<User, 'id'>
+
+
+export interface NewOutcome {
+  goals_home: string;
+  goals_visitor: string;
+  game: string; 
+}
 
 export type Credentials = {
   username: string,
