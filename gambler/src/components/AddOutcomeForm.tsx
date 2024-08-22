@@ -10,9 +10,11 @@ interface AddOutcomeFormProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
   setPlayedGame: React.Dispatch<React.SetStateAction<Game | null>>;
+  onSave: (updatedGame: Game) => void;
+  onCancel: () => void;
 }
 
-const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, setErrorMessage, setNotificationMessage, setPlayedGame }) => {
+const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, onSave, onCancel, setErrorMessage, setNotificationMessage, setPlayedGame }) => {
         
     const [visitorGoals, setVisitorGoals] = useState('');
     const [homeGoals, setHomeGoals] = useState('');
@@ -35,6 +37,8 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, setErrorMessage, 
                 game: game.id,
             };
             const savedOutcome = await addOutcome(newOutcome);
+            const updatedGame = { ...game, outcome: savedOutcome };
+            onSave(updatedGame);
             setOutcomes(outcomes.concat(savedOutcome));
             setNotificationMessage('Outcome added successfully!');
             setTimeout(() => {
@@ -76,6 +80,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, setErrorMessage, 
               </div>
               <br />
               <button type="submit">Add outcome</button>
+              <button type="button" onClick={onCancel}>Cancel</button>
               <br />
               <br />
             </form>

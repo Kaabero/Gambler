@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Game, User } from "../types";
+import { useNavigate } from 'react-router-dom';
 import { getAllGames, removeGame, editGame } from '../services/gameService';
 import React from 'react';
 import EditGameForm from './EditGameForm';
 import AddOutcomeForm from './AddOutcomeForm';
-import AddBetForm from './AddBetForm';
 import { formatDate } from '../utils/dateUtils';
 
 interface GamesProps {
@@ -17,7 +17,7 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [playedGame, setPlayedGame] = useState<Game | null>(null);
-  const [gameForBet, setGameForBet] = useState<Game | null>(null);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     getAllGames().then((data) => {
@@ -41,6 +41,19 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
     setEditingGame(null);
   };
 
+  const handleAddOutcome = (updatedGame: Game) => {
+    setGames(games.map(game => game.id === updatedGame.id ? updatedGame : game));
+  };
+
+  const handleAddBetClick = (game: Game) => {
+    
+    navigate(`/addBet/${game.id}`);
+  };
+
+  const userHasBet = (game: Game) => {
+    return game.bets?.some(bet => bet.user && bet.user.username === user.username);
+  };
+
  
   const sortedGames = [...games].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -60,19 +73,20 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             {game.outcome.goals_home} - {game.outcome.goals_visitor} <br />
             </>
             )}
-            {user && !game.outcome &&(
+            {user && !game.outcome && !userHasBet(game) && (
               <>
-            <button onClick={() => setGameForBet(game)}>Add bet</button>
+            <button onClick={() => handleAddBetClick(game)}>Add bet</button>
             </>
             )}
             {user.admin &&(
               <>
             <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
+            <button onClick={() => setEditingGame(game)}>Edit</button>
             </>
             )}
             {user.admin && !game.outcome &&(
               <>
-                <button onClick={() => setEditingGame(game)}>Edit</button>
+                
                 <button onClick={() => setPlayedGame(game)}>Add outcome</button>
               </>
             )}       
@@ -96,15 +110,8 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
           setErrorMessage={setErrorMessage}
           setNotificationMessage={setNotificationMessage}
           setPlayedGame={setPlayedGame}
-        />
-      )}
-      {gameForBet && (
-        <AddBetForm
-          game={gameForBet}
-          setErrorMessage={setErrorMessage}
-          setNotificationMessage={setNotificationMessage}
-          setGameForBet={setGameForBet}
-          user={user}
+          onSave={handleAddOutcome}
+          onCancel={() => setPlayedGame(null)}
         />
       )}
     </div>

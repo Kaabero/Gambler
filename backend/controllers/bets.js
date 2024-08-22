@@ -58,6 +58,7 @@ betsRouter.post('/', async (request, response) => {
   })
 
   const savedBet = await bet.save()
+  game.bets = game.bets.concat(savedBet._id)
 
 
   user.bets = user.bets.concat(savedBet._id)

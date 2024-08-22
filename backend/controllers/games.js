@@ -14,7 +14,19 @@ const getTokenFrom = request => {
 
 gamesRouter.get('/', async (request, response) => {
 
-  const games = await Game.find({}).populate('outcome', { goals_home: 1, goals_visitor: 1 })
+  const games = await Game.find({})
+    .populate({
+      path: 'outcome',
+      select: 'goals_home goals_visitor',
+    })
+    .populate({
+      path: 'bets',
+      select: 'goals_home goals_visitor user',
+      populate: {
+        path: 'user',
+        select: 'username'
+      }
+    })
 
   response.json(games)
 })

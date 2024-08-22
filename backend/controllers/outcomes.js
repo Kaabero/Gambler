@@ -13,7 +13,19 @@ const getTokenFrom = request => {
 
 
 outcomesRouter.get('/', async (request, response) => {
-  const outcomes = await Outcome.find({}).populate('game', { home_team: 1, visitor_team: 1, date: 1 })
+  const outcomes = await Outcome.find({})
+    .populate({
+      path: 'game',
+      select: 'home_team visitor_team date bets',
+      populate: {
+        path: 'bets',
+        select: 'goals_home goals_visitor user',
+        populate: {
+          path: 'user',
+          select: 'username'
+        }
+      }
+    })
 
   response.json(outcomes)
 

@@ -13,7 +13,7 @@ export const getAllGames = () => {
 
 export const getGameById = (id: string) => {
   return axios
-    .get<Game[]>(`${ baseUrl }/${id}`)
+    .get<Game>(`${ baseUrl }/${id}`)
     .then(response => response.data)
  
 }

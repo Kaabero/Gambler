@@ -16,5 +16,5 @@
 | 20.8.2024. | 2    | päivämäärien muotoilu ja editointi |
 | 21.8.2024. | 3    | lopputuloksen lisäys |
 | 21.8.2024. | 3    | vedon lisäys, MongoDB Triggereitä |
-| 22.8.2024. | 3    | MongoDB Triggereitä |
-| yht        | 48   |            | 
+| 22.8.2024. | 6    | MongoDB Triggereitä, näkymien päivitys frontissa |
+| yht        | 54   |            | 
