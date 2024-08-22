@@ -15,12 +15,6 @@ const gameSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  bets: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Bet'
-    }
-  ],
   outcome: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Outcome'

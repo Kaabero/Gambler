@@ -14,19 +14,7 @@ const getTokenFrom = request => {
 
 gamesRouter.get('/', async (request, response) => {
 
-  const games = await Game.find({})
-    .populate({
-      path: 'outcome',
-      select: 'goals_home goals_visitor',
-    })
-    .populate({
-      path: 'bets',
-      select: 'goals_home goals_visitor user',
-      populate: {
-        path: 'user',
-        select: 'username'
-      }
-    })
+  const games = await Game.find({}).populate('outcome', { goals_home: 1, goals_visitor: 1 })
 
   response.json(games)
 })
@@ -76,6 +64,7 @@ gamesRouter.delete('/:id', async (request, response) => {
   if (!decodedToken.id) {
     return response.status(400).end()
   }
+
   await Game.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })

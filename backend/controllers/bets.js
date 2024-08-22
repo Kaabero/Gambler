@@ -32,20 +32,23 @@ betsRouter.post('/', async (request, response) => {
   const user = await User.findById(decodedToken.id)
 
   const game = await Game.findById(body.game)
-
+  /*
   const date = new Date(game.date)
   const now = new Date()
 
   if (date < now) {
     return response.status(400).json({ error: 'Bet can not be added for past games' })
   }
-
+*/
   const existingBet = await Bet.findOne({ user, game })
 
   if (existingBet) {
     return response.status(400).json({ error: 'User has already placed a bet on this game' })
   }
 
+  if (body.goals_home === '' || body.goals_visitor === '') {
+    return response.status(400).json({ error: 'Some of the required fields are missing' })
+  }
 
   const bet = new Bet({
     goals_home: Number(body.goals_home),
@@ -55,7 +58,7 @@ betsRouter.post('/', async (request, response) => {
   })
 
   const savedBet = await bet.save()
-  game.bets = game.bets.concat(savedBet._id)
+
 
   user.bets = user.bets.concat(savedBet._id)
   await user.save()

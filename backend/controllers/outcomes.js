@@ -13,19 +13,7 @@ const getTokenFrom = request => {
 
 
 outcomesRouter.get('/', async (request, response) => {
-  const outcomes = await Outcome.find({})
-    .populate({
-      path: 'game',
-      select: 'home_team visitor_team date bets',
-      populate: {
-        path: 'bets',
-        select: 'goals_home goals_visitor user',
-        populate: {
-          path: 'user',
-          select: 'username'
-        }
-      }
-    })
+  const outcomes = await Outcome.find({}).populate('game', { home_team: 1, visitor_team: 1, date: 1 })
 
   response.json(outcomes)
 
@@ -41,12 +29,16 @@ outcomesRouter.post('/', async (request, response) => {
 
   const game = await Game.findById(body.game)
 
-
+  /*
   const date = new Date(game.date)
   const now = new Date()
 
   if (date > now) {
     return response.status(400).json({ error: 'Outcome can not be added for future games' })
+  }
+*/
+  if (body.goals_home === '' || body.goals_visitor === '') {
+    return response.status(400).json({ error: 'Some of the required fields are missing' })
   }
 
   const outcome = new Outcome({

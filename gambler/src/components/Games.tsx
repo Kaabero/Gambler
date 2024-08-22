@@ -65,9 +65,13 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             <button onClick={() => setGameForBet(game)}>Add bet</button>
             </>
             )}
+            {user.admin &&(
+              <>
+            <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
+            </>
+            )}
             {user.admin && !game.outcome &&(
               <>
-                <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
                 <button onClick={() => setEditingGame(game)}>Edit</button>
                 <button onClick={() => setPlayedGame(game)}>Add outcome</button>
               </>
