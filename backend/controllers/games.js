@@ -64,6 +64,19 @@ gamesRouter.post('/', async (request, response) => {
 
 gamesRouter.get('/:id', async (request, response) => {
   const game = await Game.findById(request.params.id)
+    .populate({
+      path: 'outcome',
+      select: 'goals_home goals_visitor',
+    })
+    .populate({
+      path: 'bets',
+      select: 'goals_home goals_visitor user',
+      populate: {
+        path: 'user',
+        select: 'username'
+      }
+    })
+
   if (game) {
     response.json(game)
   } else {
