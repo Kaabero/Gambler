@@ -55,6 +55,14 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
     navigate(`/outcome/${game.id}`);
   };
 
+  const handleAddScoresClick = (game: Game) => {
+    if (game.outcome?.id) {
+      navigate(`/addScores/${game.outcome.id}`);
+    } else {
+      console.error("No outcome found for the game.");
+    }
+  };
+
   const userHasBet = (game: Game) => {
     return game.bets?.some(bet => bet.user && bet.user.username === user.username);
   };
@@ -94,7 +102,13 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             <br />
             <button onClick={() => handleCheckOutcomeClick(game)}>Check outcome</button> <br />
             </>
-            )}     
+            )} 
+            {user.admin && game.outcome && (
+            <>
+            <br />
+            <button onClick={() => handleAddScoresClick(game)}>Add scores</button> <br />
+            </>
+            )}       
             <br />
           </li>
         )}

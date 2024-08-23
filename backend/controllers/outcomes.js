@@ -31,6 +31,28 @@ outcomesRouter.get('/', async (request, response) => {
 
 })
 
+outcomesRouter.get('/:id', async (request, response) => {
+  const outcome = await Outcome.findById(request.params.id)
+    .populate({
+      path: 'game',
+      select: 'home_team visitor_team date bets',
+      populate: {
+        path: 'bets',
+        select: 'goals_home goals_visitor user',
+        populate: {
+          path: 'user',
+          select: 'username'
+        }
+      }
+    })
+
+  if (outcome) {
+    response.json(outcome)
+  } else {
+    response.status(404).end()
+  }
+})
+
 outcomesRouter.post('/', async (request, response) => {
   const body = request.body
 
@@ -64,15 +86,6 @@ outcomesRouter.post('/', async (request, response) => {
   await game.save()
   response.status(201).json(savedOutcome)
 
-})
-
-outcomesRouter.get('/:id', async (request, response) => {
-  const outcome = await Outcome.findById(request.params.id)
-  if (outcome) {
-    response.json(outcome)
-  } else {
-    response.status(404).end()
-  }
 })
 
 outcomesRouter.delete('/:id', async (request, response) => {

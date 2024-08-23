@@ -12,6 +12,13 @@ export const getAllOutcomes = () => {
  
 }
 
+export const getOutcomeById = (id: string) => {
+  return axios
+    .get<Outcome>(`${ baseUrl }/${id}`)
+    .then(response => response.data)
+ 
+}
+
 export const addOutcome = async (newObject: NewOutcome) => {
   const config = {
     headers: { Authorization: token },
