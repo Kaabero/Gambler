@@ -1,30 +1,43 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Outcome, Game, NewOutcome } from "../types";
 import React from 'react';
 import { getAllOutcomes, addOutcome } from '../services/outcomeService';
 import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { getGameById } from '../services/gameService';
 
 
 interface AddOutcomeFormProps {
-  game: Game;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  setPlayedGame: React.Dispatch<React.SetStateAction<Game | null>>;
-  onSave: (updatedGame: Game) => void;
-  onCancel: () => void;
 }
 
-const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, onSave, onCancel, setErrorMessage, setNotificationMessage, setPlayedGame }) => {
-        
+const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+    const { gameId } = useParams(); 
+    const [game, setGame] = useState<Game>(
+      { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
+    );
     const [visitorGoals, setVisitorGoals] = useState('');
     const [homeGoals, setHomeGoals] = useState('');
     const [outcomes, setOutcomes] = useState<Outcome[]>([]);
+    const navigate = useNavigate();
       
         useEffect(() => {
           getAllOutcomes().then(data => {
             setOutcomes(data);
           });
         }, []);
+
+        useEffect(() => {
+          if (gameId) {
+            getGameById(gameId).then(setGame); 
+          }
+        }, [gameId]);
+
+        const handleCancel = () => {
+          navigate('/'); 
+        };
       
         const outcomeCreation = async (event: React.SyntheticEvent) => {
           event.preventDefault();
@@ -37,14 +50,14 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, onSave, onCancel,
                 game: game.id,
             };
             const savedOutcome = await addOutcome(newOutcome);
-            const updatedGame = { ...game, outcome: savedOutcome };
-            onSave(updatedGame);
+                        
             setOutcomes(outcomes.concat(savedOutcome));
             setNotificationMessage('Outcome added successfully!');
             setTimeout(() => {
               setNotificationMessage('');
             }, 3000);
-            setPlayedGame(null);
+            navigate('/')
+            
             
           } catch (error) {
             if (error instanceof AxiosError) {
@@ -52,7 +65,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, onSave, onCancel,
               setTimeout(() => {
                 setErrorMessage('');
               }, 3000);
-              setPlayedGame(null);
+              
             }
           }
         };
@@ -65,6 +78,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, onSave, onCancel,
                 Goals for {game.home_team}: 
                 <br />
                 <input
+                  type="number"
                   value={homeGoals}
                   onChange={({ target }) => setHomeGoals(target.value)}
                 />
@@ -74,13 +88,14 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ game, onSave, onCancel,
               Goals for {game.visitor_team}:
                 <br />
                 <input
+                  type="number"
                   value={visitorGoals}
                   onChange={({ target }) => setVisitorGoals(target.value)}
                 />
               </div>
               <br />
               <button type="submit">Add outcome</button>
-              <button type="button" onClick={onCancel}>Cancel</button>
+              <button type="button" onClick={handleCancel}>Cancel</button>
               <br />
               <br />
             </form>

@@ -10,6 +10,7 @@ import Login from './components/Login';
 import Games from './components/Games';
 import Users from './components/Users';
 import AddBetForm from './components/AddBetForm';
+import AddOutcomeForm from './components/AddOutcomeForm';
 import CreateAccount from './components/RegisterationForm';
 import {
   BrowserRouter as Router,
@@ -51,7 +52,8 @@ const App = () => {
           <Route path="/" element={user ? <Games user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/register" element={!user ? <CreateAccount setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/login" element={!user ? <Login setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} setUser={setUser}/>: <Navigate replace to="/" />} />
-          <Route path="/addBet/:gameId" element={<AddBetForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/>} />
+          <Route path="/addBet/:gameId" element={user ? <AddBetForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/>: <Navigate replace to="/login" />} />
+          <Route path="/addOutcome/:gameId" element={(user && user.admin) ? <AddOutcomeForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/>: <Navigate replace to="/" />} />
         </Routes>
 
         <div>

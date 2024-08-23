@@ -29,7 +29,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
   }, [gameId]);
 
   const handleCancel = () => {
-    navigate('/'); // Navigate to the home page
+    navigate('/'); 
   };
 
 

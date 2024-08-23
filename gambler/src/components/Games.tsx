@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { getAllGames, removeGame, editGame } from '../services/gameService';
 import React from 'react';
 import EditGameForm from './EditGameForm';
-import AddOutcomeForm from './AddOutcomeForm';
 import { formatDate } from '../utils/dateUtils';
 
 interface GamesProps {
@@ -16,7 +15,6 @@ interface GamesProps {
 const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
-  const [playedGame, setPlayedGame] = useState<Game | null>(null);
   const navigate = useNavigate(); 
 
   useEffect(() => {
@@ -41,13 +39,15 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
     setEditingGame(null);
   };
 
-  const handleAddOutcome = (updatedGame: Game) => {
-    setGames(games.map(game => game.id === updatedGame.id ? updatedGame : game));
-  };
 
   const handleAddBetClick = (game: Game) => {
     
     navigate(`/addBet/${game.id}`);
+  };
+
+  const handleAddOutcomeClick = (game: Game) => {
+    
+    navigate(`/addOutcome/${game.id}`);
   };
 
   const userHasBet = (game: Game) => {
@@ -87,7 +87,7 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             {user.admin && !game.outcome &&(
               <>
                 
-                <button onClick={() => setPlayedGame(game)}>Add outcome</button>
+                <button onClick={() => handleAddOutcomeClick(game)}>Add outcome</button>
               </>
             )}       
             <br />
@@ -104,16 +104,7 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
           onCancel={() => setEditingGame(null)}
         />
       )}
-      {playedGame && (
-        <AddOutcomeForm
-          game={playedGame}
-          setErrorMessage={setErrorMessage}
-          setNotificationMessage={setNotificationMessage}
-          setPlayedGame={setPlayedGame}
-          onSave={handleAddOutcome}
-          onCancel={() => setPlayedGame(null)}
-        />
-      )}
+
     </div>
   );
 };
