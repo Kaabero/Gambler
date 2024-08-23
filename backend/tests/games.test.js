@@ -5,7 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const helper = require('./test_helper')
-
+const User = require('../models/user')
 const Game = require('../models/game')
 
 const testUser = {
@@ -280,6 +280,7 @@ describe('modification of a game', () => {
 })
 
 after(async () => {
+  await User.deleteMany({})
   await Game.deleteMany({})
   await mongoose.connection.close()
 })
