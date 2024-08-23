@@ -13,6 +13,18 @@ usersRouter.get('/', async (request, response) => {
         select: 'home_team visitor_team date'
       }
     })
+    .populate({
+      path: 'scores',
+      select: 'points outcome',
+      populate: {
+        path: 'outcome',
+        select: 'game',
+        populate: {
+          path: 'game',
+          select: 'home_team visitor_team'
+        }
+      }
+    })
   response.json(users)
 })
 
@@ -38,6 +50,23 @@ usersRouter.post('/', async (request, response) => {
 
 usersRouter.get('/:id', async (request, response) => {
   const user = await User.findById(request.params.id)
+    .populate({
+      path: 'bets',
+      select: 'goals_home goals_visitor game',
+      populate: {
+        path: 'game',
+        select: 'home_team visitor_team date'
+      }
+    })
+    .populate({
+      path: 'scores',
+      select: 'points outcome',
+      populate: {
+        path: 'outcome',
+        select: 'game,'
+      }
+    })
+
   if (user) {
     response.json(user)
   } else {

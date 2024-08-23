@@ -17,6 +17,12 @@ const userSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Bet'
     }
+  ],
+  scores: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Scores'
+    }
   ]
 })
 

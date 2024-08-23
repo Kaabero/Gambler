@@ -26,6 +26,14 @@ outcomesRouter.get('/', async (request, response) => {
         }
       }
     })
+    .populate({
+      path: 'scores',
+      select: 'points user',
+      populate: {
+        path: 'user',
+        select: 'username'
+      }
+    })
 
   response.json(outcomes)
 
@@ -43,6 +51,14 @@ outcomesRouter.get('/:id', async (request, response) => {
           path: 'user',
           select: 'username'
         }
+      }
+    })
+    .populate({
+      path: 'scores',
+      select: 'points user',
+      populate: {
+        path: 'user',
+        select: 'username'
       }
     })
 

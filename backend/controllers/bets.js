@@ -71,6 +71,8 @@ betsRouter.post('/', async (request, response) => {
 
 betsRouter.get('/:id', async (request, response) => {
   const bet = await Bet.findById(request.params.id)
+    .populate('user', { username: 1 })
+    .populate('game', { home_team: 1, visitor_team: 1 })
   if (bet) {
     response.json(bet)
   } else {

@@ -1,28 +1,23 @@
 const mongoose = require('mongoose')
 
-const outcomeSchema = mongoose.Schema({
-  goals_home: {
+const scoresSchema = mongoose.Schema({
+  points: {
     type: Number,
     required: true
   },
-  goals_visitor: {
-    type: Number,
-    required: true
-  },
-  game: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Game',
+    ref: 'User',
     required: true
   },
-  scores: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Scores'
-    }
-  ]
+  outcome: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Outcome',
+    required: true
+  }
 })
 
-outcomeSchema.set('toJSON', {
+scoresSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -31,6 +26,6 @@ outcomeSchema.set('toJSON', {
 })
 
 
-const Outcome = mongoose.model('Outcome', outcomeSchema)
+const Scores = mongoose.model('Scores', scoresSchema)
 
-module.exports = Outcome
+module.exports = Scores

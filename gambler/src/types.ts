@@ -28,24 +28,38 @@ export interface Game {
     date: Date,
     bets?: Bet[],
     outcome?: Outcome
-  }
+}
+
+export interface Scores {
+  id: string,
+  points: string,
+  user: User,
+  outcome: Outcome
+} 
 
 export type NewGame = Omit<Game, 'id'>
 export type NewUser = Omit<User, 'id'>
 
 
 export interface NewOutcome {
-  goals_home: string;
-  goals_visitor: string;
-  game: string; 
+  goals_home: string,
+  goals_visitor: string,
+  game: string,
 }
 
 export interface NewBet {
-  goals_home: string;
-  goals_visitor: string;
-  game: string; 
-  user?: string;
+  goals_home: string,
+  goals_visitor: string,
+  game: string,
+  user?: string,
 }
+
+export interface NewScores {
+  id: string,
+  points: string,
+  user?: string,
+  outcome?: string
+} 
 
 
 export type Credentials = {
