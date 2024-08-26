@@ -1,6 +1,16 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 
 
 usersRouter.get('/', async (request, response) => {
@@ -33,8 +43,15 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, password } = request.body
 
+  const existingUser = await User.findOne({ username })
+
+  if (existingUser) {
+    return response.status(400).json({ error: 'Username already taken' })
+  }
+
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
+
 
   const user = new User({
     username,
@@ -75,23 +92,19 @@ usersRouter.get('/:id', async (request, response) => {
 })
 
 usersRouter.delete('/:id', async (request, response) => {
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
+  }
+
   await User.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 
-
-usersRouter.put('/:id', (request, response, next) => {
-  const { username, password } = request.body
-
-  User.findByIdAndUpdate(
-    request.params.id,
-    { username, password },
-    { new: true, runValidators: true, context: 'query' }
-  )
-    .then(updatedUser => {
-      response.json(updatedUser.passwordHash)
-    })
-    .catch(error => next(error))
-})
 
 module.exports = usersRouter

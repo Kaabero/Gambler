@@ -44,34 +44,46 @@ scoresRouter.post('/', async (request, response) => {
     return response.status(400).end()
   }
 
+  const user = await User.findById(decodedToken.id)
+  const pointsToUser = await User.findById(body.user)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
+  }
+
   if (!body.outcome || !body.user || body.points === '') {
     return response.status(400).json({ error: 'Some of the required fields are missing' })
   }
 
   const outcome = await Outcome.findById(body.outcome)
-  const user = await User.findById(body.user)
 
-  const existingScores = await Scores.findOne({ outcome })
+
+  if (!outcome) {
+    return response.status(400).json({ error: 'Outcome not found' })
+  }
+
+  const existingScores = await Scores.findOne({ outcome: outcome._id, user: body.user })
 
   if (existingScores) {
-    return response.status(400).json({ error: 'Scores are already added to this game' })
+    return response.status(400).json({ error: 'User has already received points for this outcome' })
   }
 
   const scores = new Scores({
     points: Number(body.points),
-    user: user._id,
+    user: body.user,
     outcome: outcome._id
   })
 
-  const savedScores = await scores.save()
-  user.scores = user.scores.concat(savedScores._id)
-  outcome.scores = outcome.scores.concat(savedScores._id)
 
-  await user.save()
+  pointsToUser.scores = pointsToUser.scores.concat(scores._id)
+  outcome.scores = outcome.scores.concat(scores._id)
+
+  await pointsToUser.save()
   await scores.save()
   await outcome.save()
 
-  response.status(201).json(savedScores)
+
+  response.status(201).json(scores)
 
 })
 
@@ -102,6 +114,11 @@ scoresRouter.delete('/:id', async (request, response) => {
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
+  }
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
   }
 
   await Scores.findByIdAndDelete(request.params.id)

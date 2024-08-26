@@ -12,6 +12,7 @@ const outcomeSchema = mongoose.Schema({
   game: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Game',
+    unique: true,
     required: true
   },
   scores: [

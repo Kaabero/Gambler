@@ -40,7 +40,7 @@ betsRouter.post('/', async (request, response) => {
     return response.status(400).json({ error: 'Bet can not be added for past games' })
   }
 */
-  const existingBet = await Bet.findOne({ user, game })
+  const existingBet = await Bet.findOne({ user: user._id, game: game._id })
 
   if (existingBet) {
     return response.status(400).json({ error: 'User has already placed a bet on this game' })

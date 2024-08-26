@@ -1,5 +1,6 @@
 const gamesRouter = require('express').Router()
 const Game = require('../models/game')
+const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
 
@@ -39,6 +40,12 @@ gamesRouter.post('/', async (request, response) => {
     return response.status(400).end()
   }
 
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
+  }
+
 
   if (body.home_team.toLowerCase() === body.visitor_team.toLowerCase()) {
     return response.status(400).json({ error: 'Home team and visitor team must be different' })
@@ -49,6 +56,16 @@ gamesRouter.post('/', async (request, response) => {
 
   if (date < now) {
     return response.status(400).json({ error: 'Set a future date' })
+  }
+
+  const existingGame = await Game.findOne({
+    home_team: body.home_team,
+    visitor_team: body.visitor_team,
+    date: body.date
+  })
+
+  if (existingGame) {
+    return response.status(400).json({ error: 'A game with the same teams and date already exists.' })
   }
 
   const game = new Game({
@@ -90,15 +107,27 @@ gamesRouter.delete('/:id', async (request, response) => {
     return response.status(400).end()
   }
 
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
+  }
+
   await Game.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 
 
-gamesRouter.put('/:id', (request, response, next) => {
+gamesRouter.put('/:id', async (request, response, next) => {
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
+  }
+
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
   }
   const { home_team, visitor_team, date } = request.body
 

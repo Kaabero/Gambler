@@ -19,4 +19,5 @@
 | 22.8.2024. | 6    | MongoDB Triggereitä, näkymien päivitys frontissa |
 | 22.8.2024. | 2    | Outcome näkymiä, outcomin poisto, pisteytyksen alustus fronttiin |
 | 22.8.2024. | 4    | pisteytyksen skeemat ja backend, pisteytyksen MongoDB Triggerit |
-| yht        | 60   |            | 
+| 22.8.2024. | 3    | backarin ja MongoDB Triggereiden ongelmien korjausta |
+| yht        | 63   |            | 

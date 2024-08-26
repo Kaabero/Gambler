@@ -1,6 +1,7 @@
 const outcomesRouter = require('express').Router()
 const Outcome = require('../models/outcome')
 const Game = require('../models/game')
+const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
 const getTokenFrom = request => {
@@ -77,6 +78,12 @@ outcomesRouter.post('/', async (request, response) => {
     return response.status(400).end()
   }
 
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
+  }
+
   const game = await Game.findById(body.game)
 
   /*
@@ -109,16 +116,29 @@ outcomesRouter.delete('/:id', async (request, response) => {
   if (!decodedToken.id) {
     return response.status(400).end()
   }
+
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
+  }
+
   await Outcome.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 
 
-outcomesRouter.put('/:id', (request, response, next) => {
+outcomesRouter.put('/:id', async (request, response, next) => {
   const { goals_home, goals_visitor, game } = request.body
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
+  }
+
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
   }
 
   Outcome.findByIdAndUpdate(
