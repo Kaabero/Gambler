@@ -1,11 +1,6 @@
 exports = async function(changeEvent) {
   const deletedDocument = changeEvent.fullDocumentBeforeChange
 
-  if (!deletedDocument || !deletedDocument.user) {
-    console.log('No scores to delete.')
-    return
-  }
-
   const serviceName = 'Cluster0'
   const database = 'GamblerApp'
   const userscollection = 'users'
@@ -19,14 +14,33 @@ exports = async function(changeEvent) {
 
   const outcomeId = deletedDocument.outcome
   const outcome = outcomes.findOne({ _id: outcomeId })
+  
+  const scoresId = deletedDocument._id;
+  
 
   try {
-    await user.scores.deleteOne({ _id: scores._id })
-    
-    await outcome.scores.deleteOne({ _id: scores._id })
+    const userresult = await users.updateOne(
+      { _id: userId },
+      { $pull: { scores: scoresId } }
+    );
 
-    console.log('Scores deleted successfully.')
-  } catch(err) {
-    console.log('error performing mongodb write: ', err.message)
+    if (userresult.modifiedCount > 0) {
+      console.log('Scores removed from user\'s scores successfully.')
+    } else {
+      console.log('Scores was not found in the user\'s scores array.')
+    }
+
+    const outcomeresult = await outcomes.updateOne(
+      { _id: outcomeId },
+      { $pull: { scores: scoresId } }
+    );
+
+    if (outcomeresult.modifiedCount > 0) {
+      console.log('Scores removed from outcomes\'s scores successfully.');
+    } else {
+      console.log('Scores was not found in the outcomes\'s scores array.');
+    }
+  } catch (err) {
+    console.log('Error performing MongoDB write: ', err.message);
   }
-}
+};
