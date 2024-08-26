@@ -8,9 +8,18 @@ const helper = require('./test_helper')
 const User = require('../models/user')
 const Game = require('../models/game')
 
+
 const testUser = {
   username: 'testuser',
-  password: 'password'
+  password: 'password',
+  admin: false
+}
+
+
+const testAdmin = {
+  username: 'testadmin',
+  password: 'password',
+  admin: true
 }
 
 let token
@@ -94,15 +103,19 @@ describe('addition of a new game', () => {
     await Game.insertMany(helper.initialGames)
     await api
       .post('/api/users')
-      .send(testUser)
+      .send(testAdmin)
     const response = await api
       .post('/api/login')
-      .send(testUser)
+      .send(testAdmin)
+
+
 
     token = response.body.token
   })
 
-  test('succeeds with valid data', async () => {
+  test('succeeds with valid data and admin rights', async () => {
+
+
     const newGame = {
       home_team: 'valid',
       visitor_team: 'data',
@@ -111,10 +124,12 @@ describe('addition of a new game', () => {
 
     await api
       .post('/api/games')
+      .set('Authorization', `Bearer ${token}`)
       .send(newGame)
       .expect(201)
       .expect('Content-Type', /application\/json/)
-      .set('Authorization', `Bearer ${token}`)
+
+
 
 
 
@@ -191,10 +206,10 @@ describe('deletion of a game', () => {
     await Game.insertMany(helper.initialGames)
     await api
       .post('/api/users')
-      .send(testUser)
+      .send(testAdmin)
     const response = await api
       .post('/api/login')
-      .send(testUser)
+      .send(testAdmin)
 
 
     token = response.body.token
@@ -227,10 +242,10 @@ describe('modification of a game', () => {
   test('succeeds with status code 200 with valid data and valid id', async () => {
     await api
       .post('/api/users')
-      .send(testUser)
+      .send(testAdmin)
     const response = await api
       .post('/api/login')
-      .send(testUser)
+      .send(testAdmin)
 
 
     token = response.body.token
@@ -279,10 +294,82 @@ describe('modification of a game', () => {
   })
 })
 
+describe('operations without admin rights: ', () => {
+
+  beforeEach(async () => {
+    await Game.deleteMany({})
+    await Game.insertMany(helper.initialGames)
+    await api
+      .post('/api/users')
+      .send(testUser)
+    const response = await api
+      .post('/api/login')
+      .send(testUser)
+
+
+
+    token = response.body.token
+  })
+
+  test('addition fails with valid data', async () => {
+
+
+    const newGame = {
+      home_team: 'not',
+      visitor_team: 'admin',
+      date: '1.1.2025',
+    }
+
+    const result = await api
+      .post('/api/games')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newGame)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    assert(result.body.error.includes('This operation is for admins only.'))
+
+  })
+
+  test('modification of a game fails with valid data and valid id', async () => {
+
+
+    const gamesAtStart = await helper.gamesInDb()
+
+    const gameToModify = gamesAtStart[0]
+
+    const modifiedGame = {
+      visitor_team: 'modified visitor_team',
+    }
+
+    const resultGame = await api
+      .put(`/api/games/${gameToModify.id}`)
+      .send(modifiedGame)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    assert(resultGame.body.error.includes('This operation is for admins only.'))
+
+  })
+
+  test('deletion of a game fails with valid id', async () => {
+    const gamesAtStart = await helper.gamesInDb()
+    const gameToDelete = gamesAtStart[0]
+
+    const result = await api
+      .delete(`/api/games/${gameToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+
+    assert(result.body.error.includes('This operation is for admins only.'))
+
+
+  })
+})
+
 after(async () => {
   await User.deleteMany({})
   await Game.deleteMany({})
   await mongoose.connection.close()
 })
-
-
