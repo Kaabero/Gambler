@@ -37,7 +37,7 @@ betsRouter.post('/', async (request, response) => {
   const now = new Date()
 
   if (date < now) {
-    return response.status(400).json({ error: 'Bet can not be added for past games' })
+    return response.status(400).json({ error: 'Bet cannot be added for past games' })
   }
 */
   const existingBet = await Bet.findOne({ user: user._id, game: game._id })
@@ -85,21 +85,41 @@ betsRouter.delete('/:id', async (request, response) => {
   if (!decodedToken.id) {
     return response.status(400).end()
   }
+  const bet = await Bet.findById(request.params.id)
+  const game = await Game.findById(bet.game)
+
+  const date = new Date(game.date)
+  const now = new Date()
+
+  if (date < now) {
+    return response.status(400).json({ error: 'Deleting bets is not allowed for past games' })
+  }
+
   await Bet.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 
 
-betsRouter.put('/:id', (request, response, next) => {
+betsRouter.put('/:id', async (request, response, next) => {
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
-  const { goals_home, goals_visitor, game, user } = request.body
+  const { goals_home, goals_visitor } = request.body
+
+  const bet = await Bet.findById(request.params.id)
+  const game = await Game.findById(bet.game)
+
+  const date = new Date(game.date)
+  const now = new Date()
+
+  if (date < now) {
+    return response.status(400).json({ error: 'Editing bets is not allowed for past games' })
+  }
 
   Bet.findByIdAndUpdate(
     request.params.id,
-    { goals_home, goals_visitor, game, user },
+    { goals_home, goals_visitor },
     { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedBet => {

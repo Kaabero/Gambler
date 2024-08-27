@@ -5,7 +5,7 @@ const baseUrl = '/api/login';
 
 interface LoginProps {
     username: string,
-    password: string
+    password: string,
 }
 
 const login = async (credentials: LoginProps) => {

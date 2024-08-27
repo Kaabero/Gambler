@@ -27,6 +27,7 @@ const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessa
       window.localStorage.setItem(
         'loggedGamblerappUser', JSON.stringify(user)
       );
+
       setToken(user.token);
       setUser(user);
       setUsername('');

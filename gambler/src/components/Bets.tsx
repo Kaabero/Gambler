@@ -18,22 +18,38 @@ const Bets = () => {
     });
   }, []);
 
+  const betsByGame: { [gameId: string]: Bet[] } = bets.reduce((acc, bet) => {
+    if (!acc[bet.game.id]) {
+      acc[bet.game.id] = [];
+    }
+    acc[bet.game.id].push(bet);
+    return acc;
+  }, {} as { [gameId: string]: Bet[] });
+
   return (
     <div>
       <h2>Bets</h2>
       <ul>
-        {bets.map(bet =>
-          <li key={bet.id}>
-            <strong>Game: {bet.game.home_team}-{bet.game.visitor_team} on {formatDate(new Date(bet.game.date))}</strong><br />
-            <br />
-            Bet: <br />
-            Goals for {bet.game.home_team}: {bet.goals_home} <br />
-            Goals for {bet.game.visitor_team}: {bet.goals_visitor} <br />
-            <br />
-            Player: {bet.user.username} <br />
-            <br />
+        {Object.keys(betsByGame).map(gameId => (
+          <li key={gameId}>
+            <strong>
+              {betsByGame[gameId][0].game.home_team} - {betsByGame[gameId][0].game.visitor_team} <br />
+              {formatDate(new Date(betsByGame[gameId][0].game.date))}</strong>
+            <br /><br />
+
+            {betsByGame[gameId].map(bet => (
+              <div key={bet.id}>
+                <strong>Bet:</strong> <br />
+                Goals for {bet.game.home_team}: {bet.goals_home} <br />
+                Goals for {bet.game.visitor_team}: {bet.goals_visitor} <br />
+                <br />
+                Player: {bet.user.username} <br />
+                <br />
+              </div>
+            ))}
+            <hr />
           </li>
-        )}
+        ))}
       </ul>
     </div>
   );

@@ -52,7 +52,7 @@ const App = () => {
           <Route path="/players" element={user ? <Users /> : <Navigate replace to="/login" />} />
           <Route path="/addGame" element={(user && user.admin) ? <GameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/" element={user ? <Games user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
-          <Route path="/usersBets" element={user ? <UsersBets user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
+          <Route path="/bets/:userId" element={user ? <UsersBets loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/register" element={!user ? <CreateAccount setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/login" element={!user ? <Login setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} setUser={setUser}/>: <Navigate replace to="/" />} />
           <Route path="/addBet/:gameId" element={user ? <AddBetForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/>: <Navigate replace to="/login" />} />
@@ -66,7 +66,7 @@ const App = () => {
             <>
               {user.admin ? <Link style={padding} to="/addGame">Add game</Link> : <></>}
               <Link style={padding} to="/bets">Bets</Link>
-              <Link style={padding} to="/usersBets">Check your own bets</Link>
+              <Link style={padding} to={`/bets/${user.id}`}>Check your own bets</Link>
               <Link style={padding} to="/outcomes">Outcomes</Link>
               <Link style={padding} to="/players">Players and points</Link>
               <Link style={padding} to="/">Home</Link>
