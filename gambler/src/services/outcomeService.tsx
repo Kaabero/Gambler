@@ -2,47 +2,47 @@ import axios from 'axios';
 import { Outcome, NewOutcome } from "../types";
 import { token } from '../utils/setToken';
 
-const baseUrl = '/api/outcomes'
+const baseUrl = '/api/outcomes';
 
 
 export const getAllOutcomes = () => {
   return axios
     .get<Outcome[]>(baseUrl)
-    .then(response => response.data)
- 
-}
+    .then(response => response.data);
+
+};
 
 export const getOutcomeById = (id: string) => {
   return axios
     .get<Outcome>(`${ baseUrl }/${id}`)
-    .then(response => response.data)
- 
-}
+    .then(response => response.data);
+
+};
 
 export const addOutcome = async (newObject: NewOutcome) => {
   const config = {
     headers: { Authorization: token },
-  }
-  const response = await axios.post<Outcome>(baseUrl, newObject, config)
-  return response.data
-}
+  };
+  const response = await axios.post<Outcome>(baseUrl, newObject, config);
+  return response.data;
+};
 
 
 export const removeOutcome = (id: string) => {
-    const config = {
-        headers: { Authorization: token },
-      }
- 
-  const request = axios.delete(`${ baseUrl }/${id}`, config)
-  return request.then(response => response.data)
-}
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const request = axios.delete(`${ baseUrl }/${id}`, config);
+  return request.then(response => response.data);
+};
 
 
 export const editOutcome = (id: string, newObject: Outcome) => {
-    const config = {
-        headers: { Authorization: token },
-      }
+  const config = {
+    headers: { Authorization: token },
+  };
 
-  const request = axios.put(`${baseUrl}/${id}`, newObject, config)
-  return request.then(response => response.data)
-}
+  const request = axios.put(`${baseUrl}/${id}`, newObject, config);
+  return request.then(response => response.data);
+};

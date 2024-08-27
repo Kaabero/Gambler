@@ -35,7 +35,7 @@ export interface Scores {
   points: string,
   user: User,
   outcome: Outcome
-} 
+}
 
 export type NewGame = Omit<Game, 'id'>
 export type NewUser = Omit<User, 'id'>
@@ -59,7 +59,7 @@ export interface NewScores {
   points: string,
   user?: string,
   outcome?: string
-} 
+}
 
 
 export type Credentials = {

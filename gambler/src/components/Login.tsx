@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import loginService from '../services/loginService'
+import loginService from '../services/loginService';
 import { Credentials } from "../types";
 import { setToken } from "../utils/setToken";
 
@@ -12,47 +12,47 @@ interface LoginFormProps {
 }
 
 const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessage, setUser }) => {
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-    
+
 
   const handleLogin = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault()
-    
+    event.preventDefault();
+
     try {
       const user = await loginService.login({
         username, password,
-      })
+      });
       window.localStorage.setItem(
         'loggedGamblerappUser', JSON.stringify(user)
-      ) 
-      setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
+      );
+      setToken(user.token);
+      setUser(user);
+      setUsername('');
+      setPassword('');
       setNotificationMessage('Login successfully!');
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-      navigate('/')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      navigate('/');
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (exception) {
-      setErrorMessage('wrong credentials')
-      setUsername('')
-      setPassword('')
+      setErrorMessage('wrong credentials');
+      setUsername('');
+      setPassword('');
       setTimeout(() => {
-        setErrorMessage('')
-      }, 5000)
+        setErrorMessage('');
+      }, 5000);
     }
-  }
-    return (
-      <div>
+  };
+  return (
+    <div>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>
-          Username: 
-            <input
+          Username:
+          <input
             type="text"
             value={username}
             name="Username"
@@ -60,21 +60,21 @@ const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessa
           />
         </div>
         <div>
-          Password: 
-            <input
+          Password:
+          <input
             type="password"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
-            />
+          />
         </div>
         <br />
         <button type="submit">Login</button>
         <br />
         <br />
       </form>
-      </div>
-    );
+    </div>
+  );
 };
-  
+
 export default Login;

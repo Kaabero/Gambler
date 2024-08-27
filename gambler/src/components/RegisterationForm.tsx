@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { createUser } from '../services/userService';
 import { AxiosError } from "axios";
@@ -10,45 +10,45 @@ interface RegisterationProps {
 }
 
 const RegisterationForm: React.FC<RegisterationProps> = ({ setErrorMessage, setNotificationMessage }) => {
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-    
+
 
   const handleRegisteration = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault()
-    
+    event.preventDefault();
+
     try {
       const user = await createUser({
         username, password, admin: false
-      })
-      setUsername('')
-      setPassword('')
+      });
+      setUsername('');
+      setPassword('');
       setNotificationMessage(`New user ${user.username} created successfully!`);
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-      navigate('/login')
+      navigate('/login');
     } catch (error) {
-        if (error instanceof AxiosError) {
-          setErrorMessage(`${error.response?.data.error}`);
-        } else {
-          setErrorMessage('An unknown error occurred');
-        }
-        setUsername('');
-        setPassword('');
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 5000);
+      if (error instanceof AxiosError) {
+        setErrorMessage(`${error.response?.data.error}`);
+      } else {
+        setErrorMessage('An unknown error occurred');
+      }
+      setUsername('');
+      setPassword('');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 5000);
     }
-  }
-    return (
-      <div>
+  };
+  return (
+    <div>
       <h2>Create account</h2>
       <form onSubmit={handleRegisteration}>
         <div>
-          Username: 
-            <input
+          Username:
+          <input
             type="text"
             value={username}
             name="Username"
@@ -56,21 +56,21 @@ const RegisterationForm: React.FC<RegisterationProps> = ({ setErrorMessage, setN
           />
         </div>
         <div>
-          Password: 
-            <input
+          Password:
+          <input
             type="password"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
-            />
+          />
         </div>
         <br />
         <button type="submit">Create account</button>
         <br />
         <br />
       </form>
-      </div>
-    );
+    </div>
+  );
 };
-  
+
 export default RegisterationForm;

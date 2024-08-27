@@ -28,7 +28,7 @@ usersRouter.get('/', async (request, response) => {
       select: 'points outcome',
       populate: {
         path: 'outcome',
-        select: 'game',
+        select: 'game goals_home goals_visitor',
         populate: {
           path: 'game',
           select: 'home_team visitor_team'

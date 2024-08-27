@@ -1,27 +1,27 @@
 import axios from 'axios';
-import { Bet, NewBet } from "../types";
+import { Scores, NewScores } from "../types";
 import { token } from '../utils/setToken';
-const baseUrl = '/api/bets';
+const baseUrl = '/api/scores';
 
 
-export const getAllBets = () => {
+export const getAllScores = () => {
   return axios
-    .get<Bet[]>(baseUrl)
+    .get<Scores[]>(baseUrl)
     .then(response => response.data);
 
 };
 
-export const addBet = async (newObject: NewBet) => {
+export const addScores = async (newObject: NewScores) => {
 
   const config = {
     headers: { Authorization: token },
   };
-  const response = await axios.post<Bet>(baseUrl, newObject, config);
+  const response = await axios.post<Scores>(baseUrl, newObject, config);
   return response.data;
 };
 
 
-export const removeBet = (id: string) => {
+export const removeScores = (id: string) => {
   const config = {
     headers: { Authorization: token },
   };
@@ -31,7 +31,7 @@ export const removeBet = (id: string) => {
 };
 
 
-export const editBet = (id: string, newObject: Bet) => {
+export const editScores = (id: string, newObject: Scores) => {
   const config = {
     headers: { Authorization: token },
   };

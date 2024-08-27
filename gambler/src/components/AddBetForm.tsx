@@ -13,23 +13,23 @@ interface AddBetFormProps {
 }
 
 const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
-  const { gameId } = useParams(); 
+  const { gameId } = useParams();
   const [game, setGame] = useState<Game>(
     { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
   );
   const [visitorGoals, setVisitorGoals] = useState('');
   const [homeGoals, setHomeGoals] = useState('');
   const navigate = useNavigate();
-  
+
 
   useEffect(() => {
     if (gameId) {
-      getGameById(gameId).then(setGame); 
+      getGameById(gameId).then(setGame);
     }
   }, [gameId]);
 
   const handleCancel = () => {
-    navigate('/'); 
+    navigate('/');
   };
 
 
@@ -51,7 +51,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
         setTimeout(() => {
           setNotificationMessage('');
         }, 3000);
-        navigate('/')
+        navigate('/');
       } catch (error) {
         if (error instanceof AxiosError) {
           setErrorMessage(`${error.response?.data.error}`);
@@ -68,7 +68,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
       <h2>Add a new bet</h2>
       <form onSubmit={betCreation}>
         <div>
-          Goals for {game?.home_team}: 
+          Goals for {game?.home_team}:
           <br />
           <input
             type="number"

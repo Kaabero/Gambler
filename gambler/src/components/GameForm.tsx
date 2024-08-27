@@ -9,7 +9,7 @@ interface GameFormProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
-  
+
 const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
   const [date, setDate] = useState('');
   const [visitorTeam, setVisitorTeam] = useState('');
@@ -29,7 +29,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
     event.preventDefault();
 
     try {
-    
+
       const newGame: Game = {
         date: new Date(date),
         home_team: homeTeam,
@@ -43,7 +43,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-      navigate('/')
+      navigate('/');
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(`${error.response?.data.error}`);
@@ -69,7 +69,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
         </div>
         <br />
         <div>
-          Home Team: 
+          Home Team:
           <br />
           <input
             value={homeTeam}

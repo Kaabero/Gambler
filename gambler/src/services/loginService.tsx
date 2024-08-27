@@ -1,7 +1,7 @@
-import axios from 'axios'
-import { Credentials } from '../types'
+import axios from 'axios';
+import { Credentials } from '../types';
 
-const baseUrl = '/api/login'
+const baseUrl = '/api/login';
 
 interface LoginProps {
     username: string,
@@ -9,8 +9,8 @@ interface LoginProps {
 }
 
 const login = async (credentials: LoginProps) => {
-  const response = await axios.post<Credentials>(baseUrl, credentials)
-  return response.data
-}
+  const response = await axios.post<Credentials>(baseUrl, credentials);
+  return response.data;
+};
 
-export default { login }
+export default { login };

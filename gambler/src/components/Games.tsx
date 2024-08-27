@@ -15,7 +15,7 @@ interface GamesProps {
 const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllGames().then((data) => {
@@ -41,17 +41,17 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
 
 
   const handleAddBetClick = (game: Game) => {
-    
+
     navigate(`/addBet/${game.id}`);
   };
 
   const handleAddOutcomeClick = (game: Game) => {
-    
+
     navigate(`/addOutcome/${game.id}`);
   };
 
   const handleCheckOutcomeClick = (game: Game) => {
-    
+
     navigate(`/outcome/${game.id}`);
   };
 
@@ -67,7 +67,7 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
     return game.bets?.some(bet => bet.user && bet.user.username === user.username);
   };
 
- 
+
   const sortedGames = [...games].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
@@ -79,36 +79,36 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             <strong>{formatDate(new Date(game.date))}</strong><br />
             Home Team: {game.home_team} <br />
             Visitor Team: {game.visitor_team} <br />
-            
+
             {user && !game.outcome && !userHasBet(game) && (
               <>
-            <button onClick={() => handleAddBetClick(game)}>Add bet</button>
-            </>
+                <button onClick={() => handleAddBetClick(game)}>Add bet</button>
+              </>
             )}
             {user.admin &&(
               <>
-            <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
-            <button onClick={() => setEditingGame(game)}>Edit</button>
-            </>
+                <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
+                <button onClick={() => setEditingGame(game)}>Edit</button>
+              </>
             )}
             {user.admin && !game.outcome &&(
               <>
-                
+
                 <button onClick={() => handleAddOutcomeClick(game)}>Add outcome</button>
               </>
-            )}  
+            )}
             {user && game.outcome && (
-            <>
-            <br />
-            <button onClick={() => handleCheckOutcomeClick(game)}>Check outcome</button> <br />
-            </>
-            )} 
+              <>
+                <br />
+                <button onClick={() => handleCheckOutcomeClick(game)}>Check outcome</button> <br />
+              </>
+            )}
             {user.admin && game.outcome && (
-            <>
-            <br />
-            <button onClick={() => handleAddScoresClick(game)}>Add scores</button> <br />
-            </>
-            )}       
+              <>
+                <br />
+                <button onClick={() => handleAddScoresClick(game)}>Add scores</button> <br />
+              </>
+            )}
             <br />
           </li>
         )}
