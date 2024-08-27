@@ -6,6 +6,7 @@ import { addBet } from '../services/betService';
 import { AxiosError } from 'axios';
 import { getGameById } from '../services/gameService';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../utils/dateUtils';
 
 interface AddBetFormProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -65,7 +66,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
 
   return (
     <div>
-      <h2>Add a new bet</h2>
+      <h2>Add a new bet for game {game?.home_team}-{game?.visitor_team} on {formatDate(new Date(game?.date))} </h2>
       <form onSubmit={betCreation}>
         <div>
           Goals for {game?.home_team}:

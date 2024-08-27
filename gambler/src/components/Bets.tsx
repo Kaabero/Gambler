@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Bet } from "../types";
 import { getAllBets } from '../services/betService';
 import React from 'react';
+import { formatDate } from '../utils/dateUtils';
 
 
 const Bets = () => {
@@ -23,13 +24,14 @@ const Bets = () => {
       <ul>
         {bets.map(bet =>
           <li key={bet.id}>
-            <strong>{bet.game.home_team}</strong><br />
-            Goals: {bet.goals_home} <br />
+            <strong>Game: {bet.game.home_team}-{bet.game.visitor_team} on {formatDate(new Date(bet.game.date))}</strong><br />
             <br />
-            <strong>{bet.game.visitor_team}</strong><br />
-            Goals: {bet.goals_visitor} <br />
+            Bet: <br />
+            Goals for {bet.game.home_team}: {bet.goals_home} <br />
+            Goals for {bet.game.visitor_team}: {bet.goals_visitor} <br />
             <br />
-            User: {bet.user.username} <br />
+            Player: {bet.user.username} <br />
+            <br />
           </li>
         )}
       </ul>

@@ -21,4 +21,5 @@
 | 22.8.2024. | 4    | pisteytyksen skeemat ja backend, pisteytyksen MongoDB Triggerit |
 | 26.8.2024. | 4    | backarin ja MongoDB Triggereiden ongelmien korjausta |
 | 26.8.2024. | 2    | testien päivitystä, pisteytyksen ensimmäisiä toiminnallisuuksia |
-| yht        | 66   |            | 
+| 27.8.2024. | 4    | pisteytys ja omien vetojen route |
+| yht        | 70   |            | 

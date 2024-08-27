@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outcome } from "../types";
 import { getAllOutcomes } from '../services/outcomeService';
 import React from 'react';
+import { formatDate } from '../utils/dateUtils';
 
 
 const Outcomes = () => {
@@ -22,11 +23,8 @@ const Outcomes = () => {
       <ul>
         {outcomes.map(outcome =>
           <li key={outcome.id}>
-            <strong>{outcome.game.home_team}</strong><br />
-            Goals: {outcome.goals_home} <br />
-            <br />
-            <strong>{outcome.game.visitor_team}</strong><br />
-            Goals: {outcome.goals_visitor} <br />
+            <strong>Game: {outcome.game.home_team}-{outcome.game.visitor_team} on {formatDate(new Date(outcome.game.date))}</strong><br />
+            Outcome: {outcome.goals_home} - {outcome.goals_visitor} <br />
             <br />
           </li>
         )}

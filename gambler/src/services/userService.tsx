@@ -12,6 +12,13 @@ export const getAllUsers = () => {
 
 };
 
+export const getUserById = (id: string) => {
+  return axios
+    .get<User>(`${ baseUrl }/${id}`)
+    .then(response => response.data);
+
+};
+
 export const createUser = async (newObject: NewUser) => {
   const response = await axios.post<User>(baseUrl, newObject);
   return response.data;
