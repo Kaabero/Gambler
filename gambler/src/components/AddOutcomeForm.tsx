@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Outcome, Game, NewOutcome, Bet, NewScores, User } from "../types";
+import { Outcome, Game, NewOutcome, Bet } from "../types";
 import React from 'react';
 import { getAllOutcomes, addOutcome } from '../services/outcomeService';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getGameById } from '../services/gameService';
 import { getAllBets } from '../services/betService';
-import { addScores } from '../services/scoreService';
-import { getOutcomeById } from '../services/outcomeService';
+import { handleAddScores } from './AddScores';
+
 
 
 
@@ -53,129 +53,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
     navigate('/');
   };
 
-  const handleAddScores = async (outcomeId: string, event: React.SyntheticEvent) => {
-    event.preventDefault();
-    const outcome = await getOutcomeById(outcomeId);
-    console.log('outcome', outcome);
 
-    const addThreePoints = async (users: User[], event: React.SyntheticEvent) => {
-      event.preventDefault();
-      try {
-        for (const user of users) {
-          const newScores: NewScores = {
-            points: '3',
-            outcome: outcome.id,
-            user: user.id,
-            id: '0'
-          };
-
-          await addScores(newScores);
-        }
-
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          setErrorMessage(`${error.response?.data.error}`);
-          setTimeout(() => {
-            setErrorMessage('');
-          }, 3000);
-        }
-      }
-    };
-
-    const addOnePoint = async (users: User[], event: React.SyntheticEvent) => {
-      event.preventDefault();
-      try {
-        for (const user of users) {
-          const newScores: NewScores = {
-            points: '1',
-            outcome: outcome.id,
-            user: user.id,
-            id: '0'
-          };
-
-          await addScores(newScores);
-        }
-
-        setNotificationMessage('Scores added successfully!');
-        setTimeout(() => {
-          setNotificationMessage('');
-        }, 3000);
-        navigate('/');
-
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          setErrorMessage(`${error.response?.data.error}`);
-          setTimeout(() => {
-            setErrorMessage('');
-          }, 3000);
-        }
-      }
-    };
-
-
-    console.log('bets', bets);
-    console.log('tulos', outcome.goals_home, outcome.goals_visitor );
-    const usersWithRightBets = bets
-      .filter(bet => bet.game.id === outcome.game.id && bet.goals_home === outcome.goals_home && bet.goals_visitor === outcome.goals_visitor)
-      .map(bet => bet.user);
-
-    console.log('right',usersWithRightBets);
-    if (usersWithRightBets.length > 0) {
-      await addThreePoints(usersWithRightBets, event);
-    }
-
-    if (outcome.goals_home > outcome.goals_visitor) {
-      const usersWithHomeTeamWins = bets
-        .filter(bet => bet.game.id === outcome.game.id && bet.goals_home > bet.goals_visitor)
-        .map(bet => bet.user);
-
-      const filteredUsersWithHomeWins = usersWithHomeTeamWins.filter(user2 =>
-        !usersWithRightBets.some(user1 => user1.id === user2.id)
-      );
-
-
-      console.log('one point home', filteredUsersWithHomeWins);
-
-      if (filteredUsersWithHomeWins.length > 0) {
-        await addOnePoint(filteredUsersWithHomeWins, event);
-      }
-    }
-
-    if (outcome.goals_home < outcome.goals_visitor) {
-      const usersWithVisitorTeamWins = bets
-        .filter(bet => bet.game.id === outcome.game.id && bet.goals_home < bet.goals_visitor)
-        .map(bet => bet.user);
-
-      const filteredUsersWithVisitorWins = usersWithVisitorTeamWins.filter(user2 =>
-        !usersWithRightBets.some(user1 => user1.id === user2.id)
-      );
-
-
-
-      console.log('one point visitor', filteredUsersWithVisitorWins);
-      if (filteredUsersWithVisitorWins.length > 0) {
-        await addOnePoint(filteredUsersWithVisitorWins, event);
-      }
-
-    }
-
-    if (outcome.goals_home === outcome.goals_visitor) {
-      const usersWithDraw = bets
-        .filter(bet => bet.game.id === outcome.game.id && bet.goals_home === bet.goals_visitor)
-        .map(bet => bet.user);
-
-      const filteredUsersWithDraw = usersWithDraw.filter(user2 =>
-        !usersWithRightBets.some(user1 => user1.id === user2.id)
-      );
-
-      console.log('one point draw', filteredUsersWithDraw);
-      if (filteredUsersWithDraw.length > 0) {
-        await addOnePoint(filteredUsersWithDraw, event);
-      }
-
-    }
-
-  };
 
   const outcomeCreation = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -190,7 +68,18 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
       const savedOutcome = await addOutcome(newOutcome);
 
       setOutcomes(outcomes.concat(savedOutcome));
-      handleAddScores(savedOutcome.id, event);
+
+      handleAddScores({
+        outcomeId: savedOutcome.id,
+        bets: bets,
+        setErrorMessage: setErrorMessage,
+        event: event
+      });
+
+      setNotificationMessage('Outcome and scores added successfully!');
+      setTimeout(() => {
+        setNotificationMessage('');
+      }, 3000);
       navigate('/');
 
 
@@ -229,7 +118,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
           />
         </div>
         <br />
-        <button type="submit">Add outcome</button>
+        <button type="submit">Add outcome and scores</button>
         <button type="button" onClick={handleCancel}>Cancel</button>
         <br />
         <br />

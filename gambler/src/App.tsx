@@ -13,7 +13,6 @@ import AddBetForm from './components/AddBetForm';
 import AddOutcomeForm from './components/AddOutcomeForm';
 import CreateAccount from './components/RegisterationForm';
 import Outcome from './components/Outcome';
-import AddScoresForm from './components/AddScoresPage';
 import {
   BrowserRouter as Router,
   Routes,
@@ -50,7 +49,6 @@ const App = () => {
           <Route path="/bets" element={user ? <Bets />: <Navigate replace to="/login" />} />
           <Route path="/outcomes" element={user ? <Outcomes />: <Navigate replace to="/login" />} />
           <Route path="/players" element={user ? <Users /> : <Navigate replace to="/login" />} />
-          <Route path="/addScores/:outcomeId" element={(user && user.admin) ? <AddScoresForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/>: <Navigate replace to="/" />} />
           <Route path="/addGame" element={(user && user.admin) ? <GameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/" element={user ? <Games user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/register" element={!user ? <CreateAccount setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
