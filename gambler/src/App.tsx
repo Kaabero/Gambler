@@ -49,7 +49,7 @@ const App = () => {
         <Routes>
           <Route path="/bets" element={user ? <Bets />: <Navigate replace to="/login" />} />
           <Route path="/outcomes" element={user ? <Outcomes />: <Navigate replace to="/login" />} />
-          <Route path="/players" element={user ? <Users /> : <Navigate replace to="/login" />} />
+          <Route path="/players" element={user ? <Users loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/addGame" element={(user && user.admin) ? <GameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/" element={user ? <Games user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/bets/:userId" element={user ? <UsersBets loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />

@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
 import { User, Scores } from "../types";
-import { getAllUsers } from '../services/userService';
+import { getAllUsers, removeUser } from '../services/userService';
 import { getAllScores } from '../services/scoreService';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
-const Users = () => {
+
+interface UsersProps {
+  loggedUser: User;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificationMessage }) => {
   const [users, setUsers] = useState<User[]>([
     { id: '1', username: 'TestUser', password: 'Password', admin: false }
   ]);
@@ -28,6 +36,24 @@ const Users = () => {
     });
   }, []);
 
+  const handleRemoveUser = async (id: string) => {
+    try {
+      await removeUser(id);
+      setUsers(users.filter(user => user.id !== id));
+      setNotificationMessage('User deleted successfully!');
+      setTimeout(() => {
+        setNotificationMessage('');
+      }, 3000);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(`${error.response?.data.error}`);
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000);
+      }
+    }
+  };
+
   const getTotalPoints = (user: User): number => {
     return scores
       .filter(score => score.user.id === user.id)
@@ -49,6 +75,11 @@ const Users = () => {
             Total points: {getTotalPoints(user)}
             <br />
             <button onClick={() => handleCheckBets(user)}>Check bets</button> <br />
+            {loggedUser.admin && (
+              <>
+                <button onClick={() => handleRemoveUser(user.id)}>Delete user</button>
+              </>
+            )}
           </li>
         ))}
       </ul>
