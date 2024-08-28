@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Bet, User } from "../types";
-import { getAllBets, removeBet } from '../services/betService';
+import { Bet, User, Game } from "../types";
+import { removeBet } from '../services/betService';
+import { getAllGames } from '../services/gameService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
@@ -12,6 +13,7 @@ interface BetsProps {
 }
 
 const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
+  const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(true);
   const [bets, setBets] = useState<Bet[]>([
     { id: '1', goals_home: "1", goals_visitor: "1", game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }, user: {
@@ -19,8 +21,8 @@ const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessa
   ]);
 
   useEffect(() => {
-    getAllBets().then((data: React.SetStateAction<Bet[]>) => {
-      setBets(data);
+    getAllGames().then((data) => {
+      setGames(data);
     });
   }, []);
 
@@ -42,20 +44,6 @@ const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessa
     }
   };
 
-  const betsByGame: { [gameId: string]: Bet[] } = bets.reduce((acc, bet) => {
-    if (!acc[bet.game.id]) {
-      acc[bet.game.id] = [];
-    }
-    acc[bet.game.id].push(bet);
-    return acc;
-  }, {} as { [gameId: string]: Bet[] });
-
-
-  const sortedGames = Object.entries(betsByGame).sort(
-    ([, betsA], [, betsB]) =>
-      new Date(betsA[0].game.date).getTime() - new Date(betsB[0].game.date).getTime()
-  );
-
   const handleShowAllClick = () => {
     setShowAllGames(true);
   };
@@ -64,60 +52,69 @@ const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessa
     setShowAllGames(false);
   };
 
+  const gamesWithBets = games.filter((game) => !game.bets || game.bets.length > 0);
 
-  const futureGames = sortedGames.filter(
-    ([, bets]) => new Date(bets[0].game.date) > new Date()
-  );
+  const sortedGames = [...gamesWithBets].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
+  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
 
 
   const gamesToShow = showAllGames ? sortedGames : futureGames;
+
 
   return (
     <div>
       <h2>Bets</h2>
       <button onClick={handleShowAllClick}>Show all games</button>
       <button onClick={handleShowFutureClick}>Show only future games</button>
-      {gamesToShow && gamesToShow.length > 0 ? (
-        <ul>
-          {gamesToShow.map(([gameId, bets]) => (
-            <li key={gameId}>
-              <strong>Game: </strong>
-              <br />
-              <br />
-              <div>
-                {formatDate(new Date(bets[0].game.date))}
-                <br />
-                {bets[0].game.home_team} - {bets[0].game.visitor_team}
-                <br />
-              </div>
-              <br />
+      {gamesWithBets.length > 0 && (
+        <>
 
-              {bets.map((bet) => (
-                <div key={bet.id}>
-                  <strong>Bet:</strong> <br />
-                  {bet.goals_home} - {bet.goals_visitor}
+          <ul>
+            {gamesToShow.map((game) => (
+              <li key={game.id}>
+                <strong>Game: </strong>
+                <br />
+                <br />
+                <div>
+                  {formatDate(new Date(game.date))}
                   <br />
+                  {game.home_team} - {game.visitor_team}
                   <br />
-                  Player: {bet.user.username}
-                  <br />
-                  <br />
-                  {user.admin && new Date(bet.game.date) > new Date() && (
-                    <>
-                      <button onClick={() => handleRemoveBetClick(bet.id)}>
-                        Delete bet
-                      </button>
-                    </>
-                  )}
                 </div>
-              ))}
-              <hr />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>There are no bets</p>
+                <br />
+
+                {game.bets?.map((bet) => (
+                  <div key={bet.id}>
+                    <strong>Bet:</strong> <br />
+                    {bet.goals_home} - {bet.goals_visitor}
+                    <br />
+                    <br />
+                  Player: {bet.user.username}
+                    <br />
+                    <br />
+                    {user.admin && new Date(game.date) > new Date() && (
+                      <>
+                        <button onClick={() => handleRemoveBetClick(bet.id)}>
+                        Delete bet
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ))}
+                <hr />
+              </li>
+            ))}
+          </ul>
+        </>
       )}
+      {gamesWithBets.length === 0 && (
+        <>
+          <br />
+          <p> There are no bets added </p>
+        </>
+      )}
+
     </div>
   );
 };
