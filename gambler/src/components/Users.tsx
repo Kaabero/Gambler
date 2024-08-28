@@ -71,6 +71,7 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
       <ul>
         {users.map(user => (
           <li key={user.id}>
+            <hr />
             <strong>Player: </strong>{user.username}<br />
             Total points: {getTotalPoints(user)}<br />
             <br />

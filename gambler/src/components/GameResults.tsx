@@ -51,6 +51,7 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
           <ul>
             {sortedOutcomes.map(outcome =>
               <li key={outcome.id}>
+                <hr />
                 <strong>Game: </strong><br />
                 <br />
                 <div>
@@ -64,7 +65,6 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
                 {user.admin &&(
                   <>
                     <button onClick={() => handleRemoveResultClick(outcome.id)}>Delete the result and related scores</button>
-                    <hr />
                   </>
                 )}
               </li>
