@@ -12,7 +12,7 @@ interface BetsProps {
 }
 
 const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
-
+  const [showAllGames, setShowAllGames] = useState(true);
   const [bets, setBets] = useState<Bet[]>([
     { id: '1', goals_home: "1", goals_visitor: "1", game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }, user: {
       id: '1', username: 'TestUser', password: 'Password', admin: false } }
@@ -56,12 +56,31 @@ const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessa
       new Date(betsA[0].game.date).getTime() - new Date(betsB[0].game.date).getTime()
   );
 
+  const handleShowAllClick = () => {
+    setShowAllGames(true);
+  };
+
+  const handleShowFutureClick = () => {
+    setShowAllGames(false);
+  };
+
+
+  const futureGames = sortedGames.filter(
+    ([, bets]) => new Date(bets[0].game.date) > new Date()
+  );
+
+
+
+  const gamesToShow = showAllGames ? sortedGames : futureGames;
+
   return (
     <div>
       <h2>Bets</h2>
-      {bets && bets.length > 0 ? (
+      <button onClick={handleShowAllClick}>Show all games</button>
+      <button onClick={handleShowFutureClick}>Show only future games</button>
+      {gamesToShow && gamesToShow.length > 0 ? (
         <ul>
-          {sortedGames.map(([gameId, bets]) => (
+          {gamesToShow.map(([gameId, bets]) => (
             <li key={gameId}>
               <strong>Game: </strong>
               <br />

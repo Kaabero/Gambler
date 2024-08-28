@@ -23,6 +23,7 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
   );
   const [editingBet, setEditingBet] = useState<Bet | null>(null);
   const [bets, setBets] = useState<Bet[]>([]);
+  const [showAllGames, setShowAllGames] = useState(true);
 
 
   useEffect(() => {
@@ -62,15 +63,31 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
     setEditingBet(null);
   };
 
+  const handleShowAllClick = () => {
+    setShowAllGames(true);
+  };
+
+  const handleShowFutureClick = () => {
+    setShowAllGames(false);
+  };
+
+
   const sortedBets = [...bets].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
+
+  const futureGames = sortedBets.filter((bet) => new Date(bet.game.date) > new Date());
+
+
+  const betsToShow = showAllGames ? sortedBets : futureGames;
 
   return (
     <div>
       <h3>User: {user.username}</h3>
+      <button onClick={handleShowAllClick}>Show all games</button>
+      <button onClick={handleShowFutureClick}>Show only future games</button>
       {bets && bets?.length > 0 && (
         <>
           <ul>
-            {sortedBets.map(bet =>
+            {betsToShow.map(bet =>
               <li key={bet.id}>
                 <strong>Game: </strong><br />
                 <br />

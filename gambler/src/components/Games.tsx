@@ -15,6 +15,7 @@ interface GamesProps {
 const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
+  const [showAllGames, setShowAllGames] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,14 +65,30 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
     return game.bets?.some(bet => bet.user && bet.user.username === user.username);
   };
 
+  const handleShowAllClick = () => {
+    setShowAllGames(true);
+  };
+
+  const handleShowFutureClick = () => {
+    setShowAllGames(false);
+  };
 
   const sortedGames = [...games].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
+
+
+  const gamesToShow = showAllGames ? sortedGames : futureGames;
+
+
 
   return (
     <div>
       <h2>Games</h2>
+      <button onClick={handleShowAllClick}>Show all games</button>
+      <button onClick={handleShowFutureClick}>Show only future games</button>
       <ul>
-        {sortedGames.map(game =>
+        {gamesToShow.map(game =>
           <li key={game.id}>
             <strong>{formatDate(new Date(game.date))}</strong><br />
             Home Team: {game.home_team} <br />

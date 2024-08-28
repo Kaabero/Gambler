@@ -23,4 +23,5 @@
 | 26.8.2024. | 2    | testien päivitystä, pisteytyksen ensimmäisiä toiminnallisuuksia |
 | 27.8.2024. | 4    | pisteytys ja omien vetojen route |
 | 27.8.2024. | 2    | vetojen poisto ja muokkaus |
-| yht        | 72   |            | 
+| 28.8.2024. | 4    | adminille uusia toimintoja, näkymien parantelua |
+| yht        | 76   |            | 
