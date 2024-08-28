@@ -55,6 +55,11 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
     navigate(`/result/${game.id}`);
   };
 
+  const handleCheckBetsClick = (game: Game) => {
+
+    navigate(`/gamesbets/${game.id}`);
+  };
+
   const userHasBet = (game: Game) => {
     return game.bets?.some(bet => bet.user && bet.user.username === user.username);
   };
@@ -71,7 +76,8 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             <strong>{formatDate(new Date(game.date))}</strong><br />
             Home Team: {game.home_team} <br />
             Visitor Team: {game.visitor_team} <br />
-
+            <br />
+            <button onClick={() => handleCheckBetsClick(game)}>Check bets</button>
             {user && !game.outcome && !userHasBet(game) && (
               <>
                 <button onClick={() => handleAddBetClick(game)}>Add bet</button>
@@ -83,7 +89,7 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
                 <button onClick={() => setEditingGame(game)}>Edit</button>
               </>
             )}
-            {user.admin && !game.outcome &&(
+            {user.admin && !game.outcome && new Date(game.date) < new Date() &&(
               <>
 
                 <button onClick={() => handleAddResultClick(game)}>Add result and scores</button>
@@ -91,7 +97,6 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             )}
             {user && game.outcome && (
               <>
-                <br />
                 <button onClick={() => handleCheckResultClick(game)}>Check result</button> <br />
               </>
             )}

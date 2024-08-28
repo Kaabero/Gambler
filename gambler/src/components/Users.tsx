@@ -71,13 +71,14 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
       <ul>
         {users.map(user => (
           <li key={user.id}>
-            <strong>{user.username}</strong><br />
-            Total points: {getTotalPoints(user)}
+            <strong>Player: </strong>{user.username}<br />
+            Total points: {getTotalPoints(user)}<br />
             <br />
-            <button onClick={() => handleCheckBets(user)}>Check bets</button> <br />
-            {loggedUser.admin && (
+            <button onClick={() => handleCheckBets(user)}>Check bets</button>
+            {loggedUser.admin && !user.admin &&(
               <>
-                <button onClick={() => handleRemoveUser(user.id)}>Delete user</button>
+                <button onClick={() => handleRemoveUser(user.id)}>Delete user</button> <br />
+                <br />
               </>
             )}
           </li>

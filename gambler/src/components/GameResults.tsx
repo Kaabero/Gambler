@@ -41,30 +41,42 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
     }
   };
 
+  const sortedOutcomes = [...outcomes].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
+
   return (
     <div>
       <h2>Results</h2>
-      <ul>
-        {outcomes.map(outcome =>
-          <li key={outcome.id}>
-            <strong>Game: </strong><br />
-            <br />
-            <div>
-              {formatDate(new Date(outcome.game.date))}<br />
-              {outcome.game.home_team}-{outcome.game.visitor_team} <br />
-              <br />
-            </div>
-            <strong>Result:</strong> <br />
-            {outcome.goals_home} - {outcome.goals_visitor} <br />
-            <br />
-            {user.admin &&(
-              <>
-                <button onClick={() => handleRemoveResultClick(outcome.id)}>Delete the result and related scores</button>
-              </>
+      {outcomes && outcomes?.length > 0 && (
+        <>
+          <ul>
+            {sortedOutcomes.map(outcome =>
+              <li key={outcome.id}>
+                <strong>Game: </strong><br />
+                <br />
+                <div>
+                  {formatDate(new Date(outcome.game.date))}<br />
+                  {outcome.game.home_team}-{outcome.game.visitor_team} <br />
+                  <br />
+                </div>
+                <strong>Result:</strong> <br />
+                {outcome.goals_home} - {outcome.goals_visitor} <br />
+                <br />
+                {user.admin &&(
+                  <>
+                    <button onClick={() => handleRemoveResultClick(outcome.id)}>Delete the result and related scores</button>
+                  </>
+                )}
+              </li>
             )}
-          </li>
-        )}
-      </ul>
+          </ul>
+        </>
+      )}
+      {!outcomes || outcomes?.length === 0 && (
+        <>
+          <br />
+          <p> There are no game results added </p>
+        </>
+      )}
     </div>
   );
 };

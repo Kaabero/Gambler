@@ -15,9 +15,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
   const [visitorTeam, setVisitorTeam] = useState('');
   const [homeTeam, setHomeTeam] = useState('');
   const navigate = useNavigate();
-  const [games, setGames] = useState<Game[]>([
-    { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
-  ]);
+  const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
     getAllGames().then(data => {
@@ -54,6 +52,11 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
     }
   };
 
+  const handleCancel = () => {
+
+    navigate(`/`);
+  };
+
   return (
     <div>
       <h2>Add new game</h2>
@@ -87,6 +90,7 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
         </div>
         <br />
         <button type="submit">Add</button>
+        <button type="button" onClick={handleCancel}>Cancel</button>
         <br />
         <br />
       </form>
