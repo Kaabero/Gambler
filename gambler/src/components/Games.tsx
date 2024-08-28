@@ -87,40 +87,50 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
       <h2>Games</h2>
       <button onClick={handleShowAllClick}>Show all games</button>
       <button onClick={handleShowFutureClick}>Show only future games</button>
-      <ul>
-        {gamesToShow.map(game =>
-          <li key={game.id}>
-            <strong>{formatDate(new Date(game.date))}</strong><br />
+      {games.length > 0 && (
+        <>
+          <ul>
+            {gamesToShow.map(game =>
+              <li key={game.id}>
+                <strong>{formatDate(new Date(game.date))}</strong><br />
             Home Team: {game.home_team} <br />
             Visitor Team: {game.visitor_team} <br />
-            <br />
-            <button onClick={() => handleCheckBetsClick(game)}>Check bets</button>
-            {user && !game.outcome && !userHasBet(game) && (
-              <>
-                <button onClick={() => handleAddBetClick(game)}>Add bet</button>
-              </>
-            )}
-            {user.admin &&(
-              <>
-                <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
-                <button onClick={() => setEditingGame(game)}>Edit</button>
-              </>
-            )}
-            {user.admin && !game.outcome && new Date(game.date) < new Date() &&(
-              <>
+                <br />
+                <button onClick={() => handleCheckBetsClick(game)}>Check bets</button>
+                {user && !game.outcome && !userHasBet(game) && (
+                  <>
+                    <button onClick={() => handleAddBetClick(game)}>Add bet</button>
+                  </>
+                )}
+                {user.admin &&(
+                  <>
+                    <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
+                    <button onClick={() => setEditingGame(game)}>Edit</button>
+                  </>
+                )}
+                {user.admin && !game.outcome && new Date(game.date) < new Date() &&(
+                  <>
 
-                <button onClick={() => handleAddResultClick(game)}>Add result and scores</button>
-              </>
+                    <button onClick={() => handleAddResultClick(game)}>Add result and scores</button>
+                  </>
+                )}
+                {user && game.outcome && (
+                  <>
+                    <button onClick={() => handleCheckResultClick(game)}>Check result</button> <br />
+                  </>
+                )}
+                <br />
+              </li>
             )}
-            {user && game.outcome && (
-              <>
-                <button onClick={() => handleCheckResultClick(game)}>Check result</button> <br />
-              </>
-            )}
-            <br />
-          </li>
-        )}
-      </ul>
+          </ul>
+        </>
+      )}
+      {games.length === 0 && (
+        <>
+          <br />
+          <p> There are no games added </p>
+        </>
+      )}
 
       {editingGame && (
         <EditGameForm
