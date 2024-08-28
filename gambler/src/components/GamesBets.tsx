@@ -72,6 +72,7 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
                 {( loggedUser.admin && new Date(game.date) > new Date()) &&(
                   <>
                     <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
+                    <hr />
                   </>
                 )}
               </li>

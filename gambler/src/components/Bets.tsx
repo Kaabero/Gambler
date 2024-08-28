@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Bet, User, Game } from "../types";
-import { removeBet } from '../services/betService';
+import { removeBet, editBet } from '../services/betService';
 import { getAllGames } from '../services/gameService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
+import EditBetForm from './EditBetForm';
 
 interface BetsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -15,6 +16,7 @@ interface BetsProps {
 const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(true);
+  const [editingBet, setEditingBet] = useState<Bet | null>(null);
   const [bets, setBets] = useState<Bet[]>([
     { id: '1', goals_home: "1", goals_visitor: "1", game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }, user: {
       id: '1', username: 'TestUser', password: 'Password', admin: false } }
@@ -42,6 +44,12 @@ const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessa
         }, 3000);
       }
     }
+  };
+
+  const handleUpdateBet = async (updatedBet: Bet) => {
+    const editedBet = await editBet(updatedBet.id, updatedBet);
+    setBets(bets.map(bet => bet.id === updatedBet.id ? editedBet : bet));
+    setEditingBet(null);
   };
 
   const handleShowAllClick = () => {
@@ -95,14 +103,13 @@ const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessa
                     <br />
                     {user.admin && new Date(game.date) > new Date() && (
                       <>
-                        <button onClick={() => handleRemoveBetClick(bet.id)}>
-                        Delete bet
-                        </button>
+                        <button onClick={() => handleRemoveBetClick(bet.id)}> Delete bet </button>
+                        <button onClick={() => setEditingBet(bet)}>Edit bet</button><br />
+                        <hr />
                       </>
                     )}
                   </div>
                 ))}
-                <hr />
               </li>
             ))}
           </ul>
@@ -113,6 +120,16 @@ const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessa
           <br />
           <p> There are no bets added </p>
         </>
+      )}
+      {editingBet && (
+        <EditBetForm
+          bet={editingBet}
+          setErrorMessage={setErrorMessage}
+          setNotificationMessage={setNotificationMessage}
+          onSave={handleUpdateBet}
+          onCancel={() => setEditingBet(null)}
+          setEditingBet={setEditingBet}
+        />
       )}
 
     </div>

@@ -64,6 +64,7 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
                 {user.admin &&(
                   <>
                     <button onClick={() => handleRemoveResultClick(outcome.id)}>Delete the result and related scores</button>
+                    <hr />
                   </>
                 )}
               </li>

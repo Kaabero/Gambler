@@ -104,6 +104,7 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
                   <>
                     <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
                     <button onClick={() => setEditingBet(bet)}>Edit bet</button>
+                    <hr />
                   </>
                 )}
               </li>
