@@ -105,6 +105,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
             type="number"
             value={homeGoals}
             onChange={({ target }) => setHomeGoals(target.value)}
+            min="0"
           />
         </div>
         <br />
@@ -115,6 +116,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
             type="number"
             value={visitorGoals}
             onChange={({ target }) => setVisitorGoals(target.value)}
+            min="0"
           />
         </div>
         <br />

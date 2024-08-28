@@ -15,6 +15,9 @@ import CreateAccount from './components/RegisterationForm';
 import GameResult from './components/GameResult';
 import UsersBets from './components/UsersBets';
 import GamesBets from './components/GamesBets';
+import Points from './components/Points';
+import UsersPoints from './components/UsersPoints';
+import GamesPoints from './components/GamesPoints';
 import {
   BrowserRouter as Router,
   Routes,
@@ -49,12 +52,15 @@ const App = () => {
 
         <Routes>
           <Route path="/bets" element={user ? <Bets user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/>: <Navigate replace to="/login" />} />
+          <Route path="/points" element={user ? <Points loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/results" element={user ? <GameResults user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/>: <Navigate replace to="/login" />} />
           <Route path="/players" element={user ? <Users loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/addGame" element={(user && user.admin) ? <GameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/" element={user ? <Games user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/bets/:userId" element={user ? <UsersBets loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
+          <Route path="/points/:userId" element={user ? <UsersPoints loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/gamesbets/:gameId" element={user ? <GamesBets loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
+          <Route path="/gamespoints/:outcomeId" element={user ? <GamesPoints loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/> : <Navigate replace to="/login" />} />
           <Route path="/register" element={!user ? <CreateAccount setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/login" element={!user ? <Login setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} setUser={setUser}/>: <Navigate replace to="/" />} />
           <Route path="/addBet/:gameId" element={user ? <AddBetForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage}/>: <Navigate replace to="/login" />} />
@@ -67,12 +73,13 @@ const App = () => {
           {user && (
             <>
               <br />
+              <Link style={padding} to="/">Home</Link>
               {user.admin ? <Link style={padding} to="/addGame">Add game</Link> : <></>}
-              <Link style={padding} to="/bets">Bets</Link>
+              <Link style={padding} to="/bets">All bets</Link>
               <Link style={padding} to={`/bets/${user.id}`}>Check and manage your own bets</Link>
               <Link style={padding} to="/results">Game results</Link>
               <Link style={padding} to="/players">Players and points</Link>
-              <Link style={padding} to="/">Home</Link>
+              <Link style={padding} to="/points">Received points</Link>
               <br />
             </>
           )}

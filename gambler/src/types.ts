@@ -2,7 +2,10 @@ export interface Outcome {
   id: string,
   goals_home: string,
   goals_visitor: string,
-  game: Game
+  game: Game,
+  scores?: Scores[],
+  bets?: Bet[],
+
 }
 
 export interface User {
@@ -11,6 +14,7 @@ export interface User {
   password: string,
   admin: boolean,
   bets?: Bet[],
+  scores?: Scores[],
 }
 
 export interface Bet {

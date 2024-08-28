@@ -125,5 +125,29 @@ scoresRouter.delete('/:id', async (request, response) => {
   response.status(204).end()
 })
 
+scoresRouter.put('/:id', async (request, response, next) => {
+  const { points } = request.body
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(400).end()
+  }
+
+  const user = await User.findById(decodedToken.id)
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
+  }
+
+  Scores.findByIdAndUpdate(
+    request.params.id,
+    { points },
+    { new: true, runValidators: true, context: 'query' }
+  )
+    .then(updatedScores => {
+      response.json(updatedScores)
+    })
+    .catch(error => next(error))
+})
+
 
 module.exports = scoresRouter

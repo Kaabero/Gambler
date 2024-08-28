@@ -4,6 +4,7 @@ import { getAllOutcomes, removeOutcome } from '../services/outcomeService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface GameResultsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -16,6 +17,7 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
   const [outcomes, setOutcomes] = useState<Outcome[]>([
     { id: '1', goals_home: "1", goals_visitor: "1", game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
   ]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllOutcomes().then((data: React.SetStateAction<Outcome[]>) => {
@@ -41,6 +43,11 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
     }
   };
 
+  const handleCheckPoints = (outcome: Outcome) => {
+
+    navigate(`/gamespoints/${outcome.id}`);
+  };
+
   const sortedOutcomes = [...outcomes].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
   return (
@@ -62,6 +69,7 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
                 <strong>Result:</strong> <br />
                 {outcome.goals_home} - {outcome.goals_visitor} <br />
                 <br />
+                <button onClick={() => handleCheckPoints(outcome)}>Check received points</button>
                 {user.admin &&(
                   <>
                     <button onClick={() => handleRemoveResultClick(outcome.id)}>Delete the result and related scores</button>

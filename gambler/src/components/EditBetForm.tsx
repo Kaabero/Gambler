@@ -60,6 +60,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({ bet, setEditingBet, onSave, o
             type="number"
             value={homeGoals}
             onChange={({ target }) => setHomeGoals(target.value)}
+            min="0"
           />
         </div>
         <br />
@@ -70,6 +71,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({ bet, setEditingBet, onSave, o
             type="number"
             value={visitorGoals}
             onChange={({ target }) => setVisitorGoals(target.value)}
+            min="0"
           />
         </div>
         <br />

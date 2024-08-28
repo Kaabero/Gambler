@@ -75,6 +75,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
             type="number"
             value={homeGoals}
             onChange={({ target }) => setHomeGoals(target.value)}
+            min="0"
           />
         </div>
         <br />
@@ -85,6 +86,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
             type="number"
             value={visitorGoals}
             onChange={({ target }) => setVisitorGoals(target.value)}
+            min="0"
           />
         </div>
         <br />

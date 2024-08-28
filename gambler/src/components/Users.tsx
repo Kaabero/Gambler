@@ -65,6 +65,11 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
     navigate(`/bets/${user.id}`);
   };
 
+  const handleCheckPoints = (user: User) => {
+
+    navigate(`/points/${user.id}`);
+  };
+
   return (
     <div>
       <h2>Players</h2>
@@ -73,9 +78,10 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
           <li key={user.id}>
             <hr />
             <strong>Player: </strong>{user.username}<br />
-            Total points: {getTotalPoints(user)}<br />
+            <strong>Total points: </strong> {getTotalPoints(user)}<br />
             <br />
             <button onClick={() => handleCheckBets(user)}>Check bets</button>
+            <button onClick={() => handleCheckPoints(user)}>Check received points</button>
             {loggedUser.admin && !user.admin &&(
               <>
                 <button onClick={() => handleRemoveUser(user.id)}>Delete user</button> <br />

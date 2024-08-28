@@ -24,4 +24,5 @@
 | 27.8.2024. | 4    | pisteytys ja omien vetojen route |
 | 27.8.2024. | 2    | vetojen poisto ja muokkaus |
 | 28.8.2024. | 4    | adminille uusia toimintoja, näkymien parantelua |
-| yht        | 76   |            | 
+| 28.8.2024. | 4    | pisteytysten tarkastelu frontissa, pisteiden poisto ja muokkaus |
+| yht        | 80  |            | 

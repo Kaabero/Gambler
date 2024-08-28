@@ -31,7 +31,7 @@ usersRouter.get('/', async (request, response) => {
         select: 'game goals_home goals_visitor',
         populate: {
           path: 'game',
-          select: 'home_team visitor_team'
+          select: 'home_team visitor_team date'
         }
       }
     })
@@ -85,7 +85,7 @@ usersRouter.get('/:id', async (request, response) => {
         select: 'game goals_home goals_visitor',
         populate: {
           path: 'game',
-          select: 'home_team visitor_team'
+          select: 'home_team visitor_team date'
         }
       }
     })
