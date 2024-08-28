@@ -45,14 +45,14 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
     navigate(`/addBet/${game.id}`);
   };
 
-  const handleAddOutcomeClick = (game: Game) => {
+  const handleAddResultClick = (game: Game) => {
 
     navigate(`/addOutcome/${game.id}`);
   };
 
-  const handleCheckOutcomeClick = (game: Game) => {
+  const handleCheckResultClick = (game: Game) => {
 
-    navigate(`/outcome/${game.id}`);
+    navigate(`/result/${game.id}`);
   };
 
   const userHasBet = (game: Game) => {
@@ -86,13 +86,13 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
             {user.admin && !game.outcome &&(
               <>
 
-                <button onClick={() => handleAddOutcomeClick(game)}>Add outcome and scores</button>
+                <button onClick={() => handleAddResultClick(game)}>Add result and scores</button>
               </>
             )}
             {user && game.outcome && (
               <>
                 <br />
-                <button onClick={() => handleCheckOutcomeClick(game)}>Check outcome</button> <br />
+                <button onClick={() => handleCheckResultClick(game)}>Check result</button> <br />
               </>
             )}
             <br />

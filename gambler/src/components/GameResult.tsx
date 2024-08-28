@@ -7,18 +7,20 @@ import { getGameById } from '../services/gameService';
 import { removeOutcome } from '../services/outcomeService';
 
 
-interface OutcomeFormProps {
+
+interface GameResultProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
   user: User
 }
 
-const Outcome: React.FC<OutcomeFormProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
+const GameResult: React.FC<GameResultProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
   const { gameId } = useParams();
   const [game, setGame] = useState<Game>(
     { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
   );
   const navigate = useNavigate();
+
 
   useEffect(() => {
     if (gameId) {
@@ -26,16 +28,16 @@ const Outcome: React.FC<OutcomeFormProps> = ({ user, setErrorMessage, setNotific
     }
   }, [gameId]);
 
-  const handleGoHome = () => {
+  const handleGoHomeClick = () => {
     navigate('/');
 
     setNotificationMessage('');
   };
 
-  const handleRemoveOutcome = (game: Game) => {
+  const handleRemoveResultClick = (game: Game) => {
     if (game.outcome) {
       removeOutcome(game.outcome?.id);
-      setNotificationMessage('Outcome deleted successfully!');
+      setNotificationMessage('Result and related scores deleted successfully!');
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
@@ -53,17 +55,17 @@ const Outcome: React.FC<OutcomeFormProps> = ({ user, setErrorMessage, setNotific
     <div>
       <h2>Game:</h2>
       <p>{game.home_team}-{game.visitor_team}</p>
-      <h2>Outcome:</h2>
+      <h2>Result:</h2>
       <p>{game.outcome?.goals_home}-{game.outcome?.goals_visitor}</p>
 
-      <button type="button" onClick={handleGoHome}>Go back home</button>
+      <button type="button" onClick={handleGoHomeClick}>Go back home</button>
       {user.admin &&(
         <>
-          <button onClick={() => handleRemoveOutcome(game)}>Delete</button>
+          <button onClick={() => handleRemoveResultClick(game)}>Delete the result and related scores</button>
         </>
       )}
     </div>
   );
 };
 
-export default Outcome;
+export default GameResult;
