@@ -81,7 +81,7 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
             <strong>Game: {bet.game.home_team}-{bet.game.visitor_team} on {formatDate(new Date(bet.game.date))} </strong><br />
             Bet: {bet.goals_home}-{bet.goals_visitor} <br />
             <br />
-            {user.id === loggedUser.id && (
+            {(user.id === loggedUser.id || loggedUser.admin) &&(
               <>
                 <button onClick={() => handleRemoveBet(bet.id)}>Delete</button>
                 <button onClick={() => setEditingBet(bet)}>Edit</button>
