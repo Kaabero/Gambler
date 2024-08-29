@@ -25,13 +25,18 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
   }, []);
 
   const handleRemoveGame = (id: string) => {
-    removeGame(id).then(() => {
-      setGames(games.filter(game => game.id !== id));
-      setNotificationMessage('Game deleted successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-    });
+
+    if (confirm('Deleting game will also remove related bets, game results and scores!')) {
+      removeGame(id).then(() => {
+        setGames(games.filter(game => game.id !== id));
+        setNotificationMessage('Game deleted successfully!');
+        setTimeout(() => {
+          setNotificationMessage('');
+        }, 3000);
+      });
+    } else {
+      return;
+    }
   };
 
   const handleUpdateGame = async (updatedGame: Game) => {

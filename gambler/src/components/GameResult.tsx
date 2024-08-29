@@ -35,19 +35,23 @@ const GameResult: React.FC<GameResultProps> = ({ user, setErrorMessage, setNotif
   };
 
   const handleRemoveResultClick = (game: Game) => {
-    if (game.outcome) {
-      removeOutcome(game.outcome?.id);
-      setNotificationMessage('Result and related scores deleted successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-      navigate('/');
+    if (confirm('Deleting game result will also remove related scores!')) {
+      if (game.outcome) {
+        removeOutcome(game.outcome?.id);
+        setNotificationMessage('Result and related scores deleted successfully!');
+        setTimeout(() => {
+          setNotificationMessage('');
+        }, 3000);
+        navigate('/');
+      } else {
+        setErrorMessage('No outcome found');
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000);
+        navigate('/');
+      }
     } else {
-      setErrorMessage('No outcome found');
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 3000);
-      navigate('/');
+      return;
     }
   };
 

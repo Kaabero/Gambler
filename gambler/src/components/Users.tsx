@@ -37,20 +37,24 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
   }, []);
 
   const handleRemoveUser = async (id: string) => {
-    try {
-      await removeUser(id);
-      setUsers(users.filter(user => user.id !== id));
-      setNotificationMessage('User deleted successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
+    if (confirm('Deleting user will also remove related bets and scores!')) {
+      try {
+        await removeUser(id);
+        setUsers(users.filter(user => user.id !== id));
+        setNotificationMessage('User deleted successfully!');
         setTimeout(() => {
-          setErrorMessage('');
+          setNotificationMessage('');
         }, 3000);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          setErrorMessage(`${error.response?.data.error}`);
+          setTimeout(() => {
+            setErrorMessage('');
+          }, 3000);
+        }
       }
+    } else {
+      return;
     }
   };
 

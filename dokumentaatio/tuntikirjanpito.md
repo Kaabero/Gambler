@@ -2,8 +2,7 @@
 
 |    päivä   | aika | mitä tein  |
 | :---------:|:-----| :----------|
-| 12.8.2024. | 2    | frontendin ja backendin alustus ja raakile |
-| 12.8.2024. | 1    | eslint asetuksia |
+| 12.8.2024. | 3    | frontendin ja backendin alustus ja raakile, eslint asetuksia |
 | 13.8.2024. | 3    | mongon, renderin ja pipelinen käyttöönotto, middlewareja, backendin rakenne kuntoon |
 | 14.8.2024. | 4    | testauksen alustus, ensimmäiset testit, pipeline toimimaan testauksen osalta, refaktorointia  |
 | 14.8.2024. | 4    | frontend sittenkin typescriptillä, ensimmäiset toiminnot |
@@ -14,15 +13,13 @@
 | 19.8.2024. | 4    | admin, adminille näkyvät toiminnot, pelin poisto |
 | 20.8.2024. | 3    | pelin muokkaus, pelien järjestäminen, testien muokkaus |
 | 20.8.2024. | 2    | päivämäärien muotoilu ja editointi |
-| 21.8.2024. | 3    | lopputuloksen lisäys |
-| 21.8.2024. | 3    | vedon lisäys, MongoDB Triggereitä |
-| 22.8.2024. | 6    | MongoDB Triggereitä, näkymien päivitys frontissa |
-| 22.8.2024. | 2    | Outcome näkymiä, outcomin poisto, pisteytyksen alustus fronttiin |
-| 22.8.2024. | 4    | pisteytyksen skeemat ja backend, pisteytyksen MongoDB Triggerit |
-| 26.8.2024. | 4    | backarin ja MongoDB Triggereiden ongelmien korjausta |
+| 21.8.2024. | 6    | lopputuloksen lisäys, vedon lisäys, mongoDB triggereitä |
+| 22.8.2024. | 6    | mongoDB triggereitä, näkymien päivitys frontissa |
+| 23.8.2024. | 2    | outcome näkymiä, outcomin poisto, pisteytyksen alustus fronttiin |
+| 23.8.2024. | 4    | pisteytyksen skeemat ja backend, pisteytyksen mongoDB triggerit |
+| 26.8.2024. | 4    | backarin ja mongoDB triggereiden ongelmien korjausta |
 | 26.8.2024. | 2    | testien päivitystä, pisteytyksen ensimmäisiä toiminnallisuuksia |
-| 27.8.2024. | 4    | pisteytys ja omien vetojen route |
-| 27.8.2024. | 2    | vetojen poisto ja muokkaus |
+| 27.8.2024. | 6    | pisteytys ja omien vetojen route, vetojen poisto ja muokkaus |
 | 28.8.2024. | 4    | adminille uusia toimintoja, näkymien parantelua |
 | 28.8.2024. | 4    | pisteytysten tarkastelu frontissa, pisteiden poisto ja muokkaus |
 | yht        | 80  |            | 

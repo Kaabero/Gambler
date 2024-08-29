@@ -26,20 +26,24 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
   }, []);
 
   const handleRemoveResultClick = async (id: string) => {
-    try {
-      await removeOutcome(id);
-      setOutcomes(outcomes.filter(outcome => outcome.id !== id));
-      setNotificationMessage('Result and related scores deleted successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
+    if (confirm('Deleting game result will also remove related scores!')) {
+      try {
+        await removeOutcome(id);
+        setOutcomes(outcomes.filter(outcome => outcome.id !== id));
+        setNotificationMessage('Result and related scores deleted successfully!');
         setTimeout(() => {
-          setErrorMessage('');
+          setNotificationMessage('');
         }, 3000);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          setErrorMessage(`${error.response?.data.error}`);
+          setTimeout(() => {
+            setErrorMessage('');
+          }, 3000);
+        }
       }
+    } else {
+      return;
     }
   };
 
