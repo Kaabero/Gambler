@@ -1,16 +1,8 @@
 const outcomesRouter = require('express').Router()
 const Outcome = require('../models/outcome')
 const Game = require('../models/game')
-const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
+const middleware = require('../utils/middleware')
 
 
 outcomesRouter.get('/', async (request, response) => {
@@ -70,15 +62,15 @@ outcomesRouter.get('/:id', async (request, response) => {
   }
 })
 
-outcomesRouter.post('/', async (request, response) => {
+outcomesRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
 
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
@@ -111,13 +103,13 @@ outcomesRouter.post('/', async (request, response) => {
 
 })
 
-outcomesRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+outcomesRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
@@ -128,14 +120,14 @@ outcomesRouter.delete('/:id', async (request, response) => {
 })
 
 
-outcomesRouter.put('/:id', async (request, response, next) => {
+outcomesRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
   const { goals_home, goals_visitor, game } = request.body
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })

@@ -2,14 +2,9 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
+
 
 const validatePassword = (password) => {
   const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
@@ -106,12 +101,12 @@ usersRouter.get('/:id', async (request, response) => {
   }
 })
 
-usersRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+usersRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
   }
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })

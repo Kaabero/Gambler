@@ -1,17 +1,8 @@
 const betsRouter = require('express').Router()
 const Bet = require('../models/bet')
-const User = require('../models/user')
 const Game = require('../models/game')
 const jwt = require('jsonwebtoken')
-
-
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
+const middleware = require('../utils/middleware')
 
 
 
@@ -22,14 +13,25 @@ betsRouter.get('/', async (request, response) => {
   response.json(bets)
 })
 
-betsRouter.post('/', async (request, response) => {
+betsRouter.get('/:id', async (request, response) => {
+  const bet = await Bet.findById(request.params.id)
+    .populate('user', { username: 1 })
+    .populate('game', { home_team: 1, visitor_team: 1, date: 1 })
+  if (bet) {
+    response.json(bet)
+  } else {
+    response.status(404).end()
+  }
+})
+
+betsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
 
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
   }
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   const game = await Game.findById(body.game)
   /*
@@ -69,24 +71,16 @@ betsRouter.post('/', async (request, response) => {
 
 })
 
-betsRouter.get('/:id', async (request, response) => {
-  const bet = await Bet.findById(request.params.id)
-    .populate('user', { username: 1 })
-    .populate('game', { home_team: 1, visitor_team: 1, date: 1 })
-  if (bet) {
-    response.json(bet)
-  } else {
-    response.status(404).end()
-  }
-})
 
-betsRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+
+betsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
   const bet = await Bet.findById(request.params.id)
   const game = await Game.findById(bet.game)
+  const user = request.user
 
   const date = new Date(game.date)
   const now = new Date()
@@ -95,13 +89,17 @@ betsRouter.delete('/:id', async (request, response) => {
     return response.status(400).json({ error: 'Deleting bets is not allowed for past games' })
   }
 
-  await Bet.findByIdAndDelete(request.params.id)
-  response.status(204).end()
+  if ( bet.user.toString() === user.id.toString() || user.admin ) {
+    await Bet.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  } else {
+    response.status(401).json({ error: 'authorization failed' })
+  }
 })
 
 
-betsRouter.put('/:id', async (request, response, next) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+betsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
@@ -109,6 +107,7 @@ betsRouter.put('/:id', async (request, response, next) => {
 
   const bet = await Bet.findById(request.params.id)
   const game = await Game.findById(bet.game)
+  const user = request.user
 
   const date = new Date(game.date)
   const now = new Date()
@@ -116,16 +115,21 @@ betsRouter.put('/:id', async (request, response, next) => {
   if (date < now) {
     return response.status(400).json({ error: 'Editing bets is not allowed for past games' })
   }
+  if ( bet.user.toString() === user.id.toString() || user.admin ) {
 
-  Bet.findByIdAndUpdate(
-    request.params.id,
-    { goals_home, goals_visitor },
-    { new: true, runValidators: true, context: 'query' }
-  )
-    .then(updatedBet => {
-      response.json(updatedBet)
-    })
-    .catch(error => next(error))
+    Bet.findByIdAndUpdate(
+      request.params.id,
+      { goals_home, goals_visitor },
+      { new: true, runValidators: true, context: 'query' }
+    )
+      .then(updatedBet => {
+        response.json(updatedBet)
+      })
+      .catch(error => next(error))
+
+  } else {
+    response.status(401).json({ error: 'authorization failed' })
+  }
 })
 
 module.exports = betsRouter

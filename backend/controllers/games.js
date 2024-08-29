@@ -1,16 +1,7 @@
 const gamesRouter = require('express').Router()
 const Game = require('../models/game')
-const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-
-
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
+const middleware = require('../utils/middleware')
 
 
 gamesRouter.get('/', async (request, response) => {
@@ -32,15 +23,37 @@ gamesRouter.get('/', async (request, response) => {
   response.json(games)
 })
 
-gamesRouter.post('/', async (request, response) => {
+gamesRouter.get('/:id', async (request, response) => {
+  const game = await Game.findById(request.params.id)
+    .populate({
+      path: 'outcome',
+      select: 'goals_home goals_visitor',
+    })
+    .populate({
+      path: 'bets',
+      select: 'goals_home goals_visitor user',
+      populate: {
+        path: 'user',
+        select: 'username'
+      }
+    })
+
+  if (game) {
+    response.json(game)
+  } else {
+    response.status(404).end()
+  }
+})
+
+gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
 
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
@@ -79,35 +92,13 @@ gamesRouter.post('/', async (request, response) => {
 
 })
 
-gamesRouter.get('/:id', async (request, response) => {
-  const game = await Game.findById(request.params.id)
-    .populate({
-      path: 'outcome',
-      select: 'goals_home goals_visitor',
-    })
-    .populate({
-      path: 'bets',
-      select: 'goals_home goals_visitor user',
-      populate: {
-        path: 'user',
-        select: 'username'
-      }
-    })
-
-  if (game) {
-    response.json(game)
-  } else {
-    response.status(404).end()
-  }
-})
-
-gamesRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+gamesRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
@@ -118,13 +109,13 @@ gamesRouter.delete('/:id', async (request, response) => {
 })
 
 
-gamesRouter.put('/:id', async (request, response, next) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+gamesRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })

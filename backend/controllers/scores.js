@@ -3,15 +3,7 @@ const Scores = require('../models/scores')
 const Outcome = require('../models/outcome')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-
-
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
+const middleware = require('../utils/middleware')
 
 
 scoresRouter.get('/', async (request, response) => {
@@ -36,15 +28,38 @@ scoresRouter.get('/', async (request, response) => {
   response.json(scores)
 })
 
-scoresRouter.post('/', async (request, response) => {
+scoresRouter.get('/:id', async (request, response) => {
+  const score = await Scores.findById(request.params.id)
+    .populate('scores', { points: 1 })
+    .populate({
+      path: 'outcome',
+      select: 'goals_home goals_visitor game',
+      populate: {
+        path: 'game',
+        select: 'home_team visitor_team date'
+      }
+    })
+    .populate({
+      path: 'user',
+      select: 'username',
+    })
+
+  if (score) {
+    response.json(score)
+  } else {
+    response.status(404).end()
+  }
+})
+
+scoresRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
 
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
   const pointsToUser = await User.findById(body.user)
 
   if (!user.admin) {
@@ -87,35 +102,12 @@ scoresRouter.post('/', async (request, response) => {
 
 })
 
-scoresRouter.get('/:id', async (request, response) => {
-  const score = await Scores.findById(request.params.id)
-    .populate('scores', { points: 1 })
-    .populate({
-      path: 'outcome',
-      select: 'goals_home goals_visitor game',
-      populate: {
-        path: 'game',
-        select: 'home_team visitor_team date'
-      }
-    })
-    .populate({
-      path: 'user',
-      select: 'username',
-    })
-
-  if (score) {
-    response.json(score)
-  } else {
-    response.status(404).end()
-  }
-})
-
-scoresRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+scoresRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
@@ -125,14 +117,14 @@ scoresRouter.delete('/:id', async (request, response) => {
   response.status(204).end()
 })
 
-scoresRouter.put('/:id', async (request, response, next) => {
+scoresRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
   const { points } = request.body
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
