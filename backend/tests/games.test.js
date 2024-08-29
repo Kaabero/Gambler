@@ -11,14 +11,14 @@ const Game = require('../models/game')
 
 const testUser = {
   username: 'testuser',
-  password: 'password',
+  password: 'Password1!',
   admin: false
 }
 
 
 const testAdmin = {
   username: 'testadmin',
-  password: 'password',
+  password: 'Password1!',
   admin: true
 }
 

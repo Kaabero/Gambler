@@ -22,8 +22,8 @@ describe('when there is initially one user at db', () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'Katri',
-      password: 'salainen',
+      username: 'FreshUsername',
+      password: 'Password1!',
     }
 
     await api
@@ -44,7 +44,7 @@ describe('when there is initially one user at db', () => {
 
     const newUser = {
       username: 'root',
-      password: 'salainen',
+      password: 'Password1!',
     }
 
     const result = await api
