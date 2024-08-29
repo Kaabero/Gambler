@@ -22,5 +22,5 @@
 | 27.8.2024. | 6    | pisteytys ja omien vetojen route, vetojen poisto ja muokkaus |
 | 28.8.2024. | 4    | adminille uusia toimintoja, näkymien parantelua |
 | 28.8.2024. | 4    | pisteytysten tarkastelu frontissa, pisteiden poisto ja muokkaus |
-| 29.8.2024. | 3    | salasanan validointi, windows alertit, tokenextractor ja userextractor middlewaret |
+| 29.8.2024. | 3    | salasanan validointi, windows alertit, tokenextractor ja userextractor middlewaret, testejä |
 | yht        | 83  |            | 
