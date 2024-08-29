@@ -11,6 +11,11 @@ const getTokenFrom = request => {
   return null
 }
 
+const validatePassword = (password) => {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  return regex.test(password)
+};
+
 
 
 usersRouter.get('/', async (request, response) => {
@@ -47,6 +52,10 @@ usersRouter.post('/', async (request, response) => {
 
   if (existingUser) {
     return response.status(400).json({ error: 'Username already taken' })
+  }
+
+  if (!validatePassword(password)) {
+    return response.status(400).json({ error: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character' })
   }
 
   const saltRounds = 10
