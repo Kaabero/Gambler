@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { NewBet, Game } from "../types";
+import { NewBet, Game } from '../types';
 import React from 'react';
 import { addBet } from '../services/betService';
 import { AxiosError } from 'axios';

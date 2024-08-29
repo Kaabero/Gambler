@@ -1,6 +1,6 @@
 import { addScores } from '../services/scoreService';
 import { getOutcomeById } from '../services/outcomeService';
-import { NewScores, User, Bet } from "../types";
+import { NewScores, User, Bet } from '../types';
 import { AxiosError } from 'axios';
 
 interface HandleAddScoresProps {

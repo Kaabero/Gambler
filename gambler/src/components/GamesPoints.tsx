@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Outcome, User, Scores } from "../types";
+import { Outcome, User, Scores } from '../types';
 import React from 'react';
 import { getOutcomeById } from '../services/outcomeService';
 import { formatDate } from '../utils/dateUtils';
@@ -18,7 +18,7 @@ interface GamesPointsProps {
 const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage, setNotificationMessage }) => {
   const { outcomeId } = useParams();
   const [outcome, setOutcome] = useState<Outcome>(
-    { id: '1', goals_home: "1", goals_visitor: "1", game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
+    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
   );
   const [scores, setScores] = useState<Scores[]>([]);
   const [editingScores, setEditingScores] = useState<Scores | null>(null);

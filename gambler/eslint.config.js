@@ -23,12 +23,29 @@ export default tseslint.config({
       { allowConstantExport: true },
     ],
     'indent': ['error', 2],
-    'no-trailing-spaces': 'error',
     'semi': ['error', 'always'],
     'array-bracket-spacing': ['error', 'never'], 
     'object-curly-spacing': ['error', 'always'],
     'brace-style': ['error', '1tbs', { 'allowSingleLine': true }],
     'no-lone-blocks': 'error',
     'no-unexpected-multiline': 'error',
+    "linebreak-style": [
+        "error",
+        "unix"
+    ],
+    "quotes": [
+        "error",
+        "single"
+    ],
+    "eqeqeq": "error",
+    "no-trailing-spaces": "error",
+    "arrow-spacing": [
+        "error", { "before": true, "after": true }
+    ],
+    "no-console": 0,
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": 0,
+    "no-unused-vars": 0
   },
 });

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outcome, User, Scores } from "../types";
+import { Outcome, User, Scores } from '../types';
 import { getAllOutcomes } from '../services/outcomeService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';

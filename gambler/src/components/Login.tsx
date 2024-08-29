@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loginService from '../services/loginService';
-import { Credentials } from "../types";
-import { setToken } from "../utils/setToken";
+import { Credentials } from '../types';
+import { setToken } from '../utils/setToken';
 
 
 interface LoginFormProps {

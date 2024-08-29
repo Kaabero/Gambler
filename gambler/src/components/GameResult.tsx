@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Game, User } from "../types";
+import { Game, User } from '../types';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getGameById } from '../services/gameService';

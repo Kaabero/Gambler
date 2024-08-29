@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Scores } from "../types";
+import { User, Scores } from '../types';
 import { getAllUsers, removeUser } from '../services/userService';
 import { getAllScores } from '../services/scoreService';
 import React from 'react';
@@ -19,7 +19,7 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
   ]);
 
   const [scores, setScores] = useState<Scores[]>([
-    { id: '1', points: '0', outcome: { id: '1', goals_home: "1", goals_visitor: "1", game: { id: '1', date: new Date(), home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }, user: { id: '1', username: 'TestUser', password: 'Password', admin: false } }
+    { id: '1', points: '0', outcome: { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date(), home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }, user: { id: '1', username: 'TestUser', password: 'Password', admin: false } }
   ]);
 
   const navigate = useNavigate();

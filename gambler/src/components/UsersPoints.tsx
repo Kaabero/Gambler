@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { User, Scores } from "../types";
+import { User, Scores } from '../types';
 import React from 'react';
 import { getUserById } from '../services/userService';
 import { formatDate } from '../utils/dateUtils';

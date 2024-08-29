@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bet } from "../types";
+import { Bet } from '../types';
 import React from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';

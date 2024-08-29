@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Game, NewGame } from "../types";
+import { Game, NewGame } from '../types';
 import { token } from '../utils/setToken';
 
 const baseUrl = '/api/games';

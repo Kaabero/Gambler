@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Game, Bet, User } from "../types";
+import { Game, Bet, User } from '../types';
 import React from 'react';
 import { getGameById } from '../services/gameService';
 import { formatDate } from '../utils/dateUtils';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Game } from "../types";
+import { Game } from '../types';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
 import { formatDateForInput } from '../utils/dateUtils';

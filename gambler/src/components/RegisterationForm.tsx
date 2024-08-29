@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUser } from '../services/userService';
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 
 
 interface RegisterationProps {

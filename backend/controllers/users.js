@@ -38,6 +38,36 @@ usersRouter.get('/', async (request, response) => {
   response.json(users)
 })
 
+usersRouter.get('/:id', async (request, response) => {
+  const user = await User.findById(request.params.id)
+    .populate({
+      path: 'bets',
+      select: 'goals_home goals_visitor game',
+      populate: {
+        path: 'game',
+        select: 'home_team visitor_team date'
+      }
+    })
+    .populate({
+      path: 'scores',
+      select: 'points outcome',
+      populate: {
+        path: 'outcome',
+        select: 'game goals_home goals_visitor',
+        populate: {
+          path: 'game',
+          select: 'home_team visitor_team date'
+        }
+      }
+    })
+
+  if (user) {
+    response.json(user)
+  } else {
+    response.status(404).end()
+  }
+})
+
 
 
 usersRouter.post('/', async (request, response) => {
@@ -70,36 +100,6 @@ usersRouter.post('/', async (request, response) => {
   response.status(201).json(savedUser)
 })
 
-
-usersRouter.get('/:id', async (request, response) => {
-  const user = await User.findById(request.params.id)
-    .populate({
-      path: 'bets',
-      select: 'goals_home goals_visitor game',
-      populate: {
-        path: 'game',
-        select: 'home_team visitor_team date'
-      }
-    })
-    .populate({
-      path: 'scores',
-      select: 'points outcome',
-      populate: {
-        path: 'outcome',
-        select: 'game goals_home goals_visitor',
-        populate: {
-          path: 'game',
-          select: 'home_team visitor_team date'
-        }
-      }
-    })
-
-  if (user) {
-    response.json(user)
-  } else {
-    response.status(404).end()
-  }
-})
 
 usersRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)

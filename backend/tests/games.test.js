@@ -7,6 +7,7 @@ const api = supertest(app)
 const helper = require('./test_helper')
 const User = require('../models/user')
 const Game = require('../models/game')
+const Tournament = require('../models/tournament')
 
 
 const testUser = {
@@ -20,6 +21,10 @@ const testAdmin = {
   username: 'testadmin',
   password: 'Password1!',
   admin: true
+}
+
+const testTournament = {
+  tournament: 'testTournament',
 }
 
 let token
@@ -108,18 +113,26 @@ describe('addition of a new game', () => {
       .post('/api/login')
       .send(testAdmin)
 
-
-
     token = response.body.token
+
+
   })
 
   test('succeeds with valid data and admin rights', async () => {
+
+    const response = await api
+      .post('/api/tournaments')
+      .set('Authorization', `Bearer ${token}`)
+      .send(testTournament)
+
+    console.log('hep', response.body.tournament)
 
 
     const newGame = {
       home_team: 'valid',
       visitor_team: 'data',
       date: '1.1.2025',
+      tournament: tournamentresponse.id
     }
 
     await api

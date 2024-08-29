@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outcome, User } from "../types";
+import { Outcome, User } from '../types';
 import { getAllOutcomes, removeOutcome } from '../services/outcomeService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
@@ -15,7 +15,7 @@ interface GameResultsProps {
 const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
 
   const [outcomes, setOutcomes] = useState<Outcome[]>([
-    { id: '1', goals_home: "1", goals_visitor: "1", game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
+    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
   ]);
   const navigate = useNavigate();
 

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Game } from "../types";
+import { Game, Tournament } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { getAllGames, createGame } from '../services/gameService';
+import { getAllTournaments } from '../services/tournamentService';
 import React from 'react';
 import { AxiosError } from 'axios';
 
@@ -16,6 +17,8 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
   const [homeTeam, setHomeTeam] = useState('');
   const navigate = useNavigate();
   const [games, setGames] = useState<Game[]>([]);
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
+  const [selectedTournament, setSelectedTournament] = useState('');
 
   useEffect(() => {
     getAllGames().then(data => {
@@ -23,7 +26,14 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
     });
   }, []);
 
+  useEffect(() => {
+    getAllTournaments().then(data => {
+      setTournaments(data);
+    });
+  }, []);
+
   const gameCreation = async (event: React.SyntheticEvent) => {
+
     event.preventDefault();
 
     try {
@@ -32,6 +42,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
         date: new Date(date),
         home_team: homeTeam,
         visitor_team: visitorTeam,
+        tournament: selectedTournament,
         id: '0'
       };
 
@@ -54,14 +65,31 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
 
   const handleCancel = () => {
 
-    navigate(`/`);
+    navigate('/');
   };
 
   return (
     <div>
       <h2>Add new game</h2>
       <form onSubmit={gameCreation}>
+        <br />
+        <select
+          id="tournament-select"
+          value={selectedTournament}
+          onChange={({ target }) => setSelectedTournament(target.value)}
+          required
+        >
+          <option value="" disabled>
+            -- Choose a tournament --
+          </option>
+          {tournaments.map((tournament) => (
+            <option key={tournament.id} value={tournament.id}>
+              {tournament.tournament}
+            </option>
+          ))}
+        </select>
         <div>
+          <br />
           Date and time:
           <br />
           <input

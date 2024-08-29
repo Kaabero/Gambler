@@ -1,48 +1,45 @@
 import axios from 'axios';
-import { Outcome, NewOutcome } from '../types';
+import { Tournament, NewTournament } from '../types';
 import { token } from '../utils/setToken';
 
-const baseUrl = '/api/outcomes';
+const baseUrl = '/api/tournaments';
 
-
-export const getAllOutcomes = () => {
+export const getAllTournaments = () => {
   return axios
-    .get<Outcome[]>(baseUrl)
+    .get<Tournament[]>(baseUrl)
     .then(response => response.data);
 
 };
 
-export const getOutcomeById = (id: string) => {
+export const getTournamentById = (id: string) => {
   return axios
-    .get<Outcome>(`${ baseUrl }/${id}`)
+    .get<Tournament>(`${ baseUrl }/${id}`)
     .then(response => response.data);
 
 };
 
-export const addOutcome = async (newObject: NewOutcome) => {
+export const createTournament = async (newObject: NewTournament) => {
   const config = {
     headers: { Authorization: token },
   };
-  const response = await axios.post<Outcome>(baseUrl, newObject, config);
+  const response = await axios.post<Tournament>(baseUrl, newObject, config);
   return response.data;
 };
 
 
-export const removeOutcome = (id: string) => {
+export const removeTournament = (id: string) => {
   const config = {
     headers: { Authorization: token },
   };
-
   const request = axios.delete(`${ baseUrl }/${id}`, config);
   return request.then(response => response.data);
 };
 
 
-export const editOutcome = (id: string, newObject: Outcome) => {
+export const editTournament = (id: string, newObject: Tournament) => {
   const config = {
     headers: { Authorization: token },
   };
-
   const request = axios.put(`${baseUrl}/${id}`, newObject, config);
   return request.then(response => response.data);
 };

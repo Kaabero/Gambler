@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Game, User } from "../types";
+import { Game, User } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { getAllGames, removeGame, editGame } from '../services/gameService';
 import React from 'react';

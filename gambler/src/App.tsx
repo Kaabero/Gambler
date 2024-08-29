@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Credentials } from "./types";
+import { Credentials } from './types';
 import React from 'react';
 import { setToken } from './utils/setToken';
 import Notification from './components/Notification';
@@ -25,7 +25,7 @@ import {
   Link,
   Navigate,
   useNavigate,
-} from "react-router-dom";
+} from 'react-router-dom';
 
 const App = () => {
   const [errormessage, setErrorMessage] = useState('');
@@ -77,6 +77,7 @@ const App = () => {
               {user.admin ? <Link style={padding} to="/addGame">Add game</Link> : <></>}
               <Link style={padding} to="/bets">All bets</Link>
               <Link style={padding} to={`/bets/${user.id}`}>Check and manage your own bets</Link>
+              <Link style={padding} to={`/points/${user.id}`}>Check your points</Link>
               <Link style={padding} to="/results">Game results</Link>
               <Link style={padding} to="/players">Players and points</Link>
               <Link style={padding} to="/points">Received points</Link>

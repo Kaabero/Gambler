@@ -1,5 +1,6 @@
 const gamesRouter = require('express').Router()
 const Game = require('../models/game')
+const Tournament = require('../models/tournament')
 const jwt = require('jsonwebtoken')
 const middleware = require('../utils/middleware')
 
@@ -47,6 +48,7 @@ gamesRouter.get('/:id', async (request, response) => {
 
 gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
+  const tournament = await Tournament.findById(body.tournament)
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
@@ -93,6 +95,8 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   })
 
   const savedGame = await game.save()
+  tournament.games = tournament.games.concat(savedGame._id)
+  await tournament.save()
   response.status(201).json(savedGame)
 
 })

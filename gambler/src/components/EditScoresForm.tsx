@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Scores } from "../types";
+import { Scores } from '../types';
 import React from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
