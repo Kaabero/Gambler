@@ -59,10 +59,15 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
     return response.status(400).json({ error: 'This operation is for admins only.' })
   }
 
+  if (!body.home_team || !body.visitor_team || !body.date) {
+    return response.status(400).json({ error: 'Some of the required fields are missing' })
+  }
+
 
   if (body.home_team.toLowerCase() === body.visitor_team.toLowerCase()) {
     return response.status(400).json({ error: 'Home team and visitor team must be different' })
   }
+
 
   const date = new Date(body.date)
   const now = new Date()
@@ -109,7 +114,7 @@ gamesRouter.delete('/:id', middleware.userExtractor, async (request, response) =
 })
 
 
-gamesRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
@@ -122,15 +127,14 @@ gamesRouter.put('/:id', middleware.userExtractor, async (request, response, next
   }
   const { home_team, visitor_team, date } = request.body
 
-  Game.findByIdAndUpdate(
+  const updatedGame = await Game.findByIdAndUpdate(
     request.params.id,
     { home_team, visitor_team, date },
     { new: true, runValidators: true, context: 'query' }
   )
-    .then(updatedGame => {
-      response.json(updatedGame)
-    })
-    .catch(error => next(error))
+
+  response.status(200).json(updatedGame)
+
 })
 
 module.exports = gamesRouter

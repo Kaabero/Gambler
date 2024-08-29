@@ -5,12 +5,12 @@ import { getAllGames, createGame } from '../services/gameService';
 import React from 'react';
 import { AxiosError } from 'axios';
 
-interface GameFormProps {
+interface AddGameFormProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
   const [date, setDate] = useState('');
   const [visitorTeam, setVisitorTeam] = useState('');
   const [homeTeam, setHomeTeam] = useState('');
@@ -98,4 +98,4 @@ const GameForm: React.FC<GameFormProps> = ({ setErrorMessage, setNotificationMes
   );
 };
 
-export default GameForm;
+export default AddGameForm;

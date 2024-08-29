@@ -5,6 +5,7 @@ import { getAllGames, removeGame, editGame } from '../services/gameService';
 import React from 'react';
 import EditGameForm from './EditGameForm';
 import { formatDate } from '../utils/dateUtils';
+import { AxiosError } from 'axios';
 
 interface GamesProps {
   user: User;
@@ -40,9 +41,18 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
   };
 
   const handleUpdateGame = async (updatedGame: Game) => {
-    const editedGame = await editGame(updatedGame.id, updatedGame);
-    setGames(games.map(game => game.id === updatedGame.id ? editedGame : game));
-    setEditingGame(null);
+    try {
+      const editedGame = await editGame(updatedGame.id, updatedGame);
+      setGames(games.map(game => game.id === updatedGame.id ? editedGame : game));
+      setEditingGame(null);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(`${error.response?.data.error}`);
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000);
+      }
+    }
   };
 
 

@@ -47,9 +47,18 @@ const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessa
   };
 
   const handleUpdateBet = async (updatedBet: Bet) => {
-    const editedBet = await editBet(updatedBet.id, updatedBet);
-    setBets(bets.map(bet => bet.id === updatedBet.id ? editedBet : bet));
-    setEditingBet(null);
+    try {
+      const editedBet = await editBet(updatedBet.id, updatedBet);
+      setBets(bets.map(bet => bet.id === updatedBet.id ? editedBet : bet));
+      setEditingBet(null);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(`${error.response?.data.error}`);
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000);
+      }
+    }
   };
 
   const handleShowAllClick = () => {
