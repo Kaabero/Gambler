@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Game, User } from '../types';
+import { Game, User, Tournament } from '../types';
 import { useNavigate } from 'react-router-dom';
-import { getAllGames, removeGame, editGame } from '../services/gameService';
+import { removeGame, editGame } from '../services/gameService';
+import { getTournamentById } from '../services/tournamentService';
 import React from 'react';
 import EditGameForm from './EditGameForm';
 import { formatDate } from '../utils/dateUtils';
@@ -9,21 +10,32 @@ import { AxiosError } from 'axios';
 
 interface GamesProps {
   user: User;
+  selectedTournament: string;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
+const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [showAllGames, setShowAllGames] = useState(true);
+  const [tournament, setTournament] = useState<Tournament>(
+    { id: '1', tournament: 'TestTournament' }
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAllGames().then((data) => {
-      setGames(data);
-    });
-  }, []);
+    if (selectedTournament) {
+      getTournamentById(selectedTournament).then(setTournament);
+    }
+  }, [selectedTournament]);
+
+  useEffect(() => {
+    if (tournament && tournament.games) {
+      setGames(tournament.games);
+    }
+  }, [tournament]);
+
 
   const handleRemoveGame = (id: string) => {
 
@@ -126,7 +138,7 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
                 {user.admin && !game.outcome && new Date(game.date) < new Date() &&(
                   <>
 
-                    <button onClick={() => handleAddResultClick(game)}>Add result and scores</button>
+                    <button onClick={() => handleAddResultClick(game)}>Add result and points</button>
                   </>
                 )}
                 {user && game.outcome && (
@@ -143,7 +155,7 @@ const Games: React.FC<GamesProps> = ({ user, setErrorMessage, setNotificationMes
       {games.length === 0 && (
         <>
           <br />
-          <p> There are no games added </p>
+          <p> There are no games added to selected tournament</p>
         </>
       )}
 

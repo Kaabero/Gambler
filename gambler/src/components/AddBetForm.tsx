@@ -66,7 +66,11 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
 
   return (
     <div>
-      <h2>Add a new bet for game {game?.home_team}-{game?.visitor_team} on {formatDate(new Date(game?.date))} </h2>
+      <h2>Add a new bet </h2>
+      <strong> Game: </strong> <br />
+      {game?.home_team}-{game?.visitor_team}<br />
+      {formatDate(new Date(game?.date))} <br />
+      <br />
       <form onSubmit={betCreation}>
         <div>
           Goals for {game?.home_team}:

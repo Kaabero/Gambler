@@ -18,6 +18,12 @@ const userSchema = mongoose.Schema({
       ref: 'Bet'
     }
   ],
+  tournaments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Tournament'
+    }
+  ],
   scores: [
     {
       type: mongoose.Schema.Types.ObjectId,

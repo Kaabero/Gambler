@@ -9,6 +9,10 @@ gamesRouter.get('/', async (request, response) => {
 
   const games = await Game.find({})
     .populate({
+      path: 'tournament',
+      select: 'tournament',
+    })
+    .populate({
       path: 'outcome',
       select: 'goals_home goals_visitor',
     })
@@ -26,6 +30,10 @@ gamesRouter.get('/', async (request, response) => {
 
 gamesRouter.get('/:id', async (request, response) => {
   const game = await Game.findById(request.params.id)
+    .populate({
+      path: 'tournament',
+      select: 'tournament',
+    })
     .populate({
       path: 'outcome',
       select: 'goals_home goals_visitor',
@@ -81,17 +89,19 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   const existingGame = await Game.findOne({
     home_team: body.home_team,
     visitor_team: body.visitor_team,
-    date: body.date
+    date: body.date,
+    tournament: body.tournament
   })
 
   if (existingGame) {
-    return response.status(400).json({ error: 'A game with the same teams and date already exists.' })
+    return response.status(400).json({ error: 'A game with the same teams and date already exists in this tournament.' })
   }
 
   const game = new Game({
     home_team: body.home_team,
     visitor_team: body.visitor_team,
-    date: body.date
+    date: body.date,
+    tournament: body.tournament
   })
 
   const savedGame = await game.save()

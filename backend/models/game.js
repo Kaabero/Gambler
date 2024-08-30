@@ -24,11 +24,15 @@ const gameSchema = mongoose.Schema({
   outcome: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Outcome'
+  },
+  tournament: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tournament'
   }
 })
 
 
-gameSchema.index({ home_team: 1, visitor_team: 1, date: 1 }, { unique: true })
+gameSchema.index({ home_team: 1, visitor_team: 1, date: 1, tournament: 1 }, { unique: true })
 
 gameSchema.set('toJSON', {
   transform: (document, returnedObject) => {

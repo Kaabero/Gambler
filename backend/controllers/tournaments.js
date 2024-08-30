@@ -1,6 +1,5 @@
 const tournamentsRouter = require('express').Router()
 const Tournament = require('../models/tournament')
-const Game = require('../models/game')
 const jwt = require('jsonwebtoken')
 const middleware = require('../utils/middleware')
 
@@ -17,7 +16,6 @@ tournamentsRouter.get('/:id', async (request, response) => {
   const tournament = await Tournament.findById(request.params.id)
     .populate('users', { username: 1 })
     .populate('games', { home_team: 1, visitor_team: 1, date: 1 })
-
   if (tournament) {
     response.json(tournament)
   } else {
@@ -69,18 +67,7 @@ tournamentsRouter.delete('/:id', middleware.userExtractor, async (request, respo
     return response.status(400).json({ error: 'This operation is for admins only.' })
   }
 
-  const tournament = await Tournament.findById(request.params.id)
-  if (!tournament) {
-    return response.status(404).json({ error: 'Tournament not found' })
-  }
-
-  const games = tournament.games || []
-
   await Tournament.findByIdAndDelete(request.params.id)
-
-  for (const game of games) {
-    await Game.findByIdAndDelete(game.id)
-  }
 
   response.status(204).end()
 })

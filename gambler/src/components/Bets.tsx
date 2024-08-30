@@ -1,32 +1,42 @@
 import { useState, useEffect } from 'react';
-import { Bet, User, Game } from '../types';
+import { Bet, User, Game, Tournament } from '../types';
 import { removeBet, editBet } from '../services/betService';
-import { getAllGames } from '../services/gameService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
 import EditBetForm from './EditBetForm';
+import { getTournamentById } from '../services/tournamentService';
 
 interface BetsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  user: User
+  user: User,
+  selectedTournament: string
 }
 
-const Bets: React.FC<BetsProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
+const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(true);
   const [editingBet, setEditingBet] = useState<Bet | null>(null);
   const [bets, setBets] = useState<Bet[]>([
-    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }, user: {
+    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam', tournament: 'TestTournament' }, user: {
       id: '1', username: 'TestUser', password: 'Password', admin: false } }
   ]);
+  const [tournament, setTournament] = useState<Tournament>(
+    { id: '1', tournament: 'TestTournament' }
+  );
 
   useEffect(() => {
-    getAllGames().then((data) => {
-      setGames(data);
-    });
-  }, []);
+    if (selectedTournament) {
+      getTournamentById(selectedTournament).then(setTournament);
+    }
+  }, [selectedTournament]);
+
+  useEffect(() => {
+    if (tournament && tournament.games) {
+      setGames(tournament.games);
+    }
+  }, [tournament]);
 
   const handleRemoveBetClick = async (id: string) => {
     try {

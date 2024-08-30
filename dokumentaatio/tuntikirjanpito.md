@@ -23,5 +23,6 @@
 | 28.8.2024. | 4    | adminille uusia toimintoja, näkymien parantelua |
 | 28.8.2024. | 4    | pisteytysten tarkastelu frontissa, pisteiden poisto ja muokkaus |
 | 29.8.2024. | 3    | salasanan validointi, windows alertit, tokenextractor ja userextractor middlewaret, testejä |
-| 29.8.2024. | 3    | turnauksen modelit, controllerit ja ensimmäiset toiminnot frontissa|
-| yht        | 86  |            | 
+| 29.8.2024. | 3    | turnauksen modelit, controllerit ja ensimmäiset toiminnot frontissa |
+| 30.8.2024. | 3    | turnaukseen liittyvät mongodb triggerit, pelien ja vetojen turnauskohtaiset näkymät |
+| yht        | 89  |            | 

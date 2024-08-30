@@ -9,14 +9,28 @@ const middleware = require('../utils/middleware')
 betsRouter.get('/', async (request, response) => {
   const bets = await Bet.find({})
     .populate('user', { username: 1 })
-    .populate('game', { home_team: 1, visitor_team: 1, date: 1 })
+    .populate({
+      path: 'game',
+      select: 'home_team visitor_team date tournament',
+      populate: {
+        path: 'tournament',
+        select: 'tournament',
+      }
+    })
   response.json(bets)
 })
 
 betsRouter.get('/:id', async (request, response) => {
   const bet = await Bet.findById(request.params.id)
     .populate('user', { username: 1 })
-    .populate('game', { home_team: 1, visitor_team: 1, date: 1 })
+    .populate({
+      path: 'game',
+      select: 'home_team visitor_team date tournament',
+      populate: {
+        path: 'tournament',
+        select: 'tournament',
+      }
+    })
   if (bet) {
     response.json(bet)
   } else {
