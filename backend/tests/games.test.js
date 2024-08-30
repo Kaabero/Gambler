@@ -125,14 +125,11 @@ describe('addition of a new game', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(testTournament)
 
-    console.log('hep', response.body.tournament)
-
-
     const newGame = {
       home_team: 'valid',
       visitor_team: 'data',
       date: '1.1.2025',
-      tournament: tournamentresponse.id
+      tournament: response.body.id
     }
 
     await api
@@ -384,5 +381,6 @@ describe('operations without admin rights: ', () => {
 after(async () => {
   await User.deleteMany({})
   await Game.deleteMany({})
+  await Tournament.deleteMany({})
   await mongoose.connection.close()
 })

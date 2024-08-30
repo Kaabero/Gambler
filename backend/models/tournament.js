@@ -12,6 +12,12 @@ const tournamentSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Game'
     }
+  ],
+  users: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
   ]
 })
 
