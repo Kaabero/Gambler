@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const tournamentSchema = mongoose.Schema({
-  tournament: {
+  name: {
     type: String,
     minlength: 3,
     required: true,

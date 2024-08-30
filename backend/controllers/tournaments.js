@@ -7,7 +7,24 @@ const middleware = require('../utils/middleware')
 tournamentsRouter.get('/', async (request, response) => {
   const tournaments = await Tournament.find({})
     .populate('users', { username: 1 })
-    .populate('games', { home_team: 1, visitor_team: 1, date: 1 })
+    .populate({
+      path: 'games',
+      select: 'home_team visitor_team date bets outcome',
+      populate: [
+        {
+          path: 'bets',
+          select: 'goals_home goals_visitor',
+          populate: {
+            path: 'user',
+            select: 'username'
+          }
+        },
+        {
+          path: 'outcome',
+          select: 'goals_home goals_visitor',
+        },
+      ]
+    })
 
   response.json(tournaments)
 })
@@ -15,7 +32,24 @@ tournamentsRouter.get('/', async (request, response) => {
 tournamentsRouter.get('/:id', async (request, response) => {
   const tournament = await Tournament.findById(request.params.id)
     .populate('users', { username: 1 })
-    .populate('games', { home_team: 1, visitor_team: 1, date: 1 })
+    .populate({
+      path: 'games',
+      select: 'home_team visitor_team date bets outcome',
+      populate: [
+        {
+          path: 'bets',
+          select: 'goals_home goals_visitor',
+          populate: {
+            path: 'user',
+            select: 'username'
+          }
+        },
+        {
+          path: 'outcome',
+          select: 'goals_home goals_visitor',
+        },
+      ]
+    })
   if (tournament) {
     response.json(tournament)
   } else {
@@ -26,7 +60,7 @@ tournamentsRouter.get('/:id', async (request, response) => {
 
 
 tournamentsRouter.post('/', middleware.userExtractor, async (request, response) => {
-  const { tournament } = request.body
+  const { name } = request.body
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
@@ -39,13 +73,13 @@ tournamentsRouter.post('/', middleware.userExtractor, async (request, response) 
     return response.status(400).json({ error: 'This operation is for admins only.' })
   }
 
-  const existingTournament = await Tournament.findOne({ tournament })
+  const existingTournament = await Tournament.findOne({ name })
 
   if (existingTournament) {
-    return response.status(400).json({ error: `Tournament ${tournament} already added` })
+    return response.status(400).json({ error: `Tournament ${name} already added` })
   }
   const newTournament = new Tournament({
-    tournament,
+    name,
   })
 
   const savedTournament = await newTournament.save()
@@ -83,11 +117,11 @@ tournamentsRouter.put('/:id', middleware.userExtractor, async (request, response
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
   }
-  const { tournament } = request.body
+  const { name } = request.body
 
   const updatedTournament = await Tournament.findByIdAndUpdate(
     request.params.id,
-    { tournament },
+    { name },
     { new: true, runValidators: true, context: 'query' }
   )
 

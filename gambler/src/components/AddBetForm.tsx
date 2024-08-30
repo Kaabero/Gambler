@@ -35,6 +35,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
 
 
   const betCreation = async (event: React.SyntheticEvent) => {
+
     event.preventDefault();
 
     if (game) {
@@ -46,7 +47,6 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
         };
 
         await addBet(newBet);
-
 
         setNotificationMessage('Bet added successfully!');
         setTimeout(() => {
@@ -67,6 +67,9 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
   return (
     <div>
       <h2>Add a new bet </h2>
+      <strong> Tournament: </strong> <br />
+      {game?.tournament?.name}<br />
+      <br />
       <strong> Game: </strong> <br />
       {game?.home_team}-{game?.visitor_team}<br />
       {formatDate(new Date(game?.date))} <br />

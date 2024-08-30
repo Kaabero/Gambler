@@ -24,7 +24,7 @@ const testAdmin = {
 }
 
 const testTournament = {
-  tournament: 'testTournament',
+  name: 'testTournament',
 }
 
 let token

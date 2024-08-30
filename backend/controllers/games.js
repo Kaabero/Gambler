@@ -10,7 +10,7 @@ gamesRouter.get('/', async (request, response) => {
   const games = await Game.find({})
     .populate({
       path: 'tournament',
-      select: 'tournament',
+      select: 'name',
     })
     .populate({
       path: 'outcome',
@@ -32,7 +32,7 @@ gamesRouter.get('/:id', async (request, response) => {
   const game = await Game.findById(request.params.id)
     .populate({
       path: 'tournament',
-      select: 'tournament',
+      select: 'name',
     })
     .populate({
       path: 'outcome',

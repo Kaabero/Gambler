@@ -9,15 +9,22 @@ outcomesRouter.get('/', async (request, response) => {
   const outcomes = await Outcome.find({})
     .populate({
       path: 'game',
-      select: 'home_team visitor_team date bets',
-      populate: {
-        path: 'bets',
-        select: 'goals_home goals_visitor user',
-        populate: {
-          path: 'user',
-          select: 'username'
-        }
-      }
+      select: 'home_team visitor_team date bets tournament',
+      populate: [
+        {
+          path: 'bets',
+          select: 'goals_home goals_visitor user',
+          populate: {
+            path: 'user',
+            select: 'username'
+          }
+        },
+        {
+          path: 'tournament',
+          select: 'name',
+
+        },
+      ]
     })
     .populate({
       path: 'scores',
@@ -36,15 +43,22 @@ outcomesRouter.get('/:id', async (request, response) => {
   const outcome = await Outcome.findById(request.params.id)
     .populate({
       path: 'game',
-      select: 'home_team visitor_team date bets',
-      populate: {
-        path: 'bets',
-        select: 'goals_home goals_visitor user',
-        populate: {
-          path: 'user',
-          select: 'username'
-        }
-      }
+      select: 'home_team visitor_team date bets tournament',
+      populate: [
+        {
+          path: 'bets',
+          select: 'goals_home goals_visitor user',
+          populate: {
+            path: 'user',
+            select: 'username'
+          }
+        },
+        {
+          path: 'tournament',
+          select: 'name',
+
+        },
+      ]
     })
     .populate({
       path: 'scores',

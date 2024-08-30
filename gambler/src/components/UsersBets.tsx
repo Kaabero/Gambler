@@ -88,6 +88,7 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
 
   const betsToShow = showAllGames ? sortedBets : futureGames;
 
+
   return (
     <div>
       <h3>User: {user.username}</h3>
@@ -99,6 +100,12 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
             {betsToShow.map(bet =>
               <li key={bet.id}>
                 <hr />
+                <strong>Tournament: </strong><br />
+                <br />
+                <div>
+                  {bet.game.tournament?.name} <br />
+                  <br />
+                </div>
                 <strong>Game: </strong><br />
                 <br />
                 <div>

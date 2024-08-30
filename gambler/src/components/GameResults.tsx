@@ -63,6 +63,8 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
             {sortedOutcomes.map(outcome =>
               <li key={outcome.id}>
                 <hr />
+                <strong>Tournament: </strong>{outcome.game.tournament?.name}<br />
+                <br />
                 <strong>Game: </strong><br />
                 <br />
                 <div>

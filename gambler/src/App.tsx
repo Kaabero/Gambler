@@ -58,6 +58,7 @@ const App = () => {
     <><div>
       <Notification errormessage={errormessage} notificationmessage={notificationmessage} /> <br />
       <br />
+      {user &&
       <select
         id="tournament-select"
         value={selectedTournament}
@@ -69,11 +70,11 @@ const App = () => {
         </option>
         {tournaments.map((tournament) => (
           <option key={tournament.id} value={tournament.id}>
-            {tournament.tournament}
+            {tournament.name}
           </option>
         ))}
       </select>
-
+      }
     </div>
     <Router>
       <div>
@@ -115,7 +116,7 @@ const App = () => {
             <p>{user.username} logged in
               <br />
               <br />
-              <LogoutButton setUser={setUser} setNotificationMessage={setNotificationMessage} /></p>
+              <LogoutButton setSelectedTournament={setSelectedTournament}setUser={setUser} setNotificationMessage={setNotificationMessage} /></p>
           ) : (
             <><Link style={padding} to="/login">Login</Link><Link style={padding} to="/register">Create account</Link></>
           )}
@@ -129,10 +130,11 @@ const App = () => {
 interface LogoutProps {
   setUser: React.Dispatch<React.SetStateAction<Credentials | null | undefined>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedTournament: React.Dispatch<React.SetStateAction<string>>;
 }
 
 
-const LogoutButton: React.FC<LogoutProps> = ({ setNotificationMessage, setUser }) => {
+const LogoutButton: React.FC<LogoutProps> = ({ setSelectedTournament, setNotificationMessage, setUser }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -144,6 +146,7 @@ const LogoutButton: React.FC<LogoutProps> = ({ setNotificationMessage, setUser }
     setTimeout(() => {
       setNotificationMessage('');
     }, 3000);
+    setSelectedTournament('');
     navigate('/login');
   };
 

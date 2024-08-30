@@ -19,11 +19,11 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
   const [showAllGames, setShowAllGames] = useState(true);
   const [editingBet, setEditingBet] = useState<Bet | null>(null);
   const [bets, setBets] = useState<Bet[]>([
-    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam', tournament: 'TestTournament' }, user: {
+    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }, user: {
       id: '1', username: 'TestUser', password: 'Password', admin: false } }
   ]);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', tournament: 'TestTournament' }
+    { id: '1', name: 'TestTournament' }
   );
 
   useEffect(() => {

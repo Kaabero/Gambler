@@ -78,6 +78,8 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
             {sortedOutcomes.map((outcome) => (
               <li key={outcome.id}>
                 <hr />
+                <strong>Tournament: </strong> {outcome.game.tournament?.name}<br />
+                <br />
                 <strong>Game: </strong> <br />
                 <br />
                 {formatDate(new Date(outcome.game.date))}
@@ -95,6 +97,7 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
                 {outcome.scores?.map((scores) => (
                   <div key={scores.id}>
                     <strong>User:</strong> {scores.user.username}<br />
+                    <br />
                     <strong>Points:</strong> {scores.points}
                     <br />
                     <br />

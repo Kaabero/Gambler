@@ -14,7 +14,7 @@ betsRouter.get('/', async (request, response) => {
       select: 'home_team visitor_team date tournament',
       populate: {
         path: 'tournament',
-        select: 'tournament',
+        select: 'name',
       }
     })
   response.json(bets)
@@ -28,7 +28,7 @@ betsRouter.get('/:id', async (request, response) => {
       select: 'home_team visitor_team date tournament',
       populate: {
         path: 'tournament',
-        select: 'tournament',
+        select: 'name',
       }
     })
   if (bet) {
@@ -41,6 +41,7 @@ betsRouter.get('/:id', async (request, response) => {
 betsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
 
+
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
@@ -48,14 +49,14 @@ betsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const user = request.user
 
   const game = await Game.findById(body.game)
-  /*
+
   const date = new Date(game.date)
   const now = new Date()
 
   if (date < now) {
     return response.status(400).json({ error: 'Bet cannot be added for past games' })
   }
-*/
+
   const existingBet = await Bet.findOne({ user: user._id, game: game._id })
 
   if (existingBet) {

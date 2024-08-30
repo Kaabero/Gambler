@@ -10,7 +10,7 @@ export interface Outcome {
 
 export interface Tournament {
   id: string,
-  tournament: string,
+  name: string,
   games?: Game[],
 }
 
@@ -38,7 +38,7 @@ export interface Game {
     date: Date,
     bets?: Bet[],
     outcome?: Outcome,
-    tournament?: string
+    tournament?: Tournament
 }
 
 export interface Scores {
@@ -48,7 +48,6 @@ export interface Scores {
   outcome: Outcome
 }
 
-export type NewGame = Omit<Game, 'id'>
 export type NewUser = Omit<User, 'id'>
 export type NewTournament = Omit<Tournament, 'id'>
 
@@ -57,6 +56,16 @@ export interface NewOutcome {
   goals_home: string,
   goals_visitor: string,
   game: string,
+}
+
+export interface NewGame {
+  id: string,
+  home_team: string,
+  visitor_team: string,
+  date: Date,
+  bets?: Bet[],
+  outcome?: Outcome,
+  tournament?: string
 }
 
 

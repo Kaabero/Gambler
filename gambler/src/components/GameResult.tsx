@@ -5,6 +5,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getGameById } from '../services/gameService';
 import { removeOutcome } from '../services/outcomeService';
+import { formatDate } from '../utils/dateUtils';
 
 
 
@@ -57,11 +58,15 @@ const GameResult: React.FC<GameResultProps> = ({ user, setErrorMessage, setNotif
 
   return (
     <div>
-      <h2>Game:</h2>
-      <p>{game.home_team}-{game.visitor_team}</p>
-      <h2>Result:</h2>
-      <p>{game.outcome?.goals_home}-{game.outcome?.goals_visitor}</p>
-
+      <br />
+      <strong>Tournament: </strong>{game.tournament?.name}<br />
+      <br />
+      <strong>Game: </strong><br />
+      {game.home_team}-{game.visitor_team}<br />
+      {formatDate(new Date(game.date))}<br />
+      <br />
+      <strong>Result:</strong> {game.outcome?.goals_home}-{game.outcome?.goals_visitor}<br />
+      <br />
       <button type="button" onClick={handleGoHomeClick}>Go back home</button>
       {user.admin &&(
         <>

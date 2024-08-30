@@ -54,6 +54,11 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
   };
   return (
     <div>
+      <br />
+      <strong>Tournament: </strong>{game.tournament?.name}<br />
+      <br />
+      <div>
+      </div>
       <strong>Game: </strong><br />
       <br />
       <div>

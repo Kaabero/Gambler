@@ -20,7 +20,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [showAllGames, setShowAllGames] = useState(true);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', tournament: 'TestTournament' }
+    { id: '1', name: 'TestTournament' }
   );
   const navigate = useNavigate();
 
@@ -30,12 +30,12 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
     }
   }, [selectedTournament]);
 
+
   useEffect(() => {
     if (tournament && tournament.games) {
       setGames(tournament.games);
     }
   }, [tournament]);
-
 
   const handleRemoveGame = (id: string) => {
 
@@ -108,67 +108,69 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
   const gamesToShow = showAllGames ? sortedGames : futureGames;
 
 
-
   return (
     <div>
-      <h2>Games</h2>
-      <button onClick={handleShowAllClick}>Show all games</button>
-      <button onClick={handleShowFutureClick}>Show only future games</button>
-      {games.length > 0 && (
-        <>
-          <ul>
-            {gamesToShow.map(game =>
-              <li key={game.id}>
-                <strong>{formatDate(new Date(game.date))}</strong><br />
-            Home Team: {game.home_team} <br />
-            Visitor Team: {game.visitor_team} <br />
-                <br />
-                <button onClick={() => handleCheckBetsClick(game)}>Check bets</button>
-                {user && !game.outcome && !userHasBet(game) && (
-                  <>
-                    <button onClick={() => handleAddBetClick(game)}>Add bet</button>
-                  </>
-                )}
-                {user.admin &&(
-                  <>
-                    <button onClick={() => handleRemoveGame(game.id)}>Delete</button>
-                    <button onClick={() => setEditingGame(game)}>Edit</button>
-                  </>
-                )}
-                {user.admin && !game.outcome && new Date(game.date) < new Date() &&(
-                  <>
+      { selectedTournament && (
 
-                    <button onClick={() => handleAddResultClick(game)}>Add result and points</button>
-                  </>
+        <div>
+          <h2>Games</h2>
+          <button onClick={handleShowAllClick}>Show all games</button>
+          <button onClick={handleShowFutureClick}>Show only future games</button>
+          {games.length > 0 && (
+            <>
+              <ul>
+                {gamesToShow.map(game =>
+                  <li key={game.id}>
+                    <strong>{formatDate(new Date(game.date))}</strong><br />
+                  Home Team: {game.home_team} <br />
+                  Visitor Team: {game.visitor_team} <br />
+                    <br />
+                    <button onClick={() => handleCheckBetsClick(game)}>Check bets</button>
+                    {user && !game.outcome && !userHasBet(game) && (
+                      <>
+                        <button onClick={() => handleAddBetClick(game)}>Add bet</button>
+                      </>
+                    )}
+                    {user.admin &&(
+                      <>
+                        <button onClick={() => handleRemoveGame(game.id)}>Delete game</button>
+                        <button onClick={() => setEditingGame(game)}>Edit game</button>
+                      </>
+                    )}
+                    {user.admin && !game.outcome && new Date(game.date) < new Date() &&(
+                      <>
+                        <button onClick={() => handleAddResultClick(game)}>Add result and points</button>
+                      </>
+                    )}
+                    {user && game.outcome && (
+                      <>
+                        <button onClick={() => handleCheckResultClick(game)}>Check result</button> <br />
+                      </>
+                    )}
+                    <br />
+                  </li>
                 )}
-                {user && game.outcome && (
-                  <>
-                    <button onClick={() => handleCheckResultClick(game)}>Check result</button> <br />
-                  </>
-                )}
-                <br />
-              </li>
-            )}
-          </ul>
-        </>
-      )}
-      {games.length === 0 && (
-        <>
-          <br />
-          <p> There are no games added to selected tournament</p>
-        </>
-      )}
+              </ul>
+            </>
+          )}
+          {games.length === 0 && (
+            <>
+              <br />
+              <p> There are no games added to selected tournament</p>
+            </>
+          )}
 
-      {editingGame && (
-        <EditGameForm
-          game={editingGame}
-          setErrorMessage={setErrorMessage}
-          setNotificationMessage={setNotificationMessage}
-          onSave={handleUpdateGame}
-          onCancel={() => setEditingGame(null)}
-        />
+          {editingGame && (
+            <EditGameForm
+              game={editingGame}
+              setErrorMessage={setErrorMessage}
+              setNotificationMessage={setNotificationMessage}
+              onSave={handleUpdateGame}
+              onCancel={() => setEditingGame(null)}
+            />
+          )}
+        </div>
       )}
-
     </div>
   );
 };

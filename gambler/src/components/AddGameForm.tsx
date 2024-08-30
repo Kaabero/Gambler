@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Game, Tournament } from '../types';
+import { Game, NewGame, Tournament } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { getAllGames, createGame } from '../services/gameService';
 import { getAllTournaments } from '../services/tournamentService';
@@ -38,7 +38,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
 
     try {
 
-      const newGame: Game = {
+      const newGame: NewGame = {
         date: new Date(date),
         home_team: homeTeam,
         visitor_team: visitorTeam,
@@ -84,7 +84,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
           </option>
           {tournaments.map((tournament) => (
             <option key={tournament.id} value={tournament.id}>
-              {tournament.tournament}
+              {tournament.name}
             </option>
           ))}
         </select>
