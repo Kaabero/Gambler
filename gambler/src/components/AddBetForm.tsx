@@ -14,7 +14,7 @@ interface AddBetFormProps {
 }
 
 const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
-  const { gameId } = useParams();
+  const { gameId } = useParams<{ gameId: string }>();
   const [game, setGame] = useState<Game>(
     { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
   );

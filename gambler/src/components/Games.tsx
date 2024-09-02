@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Game, User, Tournament } from '../types';
 import { useNavigate } from 'react-router-dom';
-import { getAllGames, removeGame, editGame } from '../services/gameService';
+import { getAllGames, removeGame } from '../services/gameService';
 import { getTournamentById } from '../services/tournamentService';
 import React from 'react';
-import EditGameForm from './EditGameForm';
-import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
+import { formatDate } from '../utils/dateUtils';
 
 interface GamesProps {
   user: User;
@@ -17,7 +16,6 @@ interface GamesProps {
 
 const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
-  const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [showAllGames, setShowAllGames] = useState(true);
   const [tournament, setTournament] = useState<Tournament>(
     { id: '1', name: 'TestTournament' }
@@ -38,44 +36,21 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
     });
   }, []);
 
-  const filteredGames = games.filter(
-    (game) => game.tournament && game.tournament.id === tournament.id
-  );
-
-  const sortedGames = [...filteredGames].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
-
-  const gamesToShow = showAllGames ? sortedGames : futureGames;
 
   const handleRemoveGame = (id: string) => {
-
-    if (confirm('Deleting game will also remove related bets, game results and scores!')) {
-      removeGame(id).then(() => {
-        setGames(games.filter(game => game.id !== id));
-        setNotificationMessage('Game deleted successfully!');
-        setTimeout(() => {
-          setNotificationMessage('');
-        }, 3000);
-      });
-    } else {
-      return;
-    }
-  };
-
-  const handleUpdateGame = async (updatedGame: Game) => {
     try {
-      const editedGame = await editGame(updatedGame.id, updatedGame);
 
-      setGames((initialGames) =>
-        initialGames.map((game) => game.id === editedGame.id ? editedGame : game)
-      );
-
-      setEditingGame(null);
-      setNotificationMessage('Game updated successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
+      if (confirm('Deleting game will also remove related bets, game results and scores!')) {
+        removeGame(id).then(() => {
+          setGames(games.filter(game => game.id !== id));
+          setNotificationMessage('Game deleted successfully!');
+          setTimeout(() => {
+            setNotificationMessage('');
+          }, 3000);
+        });
+      } else {
+        return;
+      }
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(`${error.response?.data.error}`);
@@ -119,6 +94,22 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
     setShowAllGames(false);
   };
 
+  const handleEditBetClick = (game: Game) => {
+    navigate(`/editBet/${game.id}`);
+  };
+
+
+
+  const filteredGames = games.filter(
+    (game) => game.tournament && game.tournament.id === tournament.id
+  );
+
+  const sortedGames = [...filteredGames].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
+
+  const gamesToShow = showAllGames ? sortedGames : futureGames;
+
   return (
     <div>
       { selectedTournament && (
@@ -145,7 +136,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
                     {user.admin &&(
                       <>
                         <button onClick={() => handleRemoveGame(game.id)}>Delete game</button>
-                        <button onClick={() => setEditingGame(game)}>Edit game</button>
+                        <button onClick={() => handleEditBetClick(game)}>Edit game</button>
                       </>
                     )}
                     {user.admin && !game.outcome && new Date(game.date) < new Date() &&(
@@ -169,16 +160,6 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
               <br />
               <p> There are no games added to selected tournament</p>
             </>
-          )}
-
-          {editingGame && (
-            <EditGameForm
-              game={editingGame}
-              setErrorMessage={setErrorMessage}
-              setNotificationMessage={setNotificationMessage}
-              onSave={handleUpdateGame}
-              onCancel={() => setEditingGame(null)}
-            />
           )}
         </div>
       )}

@@ -1,23 +1,39 @@
-import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Game } from '../types';
 import React from 'react';
 import { formatDateForInput } from '../utils/dateUtils';
+import { editGame } from '../services/gameService';
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { getGameById } from '../services/gameService';
 
 interface EditGameFormProps {
-  game: Game;
-  onSave: (updatedGame: Game) => void;
-  onCancel: () => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, setErrorMessage, setNotificationMessage }) => {
-  const [date, setDate] = useState(formatDateForInput(new Date(game.date)));
-  const [visitorTeam, setVisitorTeam] = useState(game.visitor_team);
-  const [homeTeam, setHomeTeam] = useState(game.home_team);
+const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+  const { gameId } = useParams<{ gameId: string }>();
+  const [game, setGame] = useState<Game | null>(null);
+  const [date, setDate] = useState<string>('');
+  const [visitorTeam, setVisitorTeam] = useState<string>('');
+  const [homeTeam, setHomeTeam] = useState<string>('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (gameId) {
+      getGameById(gameId).then(game => {
+        setGame(game);
+        setDate(formatDateForInput(new Date(game.date)));
+        setVisitorTeam(game.visitor_team);
+        setHomeTeam(game.home_team);
+      });
+    }
+  }, [gameId]);
 
 
-  const gameEdition = (event: React.SyntheticEvent) => {
+  const gameEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     if (homeTeam.trim().toLowerCase() === visitorTeam.trim().toLowerCase()) {
@@ -27,20 +43,40 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, set
       }, 3000);
       return;
     }
+    if (game) {
+      const updatedGame: Game = {
+        ...game,
+        date: new Date(date),
+        home_team: homeTeam || game.home_team,
+        visitor_team: visitorTeam || game.visitor_team,
+      };
 
-    const updatedGame: Game = {
-      ...game,
-      date: new Date(date),
-      home_team: homeTeam || game.home_team,
-      visitor_team: visitorTeam || game.visitor_team,
-    };
+      try {
+        await editGame(updatedGame.id, updatedGame);
+        setNotificationMessage('Game updated successfully!');
+        setTimeout(() => {
+          setNotificationMessage('');
+        }, 3000);
+        navigate(-1);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          setErrorMessage(`${error.response?.data.error}`);
+          setTimeout(() => {
+            setErrorMessage('');
+          }, 3000);
+        }
+      }
+    } else {
+      setErrorMessage('No game found.');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return;
+    }
+  };
 
-    setErrorMessage('');
-    onSave(updatedGame);
-    setNotificationMessage('Game edited successfully!');
-    setTimeout(() => {
-      setNotificationMessage('');
-    }, 3000);
+  const onCancel = () => {
+    navigate(-1);
   };
 
   return (
