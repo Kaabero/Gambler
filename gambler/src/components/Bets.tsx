@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Bet, User, Game, Tournament } from '../types';
 import { removeBet, editBet } from '../services/betService';
+import { getAllGames } from '../services/gameService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
@@ -18,10 +19,6 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(true);
   const [editingBet, setEditingBet] = useState<Bet | null>(null);
-  const [bets, setBets] = useState<Bet[]>([
-    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }, user: {
-      id: '1', username: 'TestUser', password: 'Password', admin: false } }
-  ]);
   const [tournament, setTournament] = useState<Tournament>(
     { id: '1', name: 'TestTournament' }
   );
@@ -33,15 +30,32 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
   }, [selectedTournament]);
 
   useEffect(() => {
-    if (tournament && tournament.games) {
-      setGames(tournament.games);
-    }
-  }, [tournament]);
+    getAllGames().then((data) => {
+      setGames(data);
+    });
+  }, []);
+
+  const filteredGames = games.filter(
+    (game) => game.tournament && game.tournament.id === tournament.id
+  );
+
+  const gamesWithBets = filteredGames.filter((game) => !game.bets || game.bets.length > 0);
+
+  const sortedGames = [...gamesWithBets].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
+
+  const gamesToShow = showAllGames ? sortedGames : futureGames;
 
   const handleRemoveBetClick = async (id: string) => {
     try {
       await removeBet(id);
-      setBets(bets.filter(bet => bet.id !== id));
+      setGames((initialGames) =>
+        initialGames.map((game) => ({
+          ...game,
+          bets: game.bets?.filter((bet) => bet.id !== id),
+        }))
+      );
       setNotificationMessage('Bet deleted successfully!');
       setTimeout(() => {
         setNotificationMessage('');
@@ -59,7 +73,17 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
   const handleUpdateBet = async (updatedBet: Bet) => {
     try {
       const editedBet = await editBet(updatedBet.id, updatedBet);
-      setBets(bets.map(bet => bet.id === updatedBet.id ? editedBet : bet));
+      setGames((initialGames) =>
+        initialGames.map((game) => {
+          if (game.bets) {
+            const updatedBets = game.bets.map((bet) =>
+              bet.id === updatedBet.id ? editedBet : bet
+            );
+            return { ...game, bets: updatedBets };
+          }
+          return game;
+        })
+      );
       setEditingBet(null);
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -78,15 +102,6 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
   const handleShowFutureClick = () => {
     setShowAllGames(false);
   };
-
-  const gamesWithBets = games.filter((game) => !game.bets || game.bets.length > 0);
-
-  const sortedGames = [...gamesWithBets].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
-
-
-  const gamesToShow = showAllGames ? sortedGames : futureGames;
 
 
   return (

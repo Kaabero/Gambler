@@ -26,4 +26,5 @@
 | 29.8.2024. | 3    | turnauksen modelit, controllerit ja ensimmäiset toiminnot frontissa |
 | 30.8.2024. | 3    | turnaukseen liittyvät mongodb triggerit, pelien ja vetojen turnauskohtaiset näkymät |
 | 30.8.2024. | 3    | turnauksiin liittyviä ongelmia |
-| yht        | 92  |            | 
+| 2.9.2024. | 3    | turnauksiin liittyviä ongelmia |
+| yht        | 95  |            | 

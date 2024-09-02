@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Bet } from '../types';
 import React from 'react';
 import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+
 
 
 interface EditBetFormProps {
@@ -17,7 +17,6 @@ interface EditBetFormProps {
 const EditBetForm: React.FC<EditBetFormProps> = ({ bet, setEditingBet, onSave, onCancel, setErrorMessage, setNotificationMessage }) => {
   const [visitorGoals, setVisitorGoals] = useState(bet.goals_visitor);
   const [homeGoals, setHomeGoals] = useState(bet.goals_home);
-  const navigate = useNavigate();
 
   const betEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -30,12 +29,12 @@ const EditBetForm: React.FC<EditBetFormProps> = ({ bet, setEditingBet, onSave, o
       };
 
       setErrorMessage('');
-      await onSave(updatedBet);
+      onSave(updatedBet);
       setNotificationMessage('Bet edited successfully!');
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-      navigate('/');
+
 
     } catch (error) {
       if (error instanceof AxiosError) {

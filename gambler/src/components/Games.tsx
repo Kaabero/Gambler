@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Game, User, Tournament } from '../types';
 import { useNavigate } from 'react-router-dom';
-import { removeGame, editGame } from '../services/gameService';
+import { getAllGames, removeGame, editGame } from '../services/gameService';
 import { getTournamentById } from '../services/tournamentService';
 import React from 'react';
 import EditGameForm from './EditGameForm';
@@ -26,16 +26,27 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
 
   useEffect(() => {
     if (selectedTournament) {
-      getTournamentById(selectedTournament).then(setTournament);
+      getTournamentById(selectedTournament).then((data) => {
+        setTournament(data);
+      });
     }
   }, [selectedTournament]);
 
-
   useEffect(() => {
-    if (tournament && tournament.games) {
-      setGames(tournament.games);
-    }
-  }, [tournament]);
+    getAllGames().then((data) => {
+      setGames(data);
+    });
+  }, []);
+
+  const filteredGames = games.filter(
+    (game) => game.tournament && game.tournament.id === tournament.id
+  );
+
+  const sortedGames = [...filteredGames].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
+
+  const gamesToShow = showAllGames ? sortedGames : futureGames;
 
   const handleRemoveGame = (id: string) => {
 
@@ -55,8 +66,16 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
   const handleUpdateGame = async (updatedGame: Game) => {
     try {
       const editedGame = await editGame(updatedGame.id, updatedGame);
-      setGames(games.map(game => game.id === updatedGame.id ? editedGame : game));
+
+      setGames((initialGames) =>
+        initialGames.map((game) => game.id === editedGame.id ? editedGame : game)
+      );
+
       setEditingGame(null);
+      setNotificationMessage('Game updated successfully!');
+      setTimeout(() => {
+        setNotificationMessage('');
+      }, 3000);
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(`${error.response?.data.error}`);
@@ -99,14 +118,6 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
   const handleShowFutureClick = () => {
     setShowAllGames(false);
   };
-
-  const sortedGames = [...games].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
-
-
-  const gamesToShow = showAllGames ? sortedGames : futureGames;
-
 
   return (
     <div>

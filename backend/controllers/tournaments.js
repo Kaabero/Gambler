@@ -6,50 +6,30 @@ const middleware = require('../utils/middleware')
 
 tournamentsRouter.get('/', async (request, response) => {
   const tournaments = await Tournament.find({})
-    .populate('users', { username: 1 })
     .populate({
       path: 'games',
-      select: 'home_team visitor_team date bets outcome',
-      populate: [
-        {
-          path: 'bets',
-          select: 'goals_home goals_visitor',
-          populate: {
-            path: 'user',
-            select: 'username'
-          }
-        },
-        {
-          path: 'outcome',
-          select: 'goals_home goals_visitor',
-        },
-      ]
+      select: 'home_team visitor_team date outcome',
+      populate: {
+        path: 'outcome',
+        select: 'goals_home goals_visitor',
+      },
     })
+    .populate('users', { username: 1 })
 
   response.json(tournaments)
 })
 
 tournamentsRouter.get('/:id', async (request, response) => {
   const tournament = await Tournament.findById(request.params.id)
-    .populate('users', { username: 1 })
     .populate({
       path: 'games',
-      select: 'home_team visitor_team date bets outcome',
-      populate: [
-        {
-          path: 'bets',
-          select: 'goals_home goals_visitor',
-          populate: {
-            path: 'user',
-            select: 'username'
-          }
-        },
-        {
-          path: 'outcome',
-          select: 'goals_home goals_visitor',
-        },
-      ]
+      select: 'home_team visitor_team date outcome',
+      populate: {
+        path: 'outcome',
+        select: 'goals_home goals_visitor',
+      },
     })
+    .populate('users', { username: 1 })
   if (tournament) {
     response.json(tournament)
   } else {

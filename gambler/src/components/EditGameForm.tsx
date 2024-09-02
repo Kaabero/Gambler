@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Game } from '../types';
-import { useNavigate } from 'react-router-dom';
 import React from 'react';
 import { formatDateForInput } from '../utils/dateUtils';
 
@@ -16,7 +15,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, set
   const [date, setDate] = useState(formatDateForInput(new Date(game.date)));
   const [visitorTeam, setVisitorTeam] = useState(game.visitor_team);
   const [homeTeam, setHomeTeam] = useState(game.home_team);
-  const navigate = useNavigate();
+
 
   const gameEdition = (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -42,7 +41,6 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ game, onSave, onCancel, set
     setTimeout(() => {
       setNotificationMessage('');
     }, 3000);
-    navigate('/');
   };
 
   return (

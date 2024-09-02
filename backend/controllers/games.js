@@ -13,16 +13,16 @@ gamesRouter.get('/', async (request, response) => {
       select: 'name',
     })
     .populate({
-      path: 'outcome',
-      select: 'goals_home goals_visitor',
-    })
-    .populate({
       path: 'bets',
       select: 'goals_home goals_visitor user',
       populate: {
         path: 'user',
         select: 'username'
       }
+    })
+    .populate({
+      path: 'outcome',
+      select: 'goals_home goals_visitor',
     })
 
   response.json(games)
@@ -90,6 +90,7 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
     home_team: body.home_team,
     visitor_team: body.visitor_team,
     date: body.date,
+    outcome: null,
     tournament: body.tournament
   })
 
