@@ -94,8 +94,8 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
     setShowAllGames(false);
   };
 
-  const handleEditBetClick = (game: Game) => {
-    navigate(`/editBet/${game.id}`);
+  const handleEditGameClick = (game: Game) => {
+    navigate(`/editGame/${game.id}`);
   };
 
 
@@ -136,7 +136,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
                     {user.admin &&(
                       <>
                         <button onClick={() => handleRemoveGame(game.id)}>Delete game</button>
-                        <button onClick={() => handleEditBetClick(game)}>Edit game</button>
+                        <button onClick={() => handleEditGameClick(game)}>Edit game</button>
                       </>
                     )}
                     {user.admin && !game.outcome && new Date(game.date) < new Date() &&(

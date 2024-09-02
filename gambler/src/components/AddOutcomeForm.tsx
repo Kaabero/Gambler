@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { getGameById } from '../services/gameService';
 import { getAllBets } from '../services/betService';
 import { handleAddScores } from './AddScores';
+import { formatDate } from '../utils/dateUtils';
 
 
 
@@ -96,7 +97,11 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
 
   return (
     <div>
-      <h2>Add a new outcome</h2>
+      <h2>Add result:  </h2>
+      <p>Tournament: {game.tournament?.name}  </p>
+      {formatDate(new Date(game?.date))} <br />
+      <br />
+      <br />
       <form onSubmit={outcomeCreation}>
         <div>
         Goals for {game.home_team}:

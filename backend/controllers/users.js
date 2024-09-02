@@ -18,14 +18,6 @@ usersRouter.get('/', async (request, response) => {
     .populate({
       path: 'bets',
       select: 'goals_home goals_visitor game',
-      populate: {
-        path: 'game',
-        select: 'home_team visitor_team date tournament',
-        populate: {
-          path: 'tournament',
-          select: 'name'
-        }
-      },
     })
     .populate({
       path: 'scores',
@@ -33,14 +25,6 @@ usersRouter.get('/', async (request, response) => {
       populate: {
         path: 'outcome',
         select: 'game goals_home goals_visitor',
-        populate: {
-          path: 'game',
-          select: 'home_team visitor_team date tournament',
-          populate: {
-            path: 'tournament',
-            select: 'name'
-          }
-        }
       }
     })
   response.json(users)
@@ -51,14 +35,7 @@ usersRouter.get('/:id', async (request, response) => {
     .populate({
       path: 'bets',
       select: 'goals_home goals_visitor game',
-      populate: {
-        path: 'game',
-        select: 'home_team visitor_team date tournament',
-        populate: {
-          path: 'tournament',
-          select: 'name'
-        }
-      },
+
     })
     .populate({
       path: 'scores',
@@ -66,14 +43,6 @@ usersRouter.get('/:id', async (request, response) => {
       populate: {
         path: 'outcome',
         select: 'game goals_home goals_visitor',
-        populate: {
-          path: 'game',
-          select: 'home_team visitor_team date tournament',
-          populate: {
-            path: 'tournament',
-            select: 'name'
-          }
-        }
       }
     })
   if (user) {

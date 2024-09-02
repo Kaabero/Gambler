@@ -1,29 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { User, Bet } from '../types';
+import { User, Bet, Tournament } from '../types';
 import React from 'react';
 import { getUserById } from '../services/userService';
 import { formatDate } from '../utils/dateUtils';
-import { removeBet, editBet } from '../services/betService';
+import { removeBet, getAllBets } from '../services/betService';
+import { getTournamentById } from '../services/tournamentService';
 import { AxiosError } from 'axios';
-import EditBetForm from './EditBetForm';
+import { useNavigate } from 'react-router-dom';
 
 
 
 interface UsersBetsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  loggedUser: User
+  loggedUser: User,
+  selectedTournament: string;
 }
 
-const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, setNotificationMessage }) => {
+const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
   const { userId } = useParams();
+  const navigate = useNavigate();
   const [user, setUser] = useState<User>(
     { id: '1', username: 'TestUser', password: 'Password', admin: false }
   );
-  const [editingBet, setEditingBet] = useState<Bet | null>(null);
+  const [tournament, setTournament] = useState<Tournament>(
+    { id: '1', name: 'TestTournament' }
+  );
   const [bets, setBets] = useState<Bet[]>([]);
   const [showAllGames, setShowAllGames] = useState(true);
+
+  useEffect(() => {
+    if (selectedTournament) {
+      getTournamentById(selectedTournament).then((data) => {
+        setTournament(data);
+      });
+    }
+  }, [selectedTournament]);
 
 
   useEffect(() => {
@@ -33,11 +46,14 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
   }, [userId]);
 
   useEffect(() => {
-    if (user && user.bets) {
-      setBets(user.bets);
-    }
-  }, [user]);
+    getAllBets().then((data) => {
+      setBets(data);
+    });
+  }, []);
 
+  const filteredBets = bets.filter(
+    (bet) => bet.user && bet.user.id === user.id
+  );
 
   const handleRemoveBet = async (id: string) => {
     try {
@@ -57,20 +73,10 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
     }
   };
 
-  const handleUpdateBet = async (updatedBet: Bet) => {
-    try {
-      const editedBet = await editBet(updatedBet.id, updatedBet);
-      setBets(bets.map(bet => bet.id === updatedBet.id ? editedBet : bet));
-      setEditingBet(null);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 3000);
-      }
-    }
+  const handleEditBetClick = (bet: Bet) => {
+    navigate(`/editBet/${bet.id}`);
   };
+
 
   const handleShowAllClick = () => {
     setShowAllGames(true);
@@ -81,12 +87,14 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
   };
 
 
-  const sortedBets = [...bets].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
+  const sortedBets = [...filteredBets].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
   const futureGames = sortedBets.filter((bet) => new Date(bet.game.date) > new Date());
 
 
   const betsToShow = showAllGames ? sortedBets : futureGames;
+
+  const tournamentBets = betsToShow.filter(bet => bet.game.tournament?.id === tournament.id);
 
 
   return (
@@ -94,59 +102,34 @@ const UsersBets: React.FC<UsersBetsProps> = ( { loggedUser, setErrorMessage, set
       <h3>User: {user.username}</h3>
       <button onClick={handleShowAllClick}>Show all games</button>
       <button onClick={handleShowFutureClick}>Show only future games</button>
-      {bets && bets?.length > 0 && (
-        <>
-          <ul>
-            {betsToShow.map(bet =>
-              <li key={bet.id}>
-                <hr />
-                <strong>Tournament: </strong><br />
+      {tournamentBets.length > 0 ? (
+        <ul>
+          {tournamentBets.map(bet => (
+            <li key={bet.id}>
+              <hr />
+              <strong>Tournament:</strong>
+              <div>{bet.game.tournament?.name}</div>
+              <strong>Game:</strong>
+              <div>
+                {formatDate(new Date(bet.game.date))}
                 <br />
-                <div>
-                  {bet.game.tournament?.name} <br />
-                  <br />
-                </div>
-                <strong>Game: </strong><br />
-                <br />
-                <div>
-                  {formatDate(new Date(bet.game.date))} <br />
-                  <br />
-                  {bet.game.home_team}-{bet.game.visitor_team} <br />
-                  <br />
-                </div>
-                <strong>Bet: </strong><br />
-                {bet.goals_home}-{bet.goals_visitor} <br />
-                <br />
-                {(user.id === loggedUser.id && new Date(bet.game.date) > new Date() || loggedUser.admin && new Date(bet.game.date) > new Date()) &&(
-                  <>
-                    <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
-                    <button onClick={() => setEditingBet(bet)}>Edit bet</button>
-                  </>
-                )}
-              </li>
-            )}
-          </ul>
-        </>
-      )}
-      {!bets || bets?.length === 0 && (
-        <>
-          <br />
-          <p> There are no bets for this user </p>
-        </>
-      )}
-
-      {editingBet && (
-        <EditBetForm
-          bet={editingBet}
-          setErrorMessage={setErrorMessage}
-          setNotificationMessage={setNotificationMessage}
-          onSave={handleUpdateBet}
-          onCancel={() => setEditingBet(null)}
-          setEditingBet={setEditingBet}
-        />
+                {bet.game.home_team} - {bet.game.visitor_team}
+              </div>
+              <strong>Bet:</strong>
+              <div>{bet.goals_home} - {bet.goals_visitor}</div>
+              {(user.id === loggedUser.id || loggedUser.admin) && new Date(bet.game.date) > new Date() && (
+                <>
+                  <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
+                  <button onClick={() => handleEditBetClick(bet)}>Edit bet</button>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>There are no bets in the selected tournament for this user</p>
       )}
     </div>
   );
 };
-
 export default UsersBets;

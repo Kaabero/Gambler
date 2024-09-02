@@ -11,6 +11,13 @@ export const getAllBets = () => {
 
 };
 
+export const getBetById = (id: string) => {
+  return axios
+    .get<Bet>(`${ baseUrl }/${id}`)
+    .then(response => response.data);
+
+};
+
 export const addBet = async (newObject: NewBet) => {
 
   const config = {

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Bet, User, Game, Tournament } from '../types';
-import { removeBet, editBet } from '../services/betService';
+import { removeBet } from '../services/betService';
 import { getAllGames } from '../services/gameService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
-import EditBetForm from './EditBetForm';
+import { useNavigate } from 'react-router-dom';
 import { getTournamentById } from '../services/tournamentService';
 
 interface BetsProps {
@@ -18,10 +18,10 @@ interface BetsProps {
 const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(true);
-  const [editingBet, setEditingBet] = useState<Bet | null>(null);
   const [tournament, setTournament] = useState<Tournament>(
     { id: '1', name: 'TestTournament' }
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (selectedTournament) {
@@ -70,37 +70,16 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
     }
   };
 
-  const handleUpdateBet = async (updatedBet: Bet) => {
-    try {
-      const editedBet = await editBet(updatedBet.id, updatedBet);
-      setGames((initialGames) =>
-        initialGames.map((game) => {
-          if (game.bets) {
-            const updatedBets = game.bets.map((bet) =>
-              bet.id === updatedBet.id ? editedBet : bet
-            );
-            return { ...game, bets: updatedBets };
-          }
-          return game;
-        })
-      );
-      setEditingBet(null);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 3000);
-      }
-    }
-  };
-
   const handleShowAllClick = () => {
     setShowAllGames(true);
   };
 
   const handleShowFutureClick = () => {
     setShowAllGames(false);
+  };
+
+  const handleEditBetClick = (bet: Bet) => {
+    navigate(`/editBet/${bet.id}`);
   };
 
 
@@ -139,7 +118,7 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
                     {user.admin && new Date(game.date) > new Date() && (
                       <>
                         <button onClick={() => handleRemoveBetClick(bet.id)}> Delete bet </button>
-                        <button onClick={() => setEditingBet(bet)}>Edit bet</button><br />
+                        <button onClick={() => handleEditBetClick(bet)}>Edit bet</button><br />
                         <br />
                       </>
                     )}
@@ -155,16 +134,6 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
           <br />
           <p> There are no bets added </p>
         </>
-      )}
-      {editingBet && (
-        <EditBetForm
-          bet={editingBet}
-          setErrorMessage={setErrorMessage}
-          setNotificationMessage={setNotificationMessage}
-          onSave={handleUpdateBet}
-          onCancel={() => setEditingBet(null)}
-          setEditingBet={setEditingBet}
-        />
       )}
 
     </div>
