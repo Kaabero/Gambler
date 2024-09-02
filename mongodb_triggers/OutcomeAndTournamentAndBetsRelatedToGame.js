@@ -10,44 +10,47 @@ exports = async function(changeEvent) {
   const outcomecollection = 'outcomes'
   const tournamentcollection = 'tournaments'
 
-  const betsCollection = context.services.get(serviceName).db(database).collection(betcollection)
-  const outcomeCollection = context.services.get(serviceName).db(database).collection(outcomecollection)
-  const tournamentCollection = context.services.get(serviceName).db(database).collection(tournamentcollection)
+  const bets = context.services.get(serviceName).db(database).collection(betcollection)
+  const outcomes = context.services.get(serviceName).db(database).collection(outcomecollection)
+  const tournaments = context.services.get(serviceName).db(database).collection(tournamentcollection)
 
   const gameId = document._id;
   const tournamentId = document.tournament;
 
-  
+
 
   try {
     if (changeEvent.operationType === 'delete') {
       for (const id of document.bets) {
-        await betsCollection.deleteOne({ _id: id })
+        await bets.deleteOne({ _id: id })
       }
       console.log('Bets deleted successfully.')
 
-      await outcomeCollection.deleteOne({ _id: document.outcome })
-      console.log('Outcome deleted successfully.')
+      
 
-      const tournamentresult = await tournamentCollection.updateOne(
+      const tournamentresult = await tournaments.updateOne(
         { _id: tournamentId },
         { $pull: { games: gameId } }
       );
+
 
       if (tournamentresult.modifiedCount > 0) {
         console.log('Game removed from tournament\'s games successfully.')
       } else {
         console.log('Game was not found in the tournament\'s games array.')
       }
+      
+      await outcomes.deleteOne({ _id: document.outcome })
+      console.log('Outcome deleted successfully.')
 
 
     } else if (changeEvent.operationType === 'update' || changeEvent.operationType === 'replace') {
       for (const id of document.bets) {
-        await betsCollection.replaceOne({ '_id': docId }, changeEvent.fullDocument)
+        await bets.replaceOne({ '_id': docId }, changeEvent.fullDocument)
       }
       console.log('Bets edited successfully.')
       
-      await outcomeCollection.replaceOne({ '_id': docId }, changeEvent.fullDocument)
+      await outcomes.replaceOne({ '_id': docId }, changeEvent.fullDocument)
       console.log('Outcome edited successfully.')
     }
   } catch(err) {
