@@ -1,72 +1,118 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Scores } from '../types';
 import React from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getScoresById } from '../services/scoreService';
+import { editScores } from '../services/scoreService';
+import { formatDate } from '../utils/dateUtils';
+
+
 
 
 interface EditScoresFormProps {
-  scores: Scores;
-  onSave: (updatedBet: Scores) => void;
-  onCancel: () => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  setEditingScores: React.Dispatch<React.SetStateAction<Scores | null>>;
 }
 
-const EditScoresForm: React.FC<EditScoresFormProps> = ({ scores, setEditingScores, onSave, onCancel, setErrorMessage, setNotificationMessage }) => {
-  const [points, setPoints] = useState(scores.points);
+const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+  const { scoresId } = useParams<{ scoresId: string }>();
+  const [scores, setScores] = useState<Scores | null>(null);
+  const [points, setPoints] = useState<string>('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (scoresId) {
+      getScoresById(scoresId).then(score => {
+        setScores(score);
+        setPoints(score.points);
+      });
+    }
+  }, [scoresId]);
 
   const scoresEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    try {
+    if (scores) {
       const updatedScores: Scores = {
         ...scores,
         points: points || scores.points
       };
 
-      setErrorMessage('');
-      await onSave(updatedScores);
-      setNotificationMessage('Scores edited successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-      navigate('/');
-
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
+      try {
+        await editScores(updatedScores.id, updatedScores);
+        setNotificationMessage('Scores edited successfully!');
         setTimeout(() => {
-          setErrorMessage('');
+          setNotificationMessage('');
         }, 3000);
+        navigate(-1);
+
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          setErrorMessage(`${error.response?.data.error}`);
+          setTimeout(() => {
+            setErrorMessage('');
+          }, 3000);
+        }
       }
-      setEditingScores(null);
+    } else {
+      setErrorMessage('No scores found.');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return;
     }
   };
 
+  const onCancel = () => {
+    navigate(-1);
+  };
+
   return (
-    <div>
+    <><div>
+
       <h2>Edit the scores</h2>
-      <form onSubmit={scoresEdition}>
-        <br />
+      {scores ? (
         <div>
-          Points:
+          <strong>Tournament: </strong>
+          {scores?.outcome.game.tournament?.name}<br />
           <br />
-          <input
-            type="number"
-            value={points}
-            onChange={({ target }) => setPoints(target.value)}
-            min="0"
-          />
+          <strong>Game: </strong><br />
+          <br />
+          <div>
+            {formatDate(new Date(scores.outcome.game.date))}<br />
+            {scores?.outcome.game.home_team}-{scores?.outcome.game.visitor_team} <br />
+            <br />
+            <strong>Player: </strong>
+            {scores?.user.username}<br />
+            <form onSubmit={scoresEdition}>
+              <br />
+              <div>
+              Points:
+                <br />
+                <input
+                  type="number"
+                  value={points}
+                  onChange={({ target }) => setPoints(target.value)}
+                  min="0"
+                />
+              </div>
+              <button type="submit">Save</button>
+              <button type="button" onClick={onCancel}>Cancel</button>
+              <br />
+              <br />
+            </form>
+          </div>
         </div>
-        <button type="submit">Save</button>
-        <button type="button" onClick={onCancel}>Cancel</button>
-        <br />
-        <br />
-      </form>
-    </div>
+
+      ) : (
+        <><p>There are no points to edit in the selected game for this user</p><br />
+          <br />
+          <button type="button" onClick={onCancel}>Cancel</button></>
+      )}
+    </div><div>
+    </div></>
   );
 };
 

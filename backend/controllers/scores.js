@@ -34,7 +34,9 @@ scoresRouter.get('/', async (request, response) => {
 
 scoresRouter.get('/:id', async (request, response) => {
   const score = await Scores.findById(request.params.id)
-    .populate('scores', { points: 1 })
+    .populate({
+      path: 'points',
+    })
     .populate({
       path: 'outcome',
       select: 'goals_home goals_visitor game',

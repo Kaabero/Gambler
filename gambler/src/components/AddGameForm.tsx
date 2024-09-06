@@ -5,20 +5,23 @@ import { getAllGames, createGame } from '../services/gameService';
 import { getAllTournaments } from '../services/tournamentService';
 import React from 'react';
 import { AxiosError } from 'axios';
+import { getTournamentById } from '../services/tournamentService';
 
 interface AddGameFormProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
+    selectedTournament: string;
 }
 
-const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorMessage, setNotificationMessage }) => {
   const [date, setDate] = useState('');
   const [visitorTeam, setVisitorTeam] = useState('');
   const [homeTeam, setHomeTeam] = useState('');
   const navigate = useNavigate();
   const [games, setGames] = useState<Game[]>([]);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [selectedTournament, setSelectedTournament] = useState('');
+  const [addToTournament, setTournament] = useState('');
+  const [tournament, setDefaultTournament] = useState<Tournament>();
 
   useEffect(() => {
     getAllGames().then(data => {
@@ -30,7 +33,15 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
     getAllTournaments().then(data => {
       setTournaments(data);
     });
-  }, []);
+  }, [selectedTournament]);
+
+  useEffect(() => {
+    if (selectedTournament) {
+      getTournamentById(selectedTournament).then((data) => {
+        setDefaultTournament(data);
+      });
+    }
+  }, [selectedTournament]);
 
   const gameCreation = async (event: React.SyntheticEvent) => {
 
@@ -42,7 +53,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
         date: new Date(date),
         home_team: homeTeam,
         visitor_team: visitorTeam,
-        tournament: selectedTournament,
+        tournament: addToTournament,
         id: '0'
       };
 
@@ -67,20 +78,21 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ setErrorMessage, setNotificat
 
     navigate('/');
   };
-
+  console.log('tournament', tournament)
   return (
     <div>
       <h2>Add new game</h2>
       <form onSubmit={gameCreation}>
         <br />
+        <p>Choose a tournament</p>
         <select
           id="tournament-select"
-          value={selectedTournament}
-          onChange={({ target }) => setSelectedTournament(target.value)}
+          value={addToTournament}
+          onChange={({ target }) => setTournament(target.value)}
           required
         >
-          <option value="" disabled>
-            -- Choose a tournament --
+          <option value="" >
+            {tournament ? tournament.name : '-- Choose a tournament --'}
           </option>
           {tournaments.map((tournament) => (
             <option key={tournament.id} value={tournament.id}>

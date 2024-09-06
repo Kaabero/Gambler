@@ -4,10 +4,10 @@ import { User, Scores, Tournament } from '../types';
 import React from 'react';
 import { getUserById } from '../services/userService';
 import { formatDate } from '../utils/dateUtils';
-import { removeScores, editScores, getAllScores } from '../services/scoreService';
+import { removeScores, getAllScores } from '../services/scoreService';
 import { getTournamentById } from '../services/tournamentService';
 import { AxiosError } from 'axios';
-import EditScoresForm from './EditScoresForm';
+import { useNavigate } from 'react-router-dom';
 
 
 interface UsersPointsProps {
@@ -18,11 +18,11 @@ interface UsersPointsProps {
 }
 
 const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
+  const navigate = useNavigate();
   const { userId } = useParams();
   const [user, setUser] = useState<User>(
     { id: '1', username: 'TestUser', password: 'Password', admin: false }
   );
-  const [editingScores, setEditingScores] = useState<Scores | null>(null);
   const [scores, setScores] = useState<Scores[]>([]);
   const [tournament, setTournament] = useState<Tournament>(
     { id: '1', name: 'TestTournament' }
@@ -72,11 +72,10 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
     }
   };
 
-  const handleUpdateScores = async (updatedScores: Scores) => {
-    const editedScores = await editScores(updatedScores.id, updatedScores);
-    setScores(scores.map(score => score.id === updatedScores.id ? editedScores : score));
-    setEditingScores(null);
+  const handleEditScoresClick = (scores: Scores) => {
+    navigate(`/editScores/${scores.id}`);
   };
+
 
   const sortedScores = [...filteredScores].sort((a, b) => new Date(a.outcome.game.date).getTime() - new Date(b.outcome.game.date).getTime());
 
@@ -105,25 +104,16 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
             {loggedUser.admin && (
               <>
                 <button onClick={() => handleRemoveScores(score.id)}>Delete points</button>
-                <button onClick={() => setEditingScores(score)}>Edit points</button>
+                <button onClick={() => handleEditScoresClick(score)}>Edit points</button>
               </>
             )}
           </li>
           )}
         </ul>
       ) : (
-        <p>There are no scores in the selected tournament for this user</p>
+        <p>There are no points in the selected tournament for this user</p>
       )}
     </div><div>
-      {editingScores && (
-        <EditScoresForm
-          scores={editingScores}
-          setErrorMessage={setErrorMessage}
-          setNotificationMessage={setNotificationMessage}
-          onSave={handleUpdateScores}
-          onCancel={() => setEditingScores(null)}
-          setEditingScores={setEditingScores} />
-      )}
     </div></>
   );
 };

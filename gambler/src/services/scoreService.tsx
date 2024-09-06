@@ -11,6 +11,13 @@ export const getAllScores = () => {
 
 };
 
+export const getScoresById = (id: string) => {
+  return axios
+    .get<Scores>(`${ baseUrl }/${id}`)
+    .then(response => response.data);
+
+};
+
 export const addScores = async (newObject: NewScores) => {
 
   const config = {

@@ -27,4 +27,5 @@
 | 30.8.2024. | 3    | turnaukseen liittyvät mongodb triggerit, pelien ja vetojen turnauskohtaiset näkymät |
 | 30.8.2024. | 3    | turnauksiin liittyviä ongelmia |
 | 2.9.2024. | 6    | pelien ja vetojen editointiin ja turbauksiin liittyviä ongelmia, refaktorointia |
-| yht        | 98  |            | 
+| 6.9.2024. | 2   | pisteiden editoinnin regaktorointia, pelin lisäykseen oletusturnaus |
+| yht        | 100 |            | 
