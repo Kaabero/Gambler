@@ -21,7 +21,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
   const [games, setGames] = useState<Game[]>([]);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [addToTournament, setTournament] = useState('');
-  const [tournament, setDefaultTournament] = useState<Tournament>();
+  const [defaultTournament, setDefaultTournament] = useState<Tournament>();
 
   useEffect(() => {
     getAllGames().then(data => {
@@ -33,12 +33,13 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
     getAllTournaments().then(data => {
       setTournaments(data);
     });
-  }, [selectedTournament]);
+  }, []);
 
   useEffect(() => {
     if (selectedTournament) {
       getTournamentById(selectedTournament).then((data) => {
         setDefaultTournament(data);
+        setTournament(data.id);
       });
     }
   }, [selectedTournament]);
@@ -46,7 +47,6 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
   const gameCreation = async (event: React.SyntheticEvent) => {
 
     event.preventDefault();
-
     try {
 
       const newGame: NewGame = {
@@ -74,66 +74,93 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
     }
   };
 
-  const handleCancel = () => {
+  const handleCancelClick = () => {
 
     navigate('/');
   };
-  console.log('tournament', tournament)
+
+  const handleAddTournamentClick = () => {
+
+    navigate('/addTournament');
+  };
+
+
   return (
     <div>
-      <h2>Add new game</h2>
-      <form onSubmit={gameCreation}>
-        <br />
-        <p>Choose a tournament</p>
-        <select
-          id="tournament-select"
-          value={addToTournament}
-          onChange={({ target }) => setTournament(target.value)}
-          required
-        >
-          <option value="" >
-            {tournament ? tournament.name : '-- Choose a tournament --'}
-          </option>
-          {tournaments.map((tournament) => (
-            <option key={tournament.id} value={tournament.id}>
-              {tournament.name}
-            </option>
-          ))}
-        </select>
+      { tournaments.length > 0 && (
         <div>
-          <br />
+          <h2>Add new game</h2>
+          <form onSubmit={gameCreation}>
+            <br />
+            <p>Choose a tournament</p>
+            <select
+              id="tournament-select"
+              value={addToTournament}
+              onChange={({ target }) => setTournament(target.value)}
+              required
+            >
+              {!defaultTournament && (
+                <option value="" disabled>
+            -- Choose a tournament --
+                </option>
+              )}
+              {defaultTournament && (
+                <option key={defaultTournament.id} value={defaultTournament.id}>
+                  {defaultTournament.name}
+                </option>
+              )}
+              {tournaments
+                .filter(tournament => tournament.id !== defaultTournament?.id)
+                .map((tournament) => (
+                  <option key={tournament.id} value={tournament.id}>
+                    {tournament.name}
+                  </option>
+                ))}
+            </select>
+            <div>
+              <br />
           Date and time:
-          <br />
-          <input
-            type='datetime-local'
-            value={date}
-            onChange={({ target }) => setDate(target.value)}
-          />
-        </div>
-        <br />
-        <div>
+              <br />
+              <input
+                type='datetime-local'
+                value={date}
+                onChange={({ target }) => setDate(target.value)}
+              />
+            </div>
+            <br />
+            <div>
           Home Team:
-          <br />
-          <input
-            value={homeTeam}
-            onChange={({ target }) => setHomeTeam(target.value)}
-          />
-        </div>
-        <br />
-        <div>
+              <br />
+              <input
+                value={homeTeam}
+                onChange={({ target }) => setHomeTeam(target.value)}
+              />
+            </div>
+            <br />
+            <div>
           Visitor Team:
-          <br />
-          <input
-            value={visitorTeam}
-            onChange={({ target }) => setVisitorTeam(target.value)}
-          />
+              <br />
+              <input
+                value={visitorTeam}
+                onChange={({ target }) => setVisitorTeam(target.value)}
+              />
+            </div>
+            <br />
+            <button type="submit">Add</button>
+            <button type="button" onClick={handleCancelClick}>Cancel</button>
+            <br />
+            <br />
+          </form>
         </div>
-        <br />
-        <button type="submit">Add</button>
-        <button type="button" onClick={handleCancel}>Cancel</button>
-        <br />
-        <br />
-      </form>
+      )}
+      {tournaments.length === 0 && (
+        <>
+          <br />
+          <h3> There isn't any tournaments where you can add a game </h3>
+          <button type="button" onClick={handleAddTournamentClick}>Add a tournament</button>
+          <button type="button" onClick={handleCancelClick}>Go Home</button>
+        </>
+      )}
     </div>
   );
 };
