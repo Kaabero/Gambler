@@ -86,6 +86,10 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
     setShowAllGames(false);
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
 
   const sortedBets = [...filteredBets].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
@@ -127,7 +131,10 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
           ))}
         </ul>
       ) : (
-        <p>There are no bets in the selected tournament for this user</p>
+        <>
+          <p>There are no bets in the selected tournament for this user</p>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
+        </>
       )}
     </div>
   );

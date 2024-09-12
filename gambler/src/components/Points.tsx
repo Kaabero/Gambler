@@ -53,6 +53,10 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
     navigate(`/editScores/${scores.id}`);
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
   const outcomesWithScores = outcomes.filter((outcome) => !outcome.scores || outcome.scores.length > 0);
 
   const sortedOutcomes = [...outcomesWithScores].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
@@ -109,6 +113,8 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
       {outcomesWithScores.length === 0 && (
         <>
           <p> There are no points added </p>
+          <br />
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
     </div>

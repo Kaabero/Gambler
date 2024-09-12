@@ -74,9 +74,9 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
     }
   };
 
-  const handleCancelClick = () => {
+  const handleGoBackClick = () => {
 
-    navigate('/');
+    navigate(-1);
   };
 
   const handleAddTournamentClick = () => {
@@ -147,7 +147,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
             </div>
             <br />
             <button type="submit">Add</button>
-            <button type="button" onClick={handleCancelClick}>Cancel</button>
+            <button type="button" onClick={handleGoBackClick}>Cancel</button>
             <br />
             <br />
           </form>
@@ -158,7 +158,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
           <br />
           <h3> There isn't any tournaments where you can add a game </h3>
           <button type="button" onClick={handleAddTournamentClick}>Add a tournament</button>
-          <button type="button" onClick={handleCancelClick}>Go Home</button>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
     </div>

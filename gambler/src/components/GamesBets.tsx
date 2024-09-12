@@ -6,6 +6,7 @@ import { getGameById } from '../services/gameService';
 import { formatDate } from '../utils/dateUtils';
 import { removeBet } from '../services/betService';
 import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 interface GamesBetProps {
@@ -15,6 +16,7 @@ interface GamesBetProps {
 }
 
 const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setNotificationMessage }) => {
+  const navigate = useNavigate();
   const { gameId } = useParams();
   const [game, setGame] = useState<Game>(
     { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
@@ -52,6 +54,12 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
       }
     }
   };
+
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
+
   return (
     <div>
       <br />
@@ -89,6 +97,8 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
         <>
           <br />
           <strong> There are no bets for this game </strong>
+          <br />
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
     </div>

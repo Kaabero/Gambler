@@ -50,8 +50,8 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
     });
   }, []);
 
-  const handleCancel = () => {
-    navigate('/');
+  const handleGoBackClick = () => {
+    navigate(-1);
   };
 
 
@@ -126,7 +126,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
         </div>
         <br />
         <button type="submit">Add result and points</button>
-        <button type="button" onClick={handleCancel}>Cancel</button>
+        <button type="button" onClick={handleGoBackClick}>Cancel</button>
         <br />
         <br />
       </form>

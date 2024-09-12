@@ -75,7 +75,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
     }
   };
 
-  const onCancel = () => {
+  const handleGoBackClick = () => {
     navigate(-1);
   };
 
@@ -112,7 +112,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
         </div>
         <br />
         <button type="submit">Save</button>
-        <button type="button" onClick={onCancel}>Cancel</button>
+        <button type="button" onClick={handleGoBackClick}>Cancel</button>
         <br />
         <br />
       </form>

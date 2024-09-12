@@ -76,6 +76,10 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
     navigate(`/editScores/${scores.id}`);
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
 
   const sortedScores = [...filteredScores].sort((a, b) => new Date(a.outcome.game.date).getTime() - new Date(b.outcome.game.date).getTime());
 
@@ -111,7 +115,10 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
           )}
         </ul>
       ) : (
-        <p>There are no points in the selected tournament for this user</p>
+        <>
+          <p>There are no points in the selected tournament for this user</p>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
+        </>
       )}
     </div><div>
     </div></>

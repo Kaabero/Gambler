@@ -59,6 +59,10 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
     navigate(`/editScores/${scores.id}`);
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
   return (
     <div>
       <strong>Game: </strong><br />
@@ -91,7 +95,9 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
       {!outcome.scores || outcome.scores?.length === 0 && (
         <>
           <br />
-          <strong> There are no scores for this game </strong>
+          <strong> There are no points gained in this game </strong>
+          <br />
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
     </div>

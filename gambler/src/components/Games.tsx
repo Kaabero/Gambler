@@ -69,7 +69,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
 
   const handleAddResultClick = (game: Game) => {
 
-    navigate(`/addOutcome/${game.id}`);
+    navigate(`/addResult/${game.id}`);
   };
 
   const handleCheckResultClick = (game: Game) => {

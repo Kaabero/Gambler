@@ -52,6 +52,10 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
     navigate(`/gamespoints/${outcome.id}`);
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
   const sortedOutcomes = [...outcomes].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
   return (
@@ -90,6 +94,7 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
         <>
           <br />
           <p> There are no game results added </p>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
     </div>

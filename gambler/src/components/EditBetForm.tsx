@@ -68,7 +68,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({ setErrorMessage, setNotificat
   };
 
 
-  const onCancel = () => {
+  const handleGoBackClick = () => {
     navigate(-1);
   };
 
@@ -104,7 +104,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({ setErrorMessage, setNotificat
             </div>
             <br />
             <button type="submit">Save</button>
-            <button type="button" onClick={onCancel}>Cancel</button>
+            <button type="button" onClick={handleGoBackClick}>Cancel</button>
             <br />
             <br />
           </form>
@@ -114,6 +114,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({ setErrorMessage, setNotificat
         <>
           <br />
           <p> No bet selected for edition. </p>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
     </div>

@@ -82,6 +82,9 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
     navigate(`/editBet/${bet.id}`);
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
 
   return (
     <div>
@@ -133,6 +136,7 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
         <>
           <br />
           <p> There are no bets added </p>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
 

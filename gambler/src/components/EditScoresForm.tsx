@@ -65,7 +65,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
     }
   };
 
-  const onCancel = () => {
+  const handleGoBackClick = () => {
     navigate(-1);
   };
 
@@ -99,7 +99,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
                 />
               </div>
               <button type="submit">Save</button>
-              <button type="button" onClick={onCancel}>Cancel</button>
+              <button type="button" onClick={handleGoBackClick}>Cancel</button>
               <br />
               <br />
             </form>
@@ -109,7 +109,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
       ) : (
         <><p>There are no points to edit in the selected game for this user</p><br />
           <br />
-          <button type="button" onClick={onCancel}>Cancel</button></>
+          <button type="button" onClick={handleGoBackClick}>Go back</button></>
       )}
     </div><div>
     </div></>
