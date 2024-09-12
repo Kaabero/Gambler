@@ -54,7 +54,7 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
   );
 
 
-  const handleRemoveScores = async (id: string) => {
+  const handleRemovePoints = async (id: string) => {
     try {
       await removeScores(id);
       setScores(scores.filter(score => score.id !== id));
@@ -72,7 +72,7 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
     }
   };
 
-  const handleEditScoresClick = (scores: Scores) => {
+  const handleEditPointsClick = (scores: Scores) => {
     navigate(`/editScores/${scores.id}`);
   };
 
@@ -103,8 +103,8 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
             <br />
             {loggedUser.admin && (
               <>
-                <button onClick={() => handleRemoveScores(score.id)}>Delete points</button>
-                <button onClick={() => handleEditScoresClick(score)}>Edit points</button>
+                <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
+                <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
               </>
             )}
           </li>

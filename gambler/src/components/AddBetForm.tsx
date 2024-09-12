@@ -29,7 +29,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
     }
   }, [gameId]);
 
-  const handleCancel = () => {
+  const handleCancelClick = () => {
     navigate('/');
   };
 
@@ -98,7 +98,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
         </div>
         <br />
         <button type="submit">Add bet</button>
-        <button type="button" onClick={handleCancel}>Cancel</button>
+        <button type="button" onClick={handleCancelClick}>Cancel</button>
         <br />
         <br />
       </form>

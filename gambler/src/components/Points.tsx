@@ -3,8 +3,8 @@ import { Outcome, User, Scores } from '../types';
 import { getAllOutcomes } from '../services/outcomeService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
-import EditScoresForm from './EditScoresForm';
-import { removeScores, editScores } from '../services/scoreService';
+import { useNavigate } from 'react-router-dom';
+import { removeScores } from '../services/scoreService';
 import { AxiosError } from 'axios';
 
 interface PointsProps {
@@ -15,8 +15,9 @@ interface PointsProps {
 
 
 const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotificationMessage }) => {
+  const navigate = useNavigate();
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
-  const [editingScores, setEditingScores] = useState<Scores | null>(null);
+
 
   useEffect(() => {
     getAllOutcomes().then((data) => {
@@ -24,7 +25,7 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
     });
   }, []);
 
-  const handleRemoveScores = async (id: string) => {
+  const handleRemovePoints = async (id: string) => {
     try {
       await removeScores(id);
       setOutcomes(
@@ -47,20 +48,10 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
     }
   };
 
-  const handleUpdateScores = async (updatedScores: Scores) => {
-    const editedScores = await editScores(updatedScores.id, updatedScores);
-    setOutcomes(
-      outcomes.map(outcome => ({
-        ...outcome,
-        scores: outcome.scores?.map(score =>
-          score.id === updatedScores.id ? editedScores : score
-        ),
-      }))
-    );
-    setEditingScores(null);
+
+  const handleEditPointsClick = (scores: Scores) => {
+    navigate(`/editScores/${scores.id}`);
   };
-
-
 
   const outcomesWithScores = outcomes.filter((outcome) => !outcome.scores || outcome.scores.length > 0);
 
@@ -94,17 +85,17 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
 
                 <br />
 
-                {outcome.scores?.map((scores) => (
-                  <div key={scores.id}>
-                    <strong>User:</strong> {scores.user.username}<br />
+                {outcome.scores?.map((score) => (
+                  <div key={score.id}>
+                    <strong>User:</strong> {score.user.username}<br />
                     <br />
-                    <strong>Points:</strong> {scores.points}
+                    <strong>Points:</strong> {score.points}
                     <br />
                     <br />
                     { loggedUser.admin && (
                       <>
-                        <button onClick={() => handleRemoveScores(scores.id)}>Delete points</button>
-                        <button onClick={() => setEditingScores(scores)}>Edit points</button><br />
+                        <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
+                        <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
                         <br />
                       </>
                     )}
@@ -117,21 +108,9 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
       )}
       {outcomesWithScores.length === 0 && (
         <>
-          <br />
-          <p> There are no scores added </p>
+          <p> There are no points added </p>
         </>
       )}
-      {editingScores && (
-        <EditScoresForm
-          scores={editingScores}
-          setErrorMessage={setErrorMessage}
-          setNotificationMessage={setNotificationMessage}
-          onSave={handleUpdateScores}
-          onCancel={() => setEditingScores(null)}
-          setEditingScores={setEditingScores}
-        />
-      )}
-
     </div>
   );
 };
