@@ -62,7 +62,7 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
 
   return (
     <div>
-      <br />
+      <hr />
       <strong>Tournament: </strong>{game.tournament?.name}<br />
       <br />
       <div>
@@ -75,9 +75,9 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
       </div>
       {game.bets && game.bets?.length > 0 && (
         <>
-          <ul>
+          <div>
             {bets.map(bet =>
-              <li key={bet.id}>
+              <p key={bet.id}>
                 <strong>User:</strong> {bet.user.username}<br />
                 <br />
                 <strong>Bet: </strong> {bet.goals_home}-{bet.goals_visitor}<br />
@@ -88,21 +88,20 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
                     <hr />
                   </>
                 )}
-              </li>
+              </p>
             )}
-          </ul>
+          </div>
         </>
       )}
       {!game.bets || game.bets?.length === 0 && (
         <>
-          <br />
-          <strong> There are no bets for this game </strong>
+          <p> There are no bets for this game </p>
           <br />
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
+      <hr />
     </div>
-
   );
 };
 

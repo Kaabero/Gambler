@@ -14,7 +14,7 @@ tournamentsRouter.get('/', async (request, response) => {
         select: 'goals_home goals_visitor',
       },
     })
-    .populate('users', { username: 1 })
+
 
   response.json(tournaments)
 })
@@ -29,7 +29,7 @@ tournamentsRouter.get('/:id', async (request, response) => {
         select: 'goals_home goals_visitor',
       },
     })
-    .populate('users', { username: 1 })
+
   if (tournament) {
     response.json(tournament)
   } else {

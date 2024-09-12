@@ -112,17 +112,20 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
 
   return (
     <div>
-      { selectedTournament && (
+      <hr />
+      <h2>Games</h2>
+      {filteredGames.length > 0 && (
+        <>
+          <div>
 
-        <div>
-          <h2>Games</h2>
-          <button onClick={handleShowAllClick}>Show all games</button>
-          <button onClick={handleShowFutureClick}>Show only future games</button>
-          {games.length > 0 && (
+            <button onClick={handleShowAllClick}>Show all games</button>
+            <button onClick={handleShowFutureClick}>Show only future games</button>
+
             <>
               <ul>
                 {gamesToShow.map(game =>
                   <li key={game.id}>
+                    <hr />
                     <strong>{formatDate(new Date(game.date))}</strong><br />
                   Home Team: {game.home_team} <br />
                   Visitor Team: {game.visitor_team} <br />
@@ -154,15 +157,15 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
                 )}
               </ul>
             </>
-          )}
-          {games.length === 0 && (
-            <>
-              <br />
-              <p> There are no games added to selected tournament</p>
-            </>
-          )}
-        </div>
+          </div>
+        </>
       )}
+      {filteredGames.length === 0 && (
+        <>
+          <p> There are no games added to selected tournament </p>
+        </>
+      )}
+      <hr />
     </div>
   );
 };

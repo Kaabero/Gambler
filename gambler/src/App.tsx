@@ -62,30 +62,32 @@ const App = () => {
       <Notification errormessage={errormessage} notificationmessage={notificationmessage} /> <br />
       <br />
       {user &&
-      <select
-        id="tournament-select"
-        value={selectedTournament}
-        onChange={({ target }) => setSelectedTournament(target.value)}
-        required
-      >
-        <option value="" disabled>
+      <><strong>Tournament:</strong><br />
+        <br />
+        <select
+          id="tournament-select"
+          value={selectedTournament}
+          onChange={({ target }) => setSelectedTournament(target.value)}
+          required
+        >
+          <option value="" disabled>
             -- Choose a tournament --
-        </option>
-        {tournaments.map((tournament) => (
-          <option key={tournament.id} value={tournament.id}>
-            {tournament.name}
           </option>
-        ))}
-      </select>
+          {tournaments.map((tournament) => (
+            <option key={tournament.id} value={tournament.id}>
+              {tournament.name}
+            </option>
+          ))}
+        </select></>
       }
     </div>
     <Router>
       <div>
         <Routes>
           <Route path="/bets" element={user ? <Bets user={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
-          <Route path="/points" element={user ? <Points loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
-          <Route path="/results" element={user ? <GameResults user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
-          <Route path="/players" element={user ? <Users loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
+          <Route path="/points" element={user ? <Points loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
+          <Route path="/results" element={user ? <GameResults user={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
+          <Route path="/users" element={user ? <Users loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
           <Route path="/addGame" element={(user && user.admin) ? <AddGameForm selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
           <Route path="/" element={user ? <Games selectedTournament={selectedTournament} user={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
           <Route path="/bets/:userId" element={user ? <UsersBets selectedTournament={selectedTournament} loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
@@ -113,7 +115,7 @@ const App = () => {
               <Link style={padding} to={`/bets/${user.id}`}>Check and manage your own bets</Link>
               <Link style={padding} to={`/points/${user.id}`}>Check your points</Link>
               <Link style={padding} to="/results">Game results</Link>
-              <Link style={padding} to="/players">Players and points</Link>
+              <Link style={padding} to="/users">Users and points</Link>
               <Link style={padding} to="/points">Received points</Link>
               <br />
             </>

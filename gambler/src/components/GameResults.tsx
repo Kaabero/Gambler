@@ -1,23 +1,34 @@
 import { useState, useEffect } from 'react';
-import { Outcome, User } from '../types';
+import { Outcome, User, Tournament } from '../types';
 import { getAllOutcomes, removeOutcome } from '../services/outcomeService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getTournamentById } from '../services/tournamentService';
 
 interface GameResultsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  user: User
+  user: User,
+  selectedTournament: string
 }
 
-const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNotificationMessage }) => {
-
+const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
+  const navigate = useNavigate();
   const [outcomes, setOutcomes] = useState<Outcome[]>([
     { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
   ]);
-  const navigate = useNavigate();
+
+  const [tournament, setTournament] = useState<Tournament>(
+    { id: '1', name: 'TestTournament' }
+  );
+
+  useEffect(() => {
+    if (selectedTournament) {
+      getTournamentById(selectedTournament).then(setTournament);
+    }
+  }, [selectedTournament]);
 
   useEffect(() => {
     getAllOutcomes().then((data: React.SetStateAction<Outcome[]>) => {
@@ -58,13 +69,18 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
 
   const sortedOutcomes = [...outcomes].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
+  const filteredOutcomes = sortedOutcomes.filter(
+    (outcome) => outcome.game.tournament && outcome.game.tournament.id === tournament.id
+  );
+
   return (
     <div>
+      <hr />
       <h2>Results</h2>
-      {outcomes && outcomes?.length > 0 && (
+      {filteredOutcomes && filteredOutcomes?.length > 0 && (
         <>
           <ul>
-            {sortedOutcomes.map(outcome =>
+            {filteredOutcomes.map(outcome =>
               <li key={outcome.id}>
                 <hr />
                 <strong>Tournament: </strong>{outcome.game.tournament?.name}<br />
@@ -90,13 +106,14 @@ const GameResults: React.FC<GameResultsProps> = ({ user, setErrorMessage, setNot
           </ul>
         </>
       )}
-      {!outcomes || outcomes?.length === 0 && (
+      {!filteredOutcomes || filteredOutcomes?.length === 0 && (
         <>
+          <p> There are no game results added to selected tournament</p>
           <br />
-          <p> There are no game results added </p>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
+      <hr />
     </div>
   );
 };

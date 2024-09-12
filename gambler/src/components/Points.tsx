@@ -1,23 +1,33 @@
 import { useState, useEffect } from 'react';
-import { Outcome, User, Scores } from '../types';
+import { Outcome, User, Scores, Tournament } from '../types';
 import { getAllOutcomes } from '../services/outcomeService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { useNavigate } from 'react-router-dom';
 import { removeScores } from '../services/scoreService';
 import { AxiosError } from 'axios';
+import { getTournamentById } from '../services/tournamentService';
 
 interface PointsProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-    loggedUser: User
+    loggedUser: User,
+    selectedTournament: string
   }
 
 
-const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotificationMessage }) => {
+const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
   const navigate = useNavigate();
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
+  const [tournament, setTournament] = useState<Tournament>(
+    { id: '1', name: 'TestTournament' }
+  );
 
+  useEffect(() => {
+    if (selectedTournament) {
+      getTournamentById(selectedTournament).then(setTournament);
+    }
+  }, [selectedTournament]);
 
   useEffect(() => {
     getAllOutcomes().then((data) => {
@@ -61,16 +71,19 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
 
   const sortedOutcomes = [...outcomesWithScores].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
+  const filteredOutcomes = sortedOutcomes.filter(
+    (outcome) => outcome.game.tournament && outcome.game.tournament.id === tournament.id
+  );
 
   return (
     <div>
+      <hr />
       <h2>Received points</h2>
-
-      {outcomesWithScores.length > 0 && (
+      {filteredOutcomes.length > 0 && (
         <>
 
           <ul>
-            {sortedOutcomes.map((outcome) => (
+            {filteredOutcomes.map((outcome) => (
               <li key={outcome.id}>
                 <hr />
                 <strong>Tournament: </strong> {outcome.game.tournament?.name}<br />
@@ -110,13 +123,14 @@ const Points: React.FC<PointsProps> = ( { loggedUser, setErrorMessage, setNotifi
           </ul>
         </>
       )}
-      {outcomesWithScores.length === 0 && (
+      {filteredOutcomes.length === 0 && (
         <>
-          <p> There are no points added </p>
+          <p> There are no points added to selected tournament</p>
           <br />
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
+      <hr />
     </div>
   );
 };

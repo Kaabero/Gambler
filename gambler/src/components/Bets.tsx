@@ -88,11 +88,13 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
 
   return (
     <div>
+      <hr />
       <h2>Bets</h2>
-      <button onClick={handleShowAllClick}>Show all games</button>
-      <button onClick={handleShowFutureClick}>Show only future games</button>
       {gamesWithBets.length > 0 && (
         <>
+          <button onClick={handleShowAllClick}>Show all games</button>
+          <button onClick={handleShowFutureClick}>Show only future games</button>
+
 
           <ul>
             {gamesToShow.map((game) => (
@@ -115,7 +117,7 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
                     {bet.goals_home} - {bet.goals_visitor}
                     <br />
                     <br />
-                  Player: {bet.user.username}
+                  User: {bet.user.username}
                     <br />
                     <br />
                     {user.admin && new Date(game.date) > new Date() && (
@@ -134,12 +136,12 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
       )}
       {gamesWithBets.length === 0 && (
         <>
+          <p> There are no bets added to selected tournament </p>
           <br />
-          <p> There are no bets added </p>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
-
+      <hr />
     </div>
   );
 };

@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
-import { User, Scores } from '../types';
+import { User, Scores, Tournament, Bet } from '../types';
 import { getAllUsers, removeUser } from '../services/userService';
 import { getAllScores } from '../services/scoreService';
 import React from 'react';
+import { getAllBets } from '../services/betService';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import { getTournamentById } from '../services/tournamentService';
 
 
 interface UsersProps {
   loggedUser: User;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
+  selectedTournament: string
 }
 
-const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificationMessage }) => {
+const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
   const [users, setUsers] = useState<User[]>([
     { id: '1', username: 'TestUser', password: 'Password', admin: false }
   ]);
@@ -21,8 +24,20 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
   const [scores, setScores] = useState<Scores[]>([
     { id: '1', points: '0', outcome: { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date(), home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }, user: { id: '1', username: 'TestUser', password: 'Password', admin: false } }
   ]);
+  const [tournament, setTournament] = useState<Tournament>(
+    { id: '1', name: 'TestTournament' }
+  );
+  const [bets, setBets] = useState<Bet[]>([]);
+
+  const [showOnlyUsersWithBets, setShowOnlyUsersWithBets] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (selectedTournament) {
+      getTournamentById(selectedTournament).then(setTournament);
+    }
+  }, [selectedTournament]);
 
   useEffect(() => {
     getAllUsers().then((data: User[]) => {
@@ -36,8 +51,14 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
     });
   }, []);
 
+  useEffect(() => {
+    getAllBets().then((data: Bet[]) => {
+      setBets(data);
+    });
+  }, []);
+
   const handleRemoveUser = async (id: string) => {
-    if (confirm('Deleting user will also remove related bets and scores!')) {
+    if (confirm('Deleting user will also remove related bets and scores in all tournaments!')) {
       try {
         await removeUser(id);
         setUsers(users.filter(user => user.id !== id));
@@ -60,8 +81,13 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
 
   const getTotalPoints = (user: User): number => {
     return scores
-      .filter(score => score.user.id === user.id)
+      .filter(score => score.user.id === user.id && score.outcome.game.tournament?.id===tournament.id)
       .reduce((total, score) => total + parseInt(score.points), 0);
+  };
+
+  const getTotalBets = (user: User): number => {
+    const filteredBets= bets.filter(bet => bet.user.id === user.id && bet.game.tournament?.id===tournament.id);
+    return filteredBets.length;
   };
 
   const handleCheckBets = (user: User) => {
@@ -74,27 +100,52 @@ const Users: React.FC<UsersProps> = ({ loggedUser, setErrorMessage, setNotificat
     navigate(`/points/${user.id}`);
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
+  const filteredUsers = users.filter(user =>
+    !showOnlyUsersWithBets || getTotalBets(user) > 0
+  );
+
+
   return (
     <div>
-      <h2>Players</h2>
-      <ul>
-        {users.map(user => (
-          <li key={user.id}>
-            <hr />
-            <strong>Player: </strong>{user.username}<br />
-            <strong>Total points: </strong> {getTotalPoints(user)}<br />
-            <br />
-            <button onClick={() => handleCheckBets(user)}>Check bets</button>
-            <button onClick={() => handleCheckPoints(user)}>Check received points</button>
-            {loggedUser.admin && !user.admin &&(
-              <>
-                <button onClick={() => handleRemoveUser(user.id)}>Delete user</button> <br />
-                <br />
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      <hr />
+      <h2>Users</h2>
+      <button onClick={() => setShowOnlyUsersWithBets(false)}>Show all users</button>
+      <button onClick={() => setShowOnlyUsersWithBets(true)}>Show only users with bets in selected tournament</button>
+
+      {filteredUsers.length > 0 ? (
+        <ul>
+          {filteredUsers.map(user => (
+            <li key={user.id}>
+              <hr />
+              <strong>User: </strong>{user.username}<br />
+              <br />
+              <strong>Total points for selected tournament: </strong> {getTotalPoints(user)}<br />
+              <br />
+              <strong>Total bets for selected tournament: </strong> {getTotalBets(user)}<br />
+              <br />
+              <button onClick={() => handleCheckBets(user)}>Check bets</button>
+              <button onClick={() => handleCheckPoints(user)}>Check received points</button>
+              {loggedUser.admin && !user.admin &&(
+                <>
+                  <button onClick={() => handleRemoveUser(user.id)}>Delete user</button> <br />
+                  <br />
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <>
+          <p> There are no users with bets in selected tournament </p>
+          <br />
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
+        </>
+      )}
+      <hr />
     </div>
   );
 };

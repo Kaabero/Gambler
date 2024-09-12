@@ -25,6 +25,10 @@ usersRouter.get('/', async (request, response) => {
       populate: {
         path: 'outcome',
         select: 'game goals_home goals_visitor',
+        populate: {
+          path: 'game',
+          select: 'tournament',
+        }
       }
     })
   response.json(users)
@@ -43,6 +47,10 @@ usersRouter.get('/:id', async (request, response) => {
       populate: {
         path: 'outcome',
         select: 'game goals_home goals_visitor',
+        populate: {
+          path: 'game',
+          select: 'tournament',
+        }
       }
     })
   if (user) {

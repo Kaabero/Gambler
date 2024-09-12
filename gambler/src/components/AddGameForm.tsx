@@ -87,11 +87,11 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
 
   return (
     <div>
+      <hr />
       { tournaments.length > 0 && (
         <div>
-          <h2>Add new game</h2>
+          <h2>Add a new game</h2>
           <form onSubmit={gameCreation}>
-            <br />
             <p>Choose a tournament</p>
             <select
               id="tournament-select"
@@ -155,12 +155,13 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
       )}
       {tournaments.length === 0 && (
         <>
+          <p> There isn't any tournaments where you can add a game </p>
           <br />
-          <h3> There isn't any tournaments where you can add a game </h3>
           <button type="button" onClick={handleAddTournamentClick}>Add a tournament</button>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
+      <hr />
     </div>
   );
 };

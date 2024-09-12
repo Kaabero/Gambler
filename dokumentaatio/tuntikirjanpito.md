@@ -28,5 +28,5 @@
 | 30.8.2024. | 3    | turnauksiin liittyviä ongelmia |
 | 2.9.2024. | 6    | pelien ja vetojen editointiin ja turbauksiin liittyviä ongelmia, refaktorointia |
 | 6.9.2024. | 2   | pisteiden editoinnin regaktorointia, pelin lisäykseen oletusturnaus |
-| 12.9.2024. | 2   | pelin lisäykseen oletusturnaus kuntoon ja pieniä korjauksia |
-| yht        | 102 |            | 
+| 12.9.2024. | 5   | pelin lisäykseen oletusturnaus kuntoon, pieniä korjauksia, sivujen ulkoasua |
+| yht        | 105 |            | 

@@ -86,8 +86,9 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
   const tournamentScores = sortedScores.filter(score => score.outcome.game.tournament?.id === tournament.id);
 
   return (
-    <><div>
-      <h3>User: {user.username}</h3>
+    <div>
+      <hr />
+      <h2>User: {user.username}</h2>
       {tournamentScores?.length > 0 ? (
         <ul>
           {tournamentScores.map(score => <li key={score.id}>
@@ -117,11 +118,12 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
       ) : (
         <>
           <p>There are no points in the selected tournament for this user</p>
+          <br />
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
-    </div><div>
-    </div></>
+      <hr />
+    </div>
   );
 };
 

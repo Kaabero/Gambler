@@ -84,7 +84,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
             {formatDate(new Date(scores.outcome.game.date))}<br />
             {scores?.outcome.game.home_team}-{scores?.outcome.game.visitor_team} <br />
             <br />
-            <strong>Player: </strong>
+            <strong>User: </strong>
             {scores?.user.username}<br />
             <form onSubmit={scoresEdition}>
               <br />

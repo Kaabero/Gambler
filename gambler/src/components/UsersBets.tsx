@@ -103,39 +103,42 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
 
   return (
     <div>
-      <h3>User: {user.username}</h3>
-      <button onClick={handleShowAllClick}>Show all games</button>
-      <button onClick={handleShowFutureClick}>Show only future games</button>
+      <hr />
+      <h2>User: {user.username}</h2>
       {tournamentBets.length > 0 ? (
-        <ul>
-          {tournamentBets.map(bet => (
-            <li key={bet.id}>
-              <hr />
-              <strong>Tournament:</strong>
-              <div>{bet.game.tournament?.name}</div>
-              <strong>Game:</strong>
-              <div>
-                {formatDate(new Date(bet.game.date))}
-                <br />
-                {bet.game.home_team} - {bet.game.visitor_team}
-              </div>
-              <strong>Bet:</strong>
-              <div>{bet.goals_home} - {bet.goals_visitor}</div>
-              {(user.id === loggedUser.id || loggedUser.admin) && new Date(bet.game.date) > new Date() && (
-                <>
-                  <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
-                  <button onClick={() => handleEditBetClick(bet)}>Edit bet</button>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
+        <><button onClick={handleShowAllClick}>Show all games</button>
+          <button onClick={handleShowFutureClick}>Show only future games</button><ul>
+            {tournamentBets.map(bet => (
+              <li key={bet.id}>
+                <hr />
+                <strong>Tournament:</strong>
+                <div>{bet.game.tournament?.name}</div><br />
+                <strong>Game:</strong>
+                <div>
+                  {formatDate(new Date(bet.game.date))}
+                  <br />
+                  {bet.game.home_team} - {bet.game.visitor_team}<br />
+                  <br />
+                </div>
+                <strong>Bet:</strong>
+                <div>{bet.goals_home} - {bet.goals_visitor}</div> <br />
+                {(user.id === loggedUser.id || loggedUser.admin) && new Date(bet.game.date) > new Date() && (
+                  <>
+                    <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
+                    <button onClick={() => handleEditBetClick(bet)}>Edit bet</button>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul></>
       ) : (
         <>
           <p>There are no bets in the selected tournament for this user</p>
+          <br />
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
+      <hr />
     </div>
   );
 };

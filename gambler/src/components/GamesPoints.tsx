@@ -65,43 +65,47 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
 
   return (
     <div>
-      <strong>Game: </strong><br />
+      <hr />
+      <strong>Tournament: </strong>{outcome.game.tournament?.name}<br />
       <br />
+      <strong>Game: </strong>
+      <br />
+      {formatDate(new Date(outcome.game.date))}<br />
+      {outcome.game.home_team}-{outcome.game.visitor_team} <br />
+      <br />
+      <h2>Points: </h2>
       <div>
-        {formatDate(new Date(outcome.game.date))}<br />
-        {outcome.game.home_team}-{outcome.game.visitor_team} <br />
+        {outcome.scores && outcome.scores?.length > 0 && (
+          <>
+            <ul>
+              {scores.map(score =>
+                <li key={score.id}>
+                  <hr />
+                  <strong>User:</strong> {score.user.username}<br />
+                  <br />
+                  <strong>Points: </strong> {score.points}<br />
+                  <br />
+                  { loggedUser.admin && (
+                    <>
+                      <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
+                      <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
+                    </>
+                  )}
+                </li>
+              )}
+            </ul>
+          </>
+        )}
       </div>
-      {outcome.scores && outcome.scores?.length > 0 && (
-        <>
-          <ul>
-            {scores.map(score =>
-              <li key={score.id}>
-                <strong>User:</strong> {score.user.username}<br />
-                <br />
-                <strong>Points: </strong> {score.points}<br />
-                <br />
-                { loggedUser.admin && (
-                  <>
-                    <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
-                    <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
-                    <hr />
-                  </>
-                )}
-              </li>
-            )}
-          </ul>
-        </>
-      )}
       {!outcome.scores || outcome.scores?.length === 0 && (
         <>
-          <br />
-          <strong> There are no points gained in this game </strong>
+          <p> There are no points gained in this game </p>
           <br />
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
+      <hr />
     </div>
-
   );
 };
 
