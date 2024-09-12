@@ -4,9 +4,9 @@ import { Outcome, User, Scores } from '../types';
 import React from 'react';
 import { getOutcomeById } from '../services/outcomeService';
 import { formatDate } from '../utils/dateUtils';
-import { removeScores, editScores } from '../services/scoreService';
+import { removeScores } from '../services/scoreService';
 import { AxiosError } from 'axios';
-import EditScoresForm from './EditScoresForm';
+import { useNavigate } from 'react-router-dom';
 
 
 interface GamesPointsProps {
@@ -16,12 +16,12 @@ interface GamesPointsProps {
 }
 
 const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage, setNotificationMessage }) => {
+  const navigate = useNavigate();
   const { outcomeId } = useParams();
   const [outcome, setOutcome] = useState<Outcome>(
     { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
   );
   const [scores, setScores] = useState<Scores[]>([]);
-  const [editingScores, setEditingScores] = useState<Scores | null>(null);
 
 
   useEffect(() => {
@@ -36,20 +36,8 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
     }
   }, [outcome]);
 
-  const handleUpdateScores = async (updatedScores: Scores) => {
-    const editedScores = await editScores(updatedScores.id, updatedScores);
-    setOutcome((outcome) => ({
-      ...outcome,
-      scores: outcome.scores?.map(score =>
-        score.id === updatedScores.id ? editedScores : score
-      ),
-    }));
 
-    setEditingScores(null);
-  };
-
-
-  const handleRemoveScores = async (id: string) => {
+  const handleRemovePoints = async (id: string) => {
     try {
       await removeScores(id);
       setScores(scores.filter(score => score.id !== id));
@@ -66,6 +54,11 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
       }
     }
   };
+
+  const handleEditPointsClick = (scores: Scores) => {
+    navigate(`/editScores/${scores.id}`);
+  };
+
   return (
     <div>
       <strong>Game: </strong><br />
@@ -77,16 +70,16 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
       {outcome.scores && outcome.scores?.length > 0 && (
         <>
           <ul>
-            {scores.map(scores =>
-              <li key={scores.id}>
-                <strong>User:</strong> {scores.user.username}<br />
+            {scores.map(score =>
+              <li key={score.id}>
+                <strong>User:</strong> {score.user.username}<br />
                 <br />
-                <strong>Points: </strong> {scores.points}<br />
+                <strong>Points: </strong> {score.points}<br />
                 <br />
                 { loggedUser.admin && (
                   <>
-                    <button onClick={() => handleRemoveScores(scores.id)}>Delete points</button>
-                    <button onClick={() => setEditingScores(scores)}>Edit points</button><br />
+                    <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
+                    <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
                     <hr />
                   </>
                 )}
@@ -100,16 +93,6 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
           <br />
           <strong> There are no scores for this game </strong>
         </>
-      )}
-      {editingScores && (
-        <EditScoresForm
-          scores={editingScores}
-          setErrorMessage={setErrorMessage}
-          setNotificationMessage={setNotificationMessage}
-          onSave={handleUpdateScores}
-          onCancel={() => setEditingScores(null)}
-          setEditingScores={setEditingScores}
-        />
       )}
     </div>
 
