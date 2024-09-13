@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outcome, User, Scores, Tournament } from '../types';
+import { Outcome, User, Scores, Tournament, Bet } from '../types';
 import { getAllOutcomes } from '../services/outcomeService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { removeScores } from '../services/scoreService';
 import { AxiosError } from 'axios';
 import { getTournamentById } from '../services/tournamentService';
+import { getAllBets } from '../services/betService';
 
 interface PointsProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -22,6 +23,7 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
   const [tournament, setTournament] = useState<Tournament>(
     { id: '1', name: 'TestTournament' }
   );
+  const [bets, setBets] = useState<Bet[]>([]);
 
   useEffect(() => {
     if (selectedTournament) {
@@ -32,6 +34,12 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
   useEffect(() => {
     getAllOutcomes().then((data) => {
       setOutcomes(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    getAllBets().then((data) => {
+      setBets(data);
     });
   }, []);
 
@@ -75,19 +83,24 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
     (outcome) => outcome.game.tournament && outcome.game.tournament.id === tournament.id
   );
 
+  const usersBet = (user: User, outcome: Outcome): string => {
+    const bet = bets.find(
+      (bet) => bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
+    );
+    return `${bet?.goals_home}-${bet?.goals_visitor}`;
+  };
+
+
   return (
     <div>
       <hr />
-      <h2>Received points</h2>
       {filteredOutcomes.length > 0 && (
         <>
-
+          <h2>Received points in tournament {tournament.name}</h2>
           <ul>
             {filteredOutcomes.map((outcome) => (
               <li key={outcome.id}>
                 <hr />
-                <strong>Tournament: </strong> {outcome.game.tournament?.name}<br />
-                <br />
                 <strong>Game: </strong> <br />
                 <br />
                 {formatDate(new Date(outcome.game.date))}
@@ -95,29 +108,28 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
                 {outcome.game.home_team} - {outcome.game.visitor_team}<br />
                 <br />
                 <strong>Game result: </strong>
-
-                <br />
                 {outcome.goals_home} - {outcome.goals_visitor}
                 <br />
-
                 <br />
+                <ul>
 
-                {outcome.scores?.map((score) => (
-                  <div key={score.id}>
-                    <strong>User:</strong> {score.user.username}<br />
-                    <br />
-                    <strong>Points:</strong> {score.points}
-                    <br />
-                    <br />
-                    { loggedUser.admin && (
-                      <>
-                        <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
-                        <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
-                        <br />
-                      </>
-                    )}
-                  </div>
-                ))}
+                  {outcome.scores?.map((score) => (
+                    <li key={score.id}>
+                      <strong>Points to user {score.user.username}: </strong>
+                      {score.points}
+                      <br />
+                      <strong>Users bet: </strong> {usersBet(score.user, outcome)} <br />
+                      <br />
+                      { loggedUser.admin && (
+                        <>
+                          <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
+                          <button onClick={() => handleEditPointsClick(score)}>Edit points</button><br />
+                          <br />
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ul>
@@ -125,12 +137,13 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
       )}
       {filteredOutcomes.length === 0 && (
         <>
-          <p> There are no points added to selected tournament</p>
-          <br />
-          <button type="button" onClick={handleGoBackClick}>Go back</button>
+          <h2>Received points</h2>
+          <p> There are no points received from selected tournament</p>
         </>
       )}
       <hr />
+      <br />
+      <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );
 };

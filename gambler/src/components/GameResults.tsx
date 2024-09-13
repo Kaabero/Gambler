@@ -76,15 +76,13 @@ const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, user, set
   return (
     <div>
       <hr />
-      <h2>Results</h2>
       {filteredOutcomes && filteredOutcomes?.length > 0 && (
         <>
+          <h2>Results in tournament {tournament.name}</h2>
           <ul>
             {filteredOutcomes.map(outcome =>
               <li key={outcome.id}>
                 <hr />
-                <strong>Tournament: </strong>{outcome.game.tournament?.name}<br />
-                <br />
                 <strong>Game: </strong><br />
                 <br />
                 <div>
@@ -108,12 +106,13 @@ const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, user, set
       )}
       {!filteredOutcomes || filteredOutcomes?.length === 0 && (
         <>
+          <h2>Results</h2>
           <p> There are no game results added to selected tournament</p>
-          <br />
-          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
       <hr />
+      <br />
+      <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );
 };

@@ -77,17 +77,13 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
     navigate(`/editBet/${bet.id}`);
   };
 
-
-  const handleShowAllClick = () => {
-    setShowAllGames(true);
-  };
-
-  const handleShowFutureClick = () => {
-    setShowAllGames(false);
-  };
-
   const handleGoBackClick = () => {
     navigate(-1);
+  };
+
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setShowAllGames(value === 'all');
   };
 
 
@@ -104,22 +100,47 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
   return (
     <div>
       <hr />
-      <h2>User: {user.username}</h2>
-      {tournamentBets.length > 0 ? (
-        <><button onClick={handleShowAllClick}>Show all games</button>
-          <button onClick={handleShowFutureClick}>Show only future games</button><ul>
+
+      {sortedBets.length > 0 && (
+        <>
+          <div>
+
+            <label>
+              <input
+                type="radio"
+                value="future"
+                checked={!showAllGames}
+                onChange={handleRadioChange}
+              />
+                Show only future games
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                type="radio"
+                value="all"
+                checked={showAllGames}
+                onChange={handleRadioChange}
+              />
+                Show all games
+            </label>
+          </div>
+        </>
+      )}
+      {tournamentBets.length > 0 && (
+        <>
+          <h2>{user.username}'s bets in tournament {tournament.name}</h2>
+          <ul>
             {tournamentBets.map(bet => (
               <li key={bet.id}>
                 <hr />
-                <strong>Tournament:</strong>
-                <div>{bet.game.tournament?.name}</div><br />
-                <strong>Game:</strong>
-                <div>
-                  {formatDate(new Date(bet.game.date))}
-                  <br />
-                  {bet.game.home_team} - {bet.game.visitor_team}<br />
-                  <br />
-                </div>
+                <strong>Game:</strong><br />
+                <br />
+                {formatDate(new Date(bet.game.date))}
+                <br />
+                {bet.game.home_team} - {bet.game.visitor_team}<br />
+                <br />
                 <strong>Bet:</strong>
                 <div>{bet.goals_home} - {bet.goals_visitor}</div> <br />
                 {(user.id === loggedUser.id || loggedUser.admin) && new Date(bet.game.date) > new Date() && (
@@ -130,15 +151,18 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
                 )}
               </li>
             ))}
-          </ul></>
-      ) : (
+          </ul>
+        </>
+      )}
+      {tournamentBets.length === 0 && (
         <>
+          <h2>User's bets </h2>
           <p>There are no bets in the selected tournament for this user</p>
-          <br />
-          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
       <hr />
+      <br />
+      <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );
 };

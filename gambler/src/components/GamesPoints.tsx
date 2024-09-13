@@ -68,7 +68,7 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
       <hr />
       <strong>Tournament: </strong>{outcome.game.tournament?.name}<br />
       <br />
-      <strong>Game: </strong>
+      <strong>Game: </strong><br />
       <br />
       {formatDate(new Date(outcome.game.date))}<br />
       {outcome.game.home_team}-{outcome.game.visitor_team} <br />
@@ -99,12 +99,12 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
       </div>
       {!outcome.scores || outcome.scores?.length === 0 && (
         <>
-          <p> There are no points gained in this game </p>
-          <br />
-          <button type="button" onClick={handleGoBackClick}>Go back</button>
+          <p> There are no points received from this game </p>
         </>
       )}
       <hr />
+      <br />
+      <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );
 };

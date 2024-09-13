@@ -85,7 +85,7 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
                   {( loggedUser.admin && new Date(game.date) > new Date()) &&(
                     <>
                       <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
-                      <hr />
+
                     </>
                   )}
                 </li>
@@ -97,11 +97,11 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
       {!game.bets || game.bets?.length === 0 && (
         <>
           <p> There are no bets for this game </p>
-          <br />
-          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
       <hr />
+      <br />
+      <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );
 };

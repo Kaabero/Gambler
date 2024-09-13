@@ -21,6 +21,7 @@ import EditScoresForm from './EditScoresForm';
 import AddGameForm from './AddGameForm';
 import Logout from './Logout';
 
+
 interface MainComponentProps {
   errormessage: string;
   notificationmessage: string;
@@ -44,6 +45,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
 }) => {
   const location = useLocation();
 
+
   const padding = {
     padding: 5,
   };
@@ -64,6 +66,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
 
   const shouldShowTournamentSelection =
     user && !hideTournamentSelectionPaths.some((path) => location.pathname.startsWith(path));
+
 
   return (
     <div>

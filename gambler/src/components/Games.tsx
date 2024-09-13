@@ -16,7 +16,7 @@ interface GamesProps {
 
 const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
-  const [showAllGames, setShowAllGames] = useState(true);
+  const [showAllGames, setShowAllGames] = useState(false);
   const [tournament, setTournament] = useState<Tournament>(
     { id: '1', name: 'TestTournament' }
   );
@@ -86,16 +86,14 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
     return game.bets?.some(bet => bet.user && bet.user.username === user.username);
   };
 
-  const handleShowAllClick = () => {
-    setShowAllGames(true);
-  };
-
-  const handleShowFutureClick = () => {
-    setShowAllGames(false);
-  };
 
   const handleEditGameClick = (game: Game) => {
     navigate(`/editGame/${game.id}`);
+  };
+
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setShowAllGames(value === 'all');
   };
 
 
@@ -113,13 +111,32 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
   return (
     <div>
       <hr />
-      <h2>Games</h2>
       {filteredGames.length > 0 && (
         <>
+          <h2>Games in tournament {tournament.name}</h2>
           <div>
-
-            <button onClick={handleShowAllClick}>Show all games</button>
-            <button onClick={handleShowFutureClick}>Show only future games</button>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  value="future"
+                  checked={!showAllGames}
+                  onChange={handleRadioChange}
+                />
+                Show only future games
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  value="all"
+                  checked={showAllGames}
+                  onChange={handleRadioChange}
+                />
+                Show all games
+              </label>
+            </div>
 
             <>
               <ul>
@@ -127,6 +144,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
                   <li key={game.id}>
                     <hr />
                     <strong>{formatDate(new Date(game.date))}</strong><br />
+                    <br />
                   Home Team: {game.home_team} <br />
                   Visitor Team: {game.visitor_team} <br />
                     <br />
@@ -162,6 +180,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
       )}
       {filteredGames.length === 0 && (
         <>
+          <h2>Games </h2>
           <p> There are no games added to selected tournament </p>
         </>
       )}

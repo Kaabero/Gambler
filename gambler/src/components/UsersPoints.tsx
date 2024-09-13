@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { User, Scores, Tournament } from '../types';
+import { User, Scores, Tournament, Bet, Outcome } from '../types';
 import React from 'react';
 import { getUserById } from '../services/userService';
 import { formatDate } from '../utils/dateUtils';
@@ -8,6 +8,7 @@ import { removeScores, getAllScores } from '../services/scoreService';
 import { getTournamentById } from '../services/tournamentService';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getAllBets } from '../services/betService';
 
 
 interface UsersPointsProps {
@@ -27,6 +28,7 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
   const [tournament, setTournament] = useState<Tournament>(
     { id: '1', name: 'TestTournament' }
   );
+  const [bets, setBets] = useState<Bet[]>([]);
 
   useEffect(() => {
     if (selectedTournament) {
@@ -52,6 +54,12 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
   const filteredScores = scores.filter(
     (score) => score.user && score.user.id === user.id
   );
+
+  useEffect(() => {
+    getAllBets().then((data) => {
+      setBets(data);
+    });
+  }, []);
 
 
   const handleRemovePoints = async (id: string) => {
@@ -85,44 +93,55 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
 
   const tournamentScores = sortedScores.filter(score => score.outcome.game.tournament?.id === tournament.id);
 
+  const usersBet = (user: User, outcome: Outcome): string => {
+    const bet = bets.find(
+      (bet) => bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
+    );
+    return `${bet?.goals_home}-${bet?.goals_visitor}`;
+  };
+
   return (
     <div>
       <hr />
-      <h2>User: {user.username}</h2>
+
       {tournamentScores?.length > 0 ? (
-        <ul>
-          {tournamentScores.map(score => <li key={score.id}>
-            <hr />
-            <strong>Game: </strong><br />
-            <br />
-            <div>
+        <>
+          <h2>{user.username}'s points in tournament {tournament.name}</h2>
+          <ul>
+            {tournamentScores.map(score => <li key={score.id}>
+              <hr />
+              <strong>Game: </strong><br />
+              <br />
               {formatDate(new Date(score.outcome.game.date))}<br />
               <br />
               {score.outcome.game.home_team}-{score.outcome.game.visitor_team} <br />
               <br />
-              Result: {score.outcome.goals_home}-{score.outcome.goals_visitor} <br />
+              <strong>Result:</strong> {score.outcome.goals_home}-{score.outcome.goals_visitor} <br />
               <br />
-            </div>
-            <strong>Scores:</strong> {score.points}<br />
-            <br />
-            <br />
-            {loggedUser.admin && (
-              <>
-                <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
-                <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
-              </>
+
+              <strong>Bet:</strong> {usersBet(score.user, score.outcome)}<br />
+              <br />
+              <strong>Points:</strong> {score.points}<br />
+              <br />
+              {loggedUser.admin && (
+                <>
+                  <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
+                  <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
+                </>
+              )}
+            </li>
             )}
-          </li>
-          )}
-        </ul>
+          </ul>
+        </>
       ) : (
         <>
+          <h2>User's points</h2>
           <p>There are no points in the selected tournament for this user</p>
-          <br />
-          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
       <hr />
+      <br />
+      <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );
 };

@@ -98,40 +98,54 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
   return (
     <div>
       <h2>Add result:  </h2>
-      <p>Tournament: {game.tournament?.name}  </p>
-      {formatDate(new Date(game?.date))} <br />
-      <br />
-      <br />
-      <form onSubmit={outcomeCreation}>
+      { game && (
         <div>
-        Goals for {game.home_team}:
+          <strong> Tournament: </strong>
+          {game.tournament?.name}<br />
           <br />
-          <input
-            type="number"
-            value={homeGoals}
-            onChange={({ target }) => setHomeGoals(target.value)}
-            min="0"
-          />
-        </div>
-        <br />
-        <div>
-          Goals for {game.visitor_team}:
+          <strong> Game: </strong> <br />
           <br />
-          <input
-            type="number"
-            value={visitorGoals}
-            onChange={({ target }) => setVisitorGoals(target.value)}
-            min="0"
-          />
+          {game.home_team}-{game.visitor_team}<br />
+          {formatDate(new Date(game.date))} <br />
+          <br />
+          <form onSubmit={outcomeCreation}>
+            <div>
+              Goals for {game.home_team}:
+              <br />
+              <input
+                type="number"
+                value={homeGoals}
+                onChange={({ target }) => setHomeGoals(target.value)}
+                min="0"
+              />
+            </div>
+            <br />
+            <div>
+              Goals for {game.visitor_team}:
+              <br />
+              <input
+                type="number"
+                value={visitorGoals}
+                onChange={({ target }) => setVisitorGoals(target.value)}
+                min="0"
+              />
+            </div>
+            <br />
+            <button type="submit">Add result and points</button>
+            <button type="button" onClick={handleGoBackClick}>Cancel</button>
+            <br />
+            <br />
+          </form>
         </div>
-        <br />
-        <button type="submit">Add result and points</button>
-        <button type="button" onClick={handleGoBackClick}>Cancel</button>
-        <br />
-        <br />
-      </form>
+      )}
+      {!game && (
+        <>
+          <br />
+          <p> No game selected. </p>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
+        </>
+      )}
     </div>
   );
 };
-
 export default AddOutcomeForm;

@@ -7,6 +7,7 @@ import { editGame } from '../services/gameService';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getGameById } from '../services/gameService';
+import { formatDate } from '../utils/dateUtils';
 
 interface EditGameFormProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -81,41 +82,63 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
 
   return (
     <div>
+
       <h2>Edit the game</h2>
-      <form onSubmit={gameEdition}>
+      <hr />
+      { game && (
         <div>
+          <strong> Initial game information: </strong> <br />
+          <p> Tournament: {game.tournament?.name}</p>
+          <p> Home team: {game.home_team}</p>
+          <p> Visitor team: {game.visitor_team}</p>
+          <p> Date: {formatDate(new Date(game.date))} </p>
+          <hr />
+          <strong> Edit game information: </strong> <br />
+          <br />
+          <form onSubmit={gameEdition}>
+            <div>
           Date:
-          <br />
-          <input
-            type='datetime-local'
-            value={date}
-            onChange={({ target }) => setDate(target.value)}
-          />
+              <br />
+              <input
+                type='datetime-local'
+                value={date}
+                onChange={({ target }) => setDate(target.value)}
+              />
+            </div>
+            <br />
+            <div>
+          Home team:
+              <br />
+              <input
+                value={homeTeam}
+                onChange={({ target }) => setHomeTeam(target.value)}
+              />
+            </div>
+            <br />
+            <div>
+          Visitor team:
+              <br />
+              <input
+                value={visitorTeam}
+                onChange={({ target }) => setVisitorTeam(target.value)}
+              />
+            </div>
+            <br />
+            <button type="submit">Save</button>
+            <button type="button" onClick={handleGoBackClick}>Cancel</button>
+            <br />
+            <br />
+          </form>
         </div>
-        <br />
-        <div>
-          Home Team:
+      )}
+      {!game && (
+        <>
           <br />
-          <input
-            value={homeTeam}
-            onChange={({ target }) => setHomeTeam(target.value)}
-          />
-        </div>
-        <br />
-        <div>
-          Visitor Team:
-          <br />
-          <input
-            value={visitorTeam}
-            onChange={({ target }) => setVisitorTeam(target.value)}
-          />
-        </div>
-        <br />
-        <button type="submit">Save</button>
-        <button type="button" onClick={handleGoBackClick}>Cancel</button>
-        <br />
-        <br />
-      </form>
+          <p> No game selected for editing. </p>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
+        </>
+      )}
+      <hr />
     </div>
   );
 };

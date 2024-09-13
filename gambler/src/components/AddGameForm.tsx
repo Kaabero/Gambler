@@ -129,7 +129,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
             </div>
             <br />
             <div>
-          Home Team:
+          Home team:
               <br />
               <input
                 value={homeTeam}
@@ -138,7 +138,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
             </div>
             <br />
             <div>
-          Visitor Team:
+          Visitor team:
               <br />
               <input
                 value={visitorTeam}

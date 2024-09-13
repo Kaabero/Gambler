@@ -29,7 +29,7 @@ const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorM
   );
   const [bets, setBets] = useState<Bet[]>([]);
 
-  const [showOnlyUsersWithBets, setShowOnlyUsersWithBets] = useState(false);
+  const [showOnlyUsersWithBets, setShowOnlyUsersWithBets] = useState(true);
 
   const navigate = useNavigate();
 
@@ -108,25 +108,58 @@ const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorM
     !showOnlyUsersWithBets || getTotalBets(user) > 0
   );
 
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setShowOnlyUsersWithBets(value === 'withbets');
+  };
+
 
   return (
     <div>
       <hr />
       <h2>Users</h2>
-      <button onClick={() => setShowOnlyUsersWithBets(false)}>Show all users</button>
-      <button onClick={() => setShowOnlyUsersWithBets(true)}>Show only users with bets in selected tournament</button>
+      <div>
+        <label>
+          <input
+            type="radio"
+            value="withbets"
+            checked={showOnlyUsersWithBets}
+            onChange={handleRadioChange}
+          />
+                Show only users with bets in selected tournament
+        </label>
+      </div>
+      <div>
+        <label>
+          <input
+            type="radio"
+            value="all"
+            checked={!showOnlyUsersWithBets}
+            onChange={handleRadioChange}
+          />
+                Show all users
+        </label>
+      </div>
 
       {filteredUsers.length > 0 ? (
         <ul>
           {filteredUsers.map(user => (
             <li key={user.id}>
               <hr />
-              <strong>User: </strong>{user.username}<br />
+              <strong>Username: </strong>{user.username}<br />
               <br />
-              <strong>Total points for selected tournament: </strong> {getTotalPoints(user)}<br />
-              <br />
-              <strong>Total bets for selected tournament: </strong> {getTotalBets(user)}<br />
-              <br />
+              {tournament.id!=='1' &&(
+                <>
+                  <p>Total points for tournament {tournament.name}: {getTotalPoints(user)}</p>
+                  <p>Total bets for tournament {tournament.name}: {getTotalBets(user)}</p>
+                </>
+              )}
+              {tournament.id==='1' &&(
+                <>
+                  <p>Total points for selected tournament: {getTotalPoints(user)}</p>
+                  <p>Total bets for selected tournament: {getTotalBets(user)}</p>
+                </>
+              )}
               <button onClick={() => handleCheckBets(user)}>Check bets</button>
               <button onClick={() => handleCheckPoints(user)}>Check received points</button>
               {loggedUser.admin && !user.admin &&(
@@ -140,12 +173,13 @@ const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorM
         </ul>
       ) : (
         <>
+          <hr />
           <p> There are no users with bets in selected tournament </p>
-          <br />
-          <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
       <hr />
+      <br />
+      <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );
 };

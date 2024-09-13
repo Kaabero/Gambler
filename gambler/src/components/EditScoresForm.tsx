@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Scores } from '../types';
+import { Scores, User, Outcome, Bet } from '../types';
 import React from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getScoresById } from '../services/scoreService';
 import { editScores } from '../services/scoreService';
 import { formatDate } from '../utils/dateUtils';
+import { getAllBets } from '../services/betService';
 
 
 
@@ -20,6 +21,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
   const { scoresId } = useParams<{ scoresId: string }>();
   const [scores, setScores] = useState<Scores | null>(null);
   const [points, setPoints] = useState<string>('');
+  const [bets, setBets] = useState<Bet[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +32,12 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
       });
     }
   }, [scoresId]);
+
+  useEffect(() => {
+    getAllBets().then((data) => {
+      setBets(data);
+    });
+  }, []);
 
   const scoresEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -69,27 +77,34 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
     navigate(-1);
   };
 
-  return (
-    <><div>
+  const usersBet = (user: User, outcome: Outcome): string => {
+    const bet = bets.find(
+      (bet) => bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
+    );
+    return `${bet?.goals_home}-${bet?.goals_visitor}`;
+  };
 
-      <h2>Edit the scores</h2>
+  return (
+    <div>
+      <h2>Edit the points</h2>
+      <hr />
       {scores ? (
         <div>
-          <strong>Tournament: </strong>
-          {scores?.outcome.game.tournament?.name}<br />
-          <br />
           <strong>Game: </strong><br />
-          <br />
+          <p>Tournament: {scores.outcome.game.tournament?.name}</p>
           <div>
             {formatDate(new Date(scores.outcome.game.date))}<br />
-            {scores?.outcome.game.home_team}-{scores?.outcome.game.visitor_team} <br />
-            <br />
-            <strong>User: </strong>
-            {scores?.user.username}<br />
+            {scores.outcome.game.home_team}-{scores.outcome.game.visitor_team} <br />
+            <p>Game result: {scores.outcome.goals_home}-{scores.outcome.goals_visitor} </p>
+            <hr />
+            <p>User: {scores.user.username}</p>
+            <p>Bet: {usersBet(scores.user, scores.outcome)} </p>
+            <p>Initial points: {points} </p>
+            <hr />
             <form onSubmit={scoresEdition}>
               <br />
               <div>
-              Points:
+                <strong>Edit the points:</strong> <br />
                 <br />
                 <input
                   type="number"
@@ -97,7 +112,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
                   onChange={({ target }) => setPoints(target.value)}
                   min="0"
                 />
-              </div>
+              </div><br />
               <button type="submit">Save</button>
               <button type="button" onClick={handleGoBackClick}>Cancel</button>
               <br />
@@ -107,12 +122,14 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
         </div>
 
       ) : (
-        <><p>There are no points to edit in the selected game for this user</p><br />
+        <>
+          <p>There are no points to edit in the selected game for this user</p><br />
           <br />
-          <button type="button" onClick={handleGoBackClick}>Go back</button></>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
+        </>
       )}
-    </div><div>
-    </div></>
+      <hr />
+    </div>
   );
 };
 

@@ -29,10 +29,6 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
     }
   }, [gameId]);
 
-  const handleCancelClick = () => {
-    navigate('/');
-  };
-
 
   const betCreation = async (event: React.SyntheticEvent) => {
 
@@ -64,44 +60,60 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
     }
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
   return (
     <div>
       <h2>Add a new bet </h2>
-      <strong> Tournament: </strong> <br />
-      {game?.tournament?.name}<br />
-      <br />
-      <strong> Game: </strong> <br />
-      {game?.home_team}-{game?.visitor_team}<br />
-      {formatDate(new Date(game?.date))} <br />
-      <br />
-      <form onSubmit={betCreation}>
+      { game && (
         <div>
-          Goals for {game?.home_team}:
+          <strong> Tournament: </strong>
+          {game.tournament?.name}<br />
           <br />
-          <input
-            type="number"
-            value={homeGoals}
-            onChange={({ target }) => setHomeGoals(target.value)}
-            min="0"
-          />
-        </div>
-        <br />
-        <div>
-          Goals for {game?.visitor_team}:
+          <strong> Game: </strong> <br />
           <br />
-          <input
-            type="number"
-            value={visitorGoals}
-            onChange={({ target }) => setVisitorGoals(target.value)}
-            min="0"
-          />
+          {game.home_team}-{game.visitor_team}<br />
+          {formatDate(new Date(game.date))} <br />
+          <br />
+          <form onSubmit={betCreation}>
+            <div>
+          Goals for {game.home_team}:
+              <br />
+              <input
+                type="number"
+                value={homeGoals}
+                onChange={({ target }) => setHomeGoals(target.value)}
+                min="0"
+              />
+            </div>
+            <br />
+            <div>
+          Goals for {game.visitor_team}:
+              <br />
+              <input
+                type="number"
+                value={visitorGoals}
+                onChange={({ target }) => setVisitorGoals(target.value)}
+                min="0"
+              />
+            </div>
+            <br />
+            <button type="submit">Add bet</button>
+            <button type="button" onClick={handleGoBackClick}>Cancel</button>
+            <br />
+            <br />
+          </form>
         </div>
-        <br />
-        <button type="submit">Add bet</button>
-        <button type="button" onClick={handleCancelClick}>Cancel</button>
-        <br />
-        <br />
-      </form>
+      )}
+      {!game && (
+        <>
+          <br />
+          <p> No game selected for betting. </p>
+          <button type="button" onClick={handleGoBackClick}>Go back</button>
+        </>
+      )}
     </div>
   );
 };

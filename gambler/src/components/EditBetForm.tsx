@@ -74,49 +74,60 @@ const EditBetForm: React.FC<EditBetFormProps> = ({ setErrorMessage, setNotificat
 
   return (
     <div>
-      { bet && (
+      <h2>Edit the bet</h2>
+      <hr />
+      {bet ? (
         <div>
-          <h2>Edit the bet</h2>
-          <p>Tournament: {bet.game.tournament?.name}  </p>
-          {formatDate(new Date(bet.game.date))} <br />
-          <form onSubmit={betEdition}>
-            <br />
-            <div>
-         Goals for {bet.game.home_team}:
+          <strong>Game: </strong><br />
+          <p>Tournament: {bet.game.tournament?.name}</p>
+          <div>
+            {formatDate(new Date(bet.game.date))}<br />
+            {bet.game.home_team}-{bet.game.visitor_team} <br />
+            <hr />
+            <p>Initial bet: {bet.goals_home}-{bet.goals_visitor} </p>
+            <hr />
+
+
+            <form onSubmit={betEdition}>
               <br />
-              <input
-                type="number"
-                value={homeGoals}
-                onChange={({ target }) => setHomeGoals(target.value)}
-                min="0"
-              />
-            </div>
-            <br />
-            <div>
-            Goals for {bet.game.visitor_team}:
+              <div>
+                Goals for {bet.game.home_team}:
+                <br />
+                <input
+                  type="number"
+                  value={homeGoals}
+                  onChange={({ target }) => setHomeGoals(target.value)}
+                  min="0"
+                />
+              </div>
               <br />
-              <input
-                type="number"
-                value={visitorGoals}
-                onChange={({ target }) => setVisitorGoals(target.value)}
-                min="0"
-              />
-            </div>
-            <br />
-            <button type="submit">Save</button>
-            <button type="button" onClick={handleGoBackClick}>Cancel</button>
-            <br />
-            <br />
-          </form>
+              <div>
+                 Goals for {bet.game.visitor_team}:
+                <br />
+                <input
+                  type="number"
+                  value={visitorGoals}
+                  onChange={({ target }) => setVisitorGoals(target.value)}
+                  min="0"
+                />
+              </div>
+              <br />
+              <button type="submit">Save</button>
+              <button type="button" onClick={handleGoBackClick}>Cancel</button>
+              <br />
+              <br />
+            </form>
+          </div>
         </div>
-      )}
-      {!bet && (
+
+      ) : (
         <>
-          <br />
           <p> No bet selected for edition. </p>
+          <br />
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
+      <hr />
     </div>
   );
 };
