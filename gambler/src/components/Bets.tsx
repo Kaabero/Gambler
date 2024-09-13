@@ -17,7 +17,7 @@ interface BetsProps {
 
 const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
-  const [showAllGames, setShowAllGames] = useState(true);
+  const [showAllGames, setShowAllGames] = useState(false);
   const [tournament, setTournament] = useState<Tournament>(
     { id: '1', name: 'TestTournament' }
   );
@@ -89,7 +89,7 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
   return (
     <div>
       <hr />
-      <h2>Bets</h2>
+      <h2>Bets for tournament {tournament.name}</h2>
       {gamesWithBets.length > 0 && (
         <>
           <button onClick={handleShowAllClick}>Show all games</button>

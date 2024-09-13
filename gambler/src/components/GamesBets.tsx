@@ -65,34 +65,35 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
       <hr />
       <strong>Tournament: </strong>{game.tournament?.name}<br />
       <br />
-      <div>
-      </div>
       <strong>Game: </strong><br />
       <br />
+      {formatDate(new Date(game.date))}<br />
+      {game.home_team}-{game.visitor_team} <br />
+      <br />
+      <h2>Bets: </h2>
       <div>
-        {formatDate(new Date(game.date))}<br />
-        {game.home_team}-{game.visitor_team} <br />
+        {game.bets && game.bets?.length > 0 && (
+          <>
+            <ul>
+              {bets.map(bet =>
+                <li key={bet.id}>
+                  <hr />
+                  <strong>User:</strong> {bet.user.username}<br />
+                  <br />
+                  <strong>Bet: </strong> {bet.goals_home}-{bet.goals_visitor}<br />
+                  <br />
+                  {( loggedUser.admin && new Date(game.date) > new Date()) &&(
+                    <>
+                      <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
+                      <hr />
+                    </>
+                  )}
+                </li>
+              )}
+            </ul>
+          </>
+        )}
       </div>
-      {game.bets && game.bets?.length > 0 && (
-        <>
-          <div>
-            {bets.map(bet =>
-              <p key={bet.id}>
-                <strong>User:</strong> {bet.user.username}<br />
-                <br />
-                <strong>Bet: </strong> {bet.goals_home}-{bet.goals_visitor}<br />
-                <br />
-                {( loggedUser.admin && new Date(game.date) > new Date()) &&(
-                  <>
-                    <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
-                    <hr />
-                  </>
-                )}
-              </p>
-            )}
-          </div>
-        </>
-      )}
       {!game.bets || game.bets?.length === 0 && (
         <>
           <p> There are no bets for this game </p>
