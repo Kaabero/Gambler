@@ -21,6 +21,7 @@ import EditScoresForm from './EditScoresForm';
 import AddGameForm from './AddGameForm';
 import Logout from './Logout';
 import Home from './WelcomePage';
+import AdminTools from './AdminTools';
 
 
 interface MainComponentProps {
@@ -95,6 +96,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
       )}
       <Routes>
         <Route path="/" element={user ? <Home /> : <Navigate replace to="/login" />} />
+        <Route path="/adminTools" element={(user && user.admin) ? <AdminTools loggedUser={user} /> : <Navigate replace to="/" />} />
         <Route path="/bets" element={user ? <Bets loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/points" element={user ? <Points loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/results" element={user ? <GameResults user={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
@@ -117,10 +119,9 @@ const MainComponent: React.FC<MainComponentProps> = ({
       <div>
         {user ? (
           <>
-            <br />
+            <hr />
             <Link style={padding} to="/">Home</Link>
             <Link style={padding} to="/games">Games</Link>
-            {user.admin && <Link style={padding} to="/addGame">Add game</Link>}
             <Link style={padding} to="/bets">All bets</Link>
             <Link style={padding} to={`/bets/${user.id}`}>
               Check and manage your own bets
@@ -132,8 +133,9 @@ const MainComponent: React.FC<MainComponentProps> = ({
             <Link style={padding} to="/users">Users and points</Link>
             <Link style={padding} to="/points">Received points</Link>
             <br />
+            <hr />
             <p>
-              {user.username} logged in
+              {user.username} logged in {user.admin && <Link style={padding} to="/adminTools">Admin tools</Link>}
               <br />
               <br />
               <Logout

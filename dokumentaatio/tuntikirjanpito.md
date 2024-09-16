@@ -30,4 +30,5 @@
 | 6.9.2024. | 2   | pisteiden editoinnin regaktorointia, pelin lisäykseen oletusturnaus |
 | 12.9.2024. | 5   | pelin lisäykseen oletusturnaus kuntoon, pieniä korjauksia, sivujen ulkoasua |
 | 13.9.2024. | 5   | refaktorointia ja sivujen ulkoasua |
-| yht        | 110 |            | 
+| 13.9.2024. | 2   | homepage ja admintools -sivut |
+| yht        | 112 |            | 
