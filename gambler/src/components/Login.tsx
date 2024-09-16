@@ -49,6 +49,21 @@ const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessa
   };
   return (
     <div>
+      <div>
+        <hr />
+        <h2>Welcome to the Gambler app!</h2>
+
+        <div>
+          You can now compete with your betting group for the title of the best score predictor! <br />
+          <br />
+          Log in to select your preferred tournament from the menu, view the tournament's games, and add your predictions. <br />
+          <br />
+          If you haven't registered yet, create an account to get started! <br />
+          <br />
+          <hr />
+
+        </div>
+      </div>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>

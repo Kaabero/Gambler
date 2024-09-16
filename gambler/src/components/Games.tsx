@@ -96,6 +96,10 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
     setShowAllGames(value === 'all');
   };
 
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
 
 
   const filteredGames = games.filter(
@@ -185,6 +189,8 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
         </>
       )}
       <hr />
+      <br />
+      <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );
 };

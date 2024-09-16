@@ -11,11 +11,11 @@ import { getTournamentById } from '../services/tournamentService';
 interface BetsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  user: User,
+  loggedUser: User,
   selectedTournament: string
 }
 
-const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
+const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(false);
   const [tournament, setTournament] = useState<Tournament>(
@@ -135,7 +135,7 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, user, setErrorMessage, 
                           {bet.goals_home} - {bet.goals_visitor}
                           <br />
                           <br />
-                          {user.admin && new Date(game.date) > new Date() && (
+                          {loggedUser.admin && new Date(game.date) > new Date() && (
                             <>
                               <button onClick={() => handleRemoveBetClick(bet.id)}> Delete bet </button>
                               <button onClick={() => handleEditBetClick(bet)}>Edit bet</button><br />
