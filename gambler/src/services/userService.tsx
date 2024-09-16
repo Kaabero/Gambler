@@ -34,3 +34,12 @@ export const removeUser = (id: string) => {
   return request.then(response => response.data);
 };
 
+export const editUser = (id: string, newObject: User) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const request = axios.put(`${baseUrl}/${id}`, newObject, config);
+  return request.then(response => response.data);
+};
+

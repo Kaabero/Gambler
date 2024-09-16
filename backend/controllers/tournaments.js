@@ -40,7 +40,7 @@ tournamentsRouter.get('/:id', async (request, response) => {
 
 
 tournamentsRouter.post('/', middleware.userExtractor, async (request, response) => {
-  const { name } = request.body
+  const body = request.body
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
@@ -53,16 +53,40 @@ tournamentsRouter.post('/', middleware.userExtractor, async (request, response) 
     return response.status(400).json({ error: 'This operation is for admins only.' })
   }
 
-  const existingTournament = await Tournament.findOne({ name })
-
-  if (existingTournament) {
-    return response.status(400).json({ error: `Tournament ${name} already added` })
-  }
-  const newTournament = new Tournament({
-    name,
+  const existingTournament = await Tournament.findOne({
+    name: body.name,
+    from_date: body.from_date,
+    to_date: body.to_date,
   })
 
-  const savedTournament = await newTournament.save()
+  if (existingTournament) {
+    return response.status(400).json({ error: `Tournament ${body.name} already added` })
+  }
+
+  if (body.to_date === body.from_date) {
+    return response.status(400).json({ error: 'Check the dates' })
+  }
+
+  const from = new Date(body.from_date)
+  const to = new Date(body.to_date)
+  const now = new Date()
+
+  if (from < now) {
+    return response.status(400).json({ error: 'Set a future starting date' })
+  }
+
+  if (from === to || from > to) {
+    return response.status(400).json({ error: 'Check the dates' })
+  }
+
+
+  const tournament = new Tournament({
+    name: body.name,
+    from_date: body.from_date,
+    to_date: body.to_date
+  })
+
+  const savedTournament = await tournament.save()
 
   response.status(201).json(savedTournament)
 })
@@ -97,11 +121,11 @@ tournamentsRouter.put('/:id', middleware.userExtractor, async (request, response
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
   }
-  const { name } = request.body
+  const { name, from_date, to_date } = request.body
 
   const updatedTournament = await Tournament.findByIdAndUpdate(
     request.params.id,
-    { name },
+    { name, from_date, to_date },
     { new: true, runValidators: true, context: 'query' }
   )
 

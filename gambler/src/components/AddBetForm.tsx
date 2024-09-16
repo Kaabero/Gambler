@@ -48,7 +48,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificatio
         setTimeout(() => {
           setNotificationMessage('');
         }, 3000);
-        navigate('/');
+        navigate('/games');
       } catch (error) {
         if (error instanceof AxiosError) {
           setErrorMessage(`${error.response?.data.error}`);

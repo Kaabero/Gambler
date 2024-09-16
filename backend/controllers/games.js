@@ -78,12 +78,18 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
     return response.status(400).json({ error: 'Home team and visitor team must be different' })
   }
 
-
+  console.log('tournament', tournament)
   const date = new Date(body.date)
   const now = new Date()
+  const tournamentFrom = new Date(tournament.from_date)
+  const tournamentTo = new Date(tournament.to_date)
 
   if (date < now) {
     return response.status(400).json({ error: 'Set a future date' })
+  }
+
+  if ( tournamentFrom > date || tournamentTo < date) {
+    return response.status(400).json({ error: 'Set a date inside tournament time period' })
   }
 
   const existingGame = await Game.findOne({

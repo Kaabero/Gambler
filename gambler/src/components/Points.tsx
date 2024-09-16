@@ -19,9 +19,10 @@ interface PointsProps {
 
 const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
   const navigate = useNavigate();
+  const [showAdminTools, setShowAdminTools] = useState(false);
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament' }
+    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
   );
   const [bets, setBets] = useState<Bet[]>([]);
 
@@ -90,12 +91,44 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
     return `${bet?.goals_home}-${bet?.goals_visitor}`;
   };
 
+  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setShowAdminTools(value === 'showadmin');
+  };
+
 
   return (
     <div>
       <hr />
       {filteredOutcomes.length > 0 && (
         <>
+          {loggedUser.admin && (
+            <>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="hideadmin"
+                    checked={!showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+              Hide admin tools
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="showadmin"
+                    checked={showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+              Show admin tools
+                </label>
+              </div>
+              <hr />
+            </>
+          )}
           <h2>Received points in tournament {tournament.name}</h2>
           <ul>
             {filteredOutcomes.map((outcome) => (
@@ -120,7 +153,7 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
                       <br />
                       <strong>Users bet: </strong> {usersBet(score.user, outcome)} <br />
                       <br />
-                      { loggedUser.admin && (
+                      { loggedUser.admin && showAdminTools && (
                         <>
                           <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
                           <button onClick={() => handleEditPointsClick(score)}>Edit points</button><br />

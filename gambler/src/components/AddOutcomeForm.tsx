@@ -81,7 +81,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNot
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-      navigate('/');
+      navigate('/games');
 
 
     } catch (error) {

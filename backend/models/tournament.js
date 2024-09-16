@@ -12,7 +12,15 @@ const tournamentSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Game'
     }
-  ]
+  ],
+  from_date: {
+    type: String,
+    required: true
+  },
+  to_date: {
+    type: String,
+    required: true
+  },
 })
 
 tournamentSchema.set('toJSON', {

@@ -4,21 +4,17 @@ import { User, Scores, Tournament, Bet, Outcome } from '../types';
 import React from 'react';
 import { getUserById } from '../services/userService';
 import { formatDate } from '../utils/dateUtils';
-import { removeScores, getAllScores } from '../services/scoreService';
+import { getAllScores } from '../services/scoreService';
 import { getTournamentById } from '../services/tournamentService';
-import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getAllBets } from '../services/betService';
 
 
 interface UsersPointsProps {
-  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-  setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  loggedUser: User,
   selectedTournament: string;
 }
 
-const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
+const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const [user, setUser] = useState<User>(
@@ -26,7 +22,7 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
   );
   const [scores, setScores] = useState<Scores[]>([]);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament' }
+    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
   );
   const [bets, setBets] = useState<Bet[]>([]);
 
@@ -62,27 +58,7 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
   }, []);
 
 
-  const handleRemovePoints = async (id: string) => {
-    try {
-      await removeScores(id);
-      setScores(scores.filter(score => score.id !== id));
-      setNotificationMessage('Points deleted successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 3000);
-      }
-    }
-  };
 
-  const handleEditPointsClick = (scores: Scores) => {
-    navigate(`/editScores/${scores.id}`);
-  };
 
   const handleGoBackClick = () => {
     navigate(-1);
@@ -123,12 +99,6 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament, loggedUs
               <br />
               <strong>Points:</strong> {score.points}<br />
               <br />
-              {loggedUser.admin && (
-                <>
-                  <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
-                  <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
-                </>
-              )}
             </li>
             )}
           </ul>

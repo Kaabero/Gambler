@@ -10,18 +10,19 @@ import { getTournamentById } from '../services/tournamentService';
 interface GameResultsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  user: User,
+  loggedUser: User,
   selectedTournament: string
 }
 
-const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
+const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
   const navigate = useNavigate();
+  const [showAdminTools, setShowAdminTools] = useState(false);
   const [outcomes, setOutcomes] = useState<Outcome[]>([
     { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
   ]);
 
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament' }
+    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
   );
 
   useEffect(() => {
@@ -67,6 +68,11 @@ const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, user, set
     navigate(-1);
   };
 
+  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setShowAdminTools(value === 'showadmin');
+  };
+
   const sortedOutcomes = [...outcomes].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
   const filteredOutcomes = sortedOutcomes.filter(
@@ -78,6 +84,33 @@ const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, user, set
       <hr />
       {filteredOutcomes && filteredOutcomes?.length > 0 && (
         <>
+          {loggedUser.admin && (
+            <>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="hideadmin"
+                    checked={!showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+              Hide admin tools
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="showadmin"
+                    checked={showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+              Show admin tools
+                </label>
+              </div>
+              <hr />
+            </>
+          )}
           <h2>Results in tournament {tournament.name}</h2>
           <ul>
             {filteredOutcomes.map(outcome =>
@@ -94,7 +127,7 @@ const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, user, set
                 {outcome.goals_home} - {outcome.goals_visitor} <br />
                 <br />
                 <button onClick={() => handleCheckPoints(outcome)}>Check received points</button>
-                {user.admin &&(
+                {loggedUser.admin && showAdminTools && (
                   <>
                     <button onClick={() => handleRemoveResultClick(outcome.id)}>Delete the result and related scores</button>
                   </>

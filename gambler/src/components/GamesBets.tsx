@@ -1,21 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Game, Bet, User } from '../types';
+import { Game, Bet } from '../types';
 import React from 'react';
 import { getGameById } from '../services/gameService';
 import { formatDate } from '../utils/dateUtils';
-import { removeBet } from '../services/betService';
-import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-interface GamesBetProps {
-  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-  setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  loggedUser: User
-}
 
-const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setNotificationMessage }) => {
+
+const GamesBets = () => {
   const navigate = useNavigate();
   const { gameId } = useParams();
   const [game, setGame] = useState<Game>(
@@ -36,24 +30,6 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
     }
   }, [game]);
 
-
-  const handleRemoveBet = async (id: string) => {
-    try {
-      await removeBet(id);
-      setBets(bets.filter(bet => bet.id !== id));
-      setNotificationMessage('Bet deleted successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 3000);
-      }
-    }
-  };
 
   const handleGoBackClick = () => {
     navigate(-1);
@@ -82,12 +58,6 @@ const GamesBets: React.FC<GamesBetProps> = ( { loggedUser, setErrorMessage, setN
                   <br />
                   <strong>Bet: </strong> {bet.goals_home}-{bet.goals_visitor}<br />
                   <br />
-                  {( loggedUser.admin && new Date(game.date) > new Date()) &&(
-                    <>
-                      <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
-
-                    </>
-                  )}
                 </li>
               )}
             </ul>

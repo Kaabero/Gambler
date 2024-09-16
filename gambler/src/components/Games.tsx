@@ -8,17 +8,18 @@ import { AxiosError } from 'axios';
 import { formatDate } from '../utils/dateUtils';
 
 interface GamesProps {
-  user: User;
+  loggedUser: User;
   selectedTournament: string;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage, setNotificationMessage }) => {
+const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(false);
+  const [showAdminTools, setShowAdminTools] = useState(false);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament' }
+    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
   );
   const navigate = useNavigate();
 
@@ -83,7 +84,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
   };
 
   const userHasBet = (game: Game) => {
-    return game.bets?.some(bet => bet.user && bet.user.username === user.username);
+    return game.bets?.some(bet => bet.user && bet.user.username === loggedUser.username);
   };
 
 
@@ -91,9 +92,14 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
     navigate(`/editGame/${game.id}`);
   };
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeGames = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setShowAllGames(value === 'all');
+  };
+
+  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setShowAdminTools(value === 'showadmin');
   };
 
   const handleGoBackClick = () => {
@@ -117,6 +123,33 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
       <hr />
       {filteredGames.length > 0 && (
         <>
+          {loggedUser.admin && (
+            <>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="hideadmin"
+                    checked={!showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+                Hide admin tools
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="showadmin"
+                    checked={showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+                Show admin tools
+                </label>
+              </div>
+              <hr />
+            </>
+          )}
           <h2>Games in tournament {tournament.name}</h2>
           <div>
             <div>
@@ -125,7 +158,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
                   type="radio"
                   value="future"
                   checked={!showAllGames}
-                  onChange={handleRadioChange}
+                  onChange={handleRadioChangeGames}
                 />
                 Show only future games
               </label>
@@ -136,7 +169,7 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
                   type="radio"
                   value="all"
                   checked={showAllGames}
-                  onChange={handleRadioChange}
+                  onChange={handleRadioChangeGames}
                 />
                 Show all games
               </label>
@@ -153,23 +186,23 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, user, setErrorMessage
                   Visitor Team: {game.visitor_team} <br />
                     <br />
                     <button onClick={() => handleCheckBetsClick(game)}>Check bets</button>
-                    {user && !game.outcome && !userHasBet(game) && (
+                    {loggedUser && !game.outcome && !userHasBet(game) && (
                       <>
                         <button onClick={() => handleAddBetClick(game)}>Add bet</button>
                       </>
                     )}
-                    {user.admin &&(
+                    {loggedUser.admin && showAdminTools && (
                       <>
                         <button onClick={() => handleRemoveGame(game.id)}>Delete game</button>
                         <button onClick={() => handleEditGameClick(game)}>Edit game</button>
                       </>
                     )}
-                    {user.admin && !game.outcome && new Date(game.date) < new Date() &&(
+                    {loggedUser.admin && !game.outcome && new Date(game.date) < new Date() && showAdminTools &&(
                       <>
                         <button onClick={() => handleAddResultClick(game)}>Add result and points</button>
                       </>
                     )}
-                    {user && game.outcome && (
+                    {loggedUser && game.outcome &&(
                       <>
                         <button onClick={() => handleCheckResultClick(game)}>Check result</button> <br />
                       </>

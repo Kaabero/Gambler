@@ -19,8 +19,9 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(false);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament' }
+    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
   );
+  const [showAdminTools, setShowAdminTools] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,6 +71,11 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
     }
   };
 
+  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setShowAdminTools(value === 'showadmin');
+  };
+
 
   const handleEditBetClick = (bet: Bet) => {
     navigate(`/editBet/${bet.id}`);
@@ -90,6 +96,33 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
 
       {gamesWithBets.length > 0 && (
         <>
+          {loggedUser.admin && (
+            <>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="hideadmin"
+                    checked={!showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+                Hide admin tools
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="showadmin"
+                    checked={showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+                Show admin tools
+                </label>
+              </div>
+              <hr />
+            </>
+          )}
           <h2>Bets for tournament {tournament.name}</h2>
           <div>
             <div>
@@ -135,7 +168,7 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
                           {bet.goals_home} - {bet.goals_visitor}
                           <br />
                           <br />
-                          {loggedUser.admin && new Date(game.date) > new Date() && (
+                          {loggedUser.admin && new Date(game.date) > new Date() && showAdminTools && (
                             <>
                               <button onClick={() => handleRemoveBetClick(bet.id)}> Delete bet </button>
                               <button onClick={() => handleEditBetClick(bet)}>Edit bet</button><br />

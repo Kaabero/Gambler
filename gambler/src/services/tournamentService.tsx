@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Tournament, NewTournament } from '../types';
+import { Tournament } from '../types';
 import { token } from '../utils/setToken';
 
 const baseUrl = '/api/tournaments';
@@ -18,7 +18,7 @@ export const getTournamentById = (id: string) => {
 
 };
 
-export const createTournament = async (newObject: NewTournament) => {
+export const createTournament = async (newObject: Tournament) => {
   const config = {
     headers: { Authorization: token },
   };

@@ -108,5 +108,28 @@ usersRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   response.status(204).end()
 })
 
+usersRouter.put('/:id', middleware.userExtractor, async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(400).end()
+  }
+
+  const user = request.user
+
+  if (!user.admin) {
+    return response.status(400).json({ error: 'This operation is for admins only.' })
+  }
+  const { admin } = request.body
+
+  const updatedUser = await User.findByIdAndUpdate(
+    request.params.id,
+    { admin },
+    { new: true, runValidators: true, context: 'query' }
+  )
+
+  response.status(200).json(updatedUser)
+
+})
+
 
 module.exports = usersRouter

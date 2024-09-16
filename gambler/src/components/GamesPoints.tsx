@@ -1,21 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Outcome, User, Scores } from '../types';
+import { Outcome, Scores } from '../types';
 import React from 'react';
 import { getOutcomeById } from '../services/outcomeService';
 import { formatDate } from '../utils/dateUtils';
-import { removeScores } from '../services/scoreService';
-import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-interface GamesPointsProps {
-  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-  setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
-  loggedUser: User
-}
 
-const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage, setNotificationMessage }) => {
+const GamesPoints = () => {
   const navigate = useNavigate();
   const { outcomeId } = useParams();
   const [outcome, setOutcome] = useState<Outcome>(
@@ -37,27 +30,6 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
   }, [outcome]);
 
 
-  const handleRemovePoints = async (id: string) => {
-    try {
-      await removeScores(id);
-      setScores(scores.filter(score => score.id !== id));
-      setNotificationMessage('Scores deleted successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 3000);
-      }
-    }
-  };
-
-  const handleEditPointsClick = (scores: Scores) => {
-    navigate(`/editScores/${scores.id}`);
-  };
 
   const handleGoBackClick = () => {
     navigate(-1);
@@ -85,12 +57,6 @@ const GamesPoints: React.FC<GamesPointsProps> = ( { loggedUser, setErrorMessage,
                   <br />
                   <strong>Points: </strong> {score.points}<br />
                   <br />
-                  { loggedUser.admin && (
-                    <>
-                      <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
-                      <button onClick={() => handleEditPointsClick(score)}>Edit points</button>
-                    </>
-                  )}
                 </li>
               )}
             </ul>

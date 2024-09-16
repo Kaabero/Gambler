@@ -25,7 +25,7 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
     { id: '1', username: 'TestUser', password: 'Password', admin: false }
   );
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament' }
+    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
   );
   const [bets, setBets] = useState<Bet[]>([]);
   const [showAllGames, setShowAllGames] = useState(true);
@@ -143,7 +143,7 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
                 <br />
                 <strong>Bet:</strong>
                 <div>{bet.goals_home} - {bet.goals_visitor}</div> <br />
-                {(user.id === loggedUser.id || loggedUser.admin) && new Date(bet.game.date) > new Date() && (
+                {(user.id === loggedUser.id) && new Date(bet.game.date) > new Date() && (
                   <>
                     <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
                     <button onClick={() => handleEditBetClick(bet)}>Edit bet</button>

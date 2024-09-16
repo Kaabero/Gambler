@@ -63,7 +63,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-      navigate('/');
+      navigate('/games');
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(`${error.response?.data.error}`);
