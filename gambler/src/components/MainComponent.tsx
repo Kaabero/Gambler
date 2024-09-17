@@ -25,6 +25,7 @@ import AdminTools from './AdminTools';
 import AddTournamentForm from './AddTournamentForm';
 import Tournaments from './Tournaments';
 import EditTournamentForm from './EditTournamentForm';
+import { formatSimpleDate } from '../utils/dateUtils';
 
 
 interface MainComponentProps {
@@ -96,7 +97,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
             </option>
             {tournaments.map((tournament) => (
               <option key={tournament.id} value={tournament.id}>
-                {tournament.name}
+                {tournament.name} {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
               </option>
             ))}
           </select>

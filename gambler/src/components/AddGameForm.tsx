@@ -6,6 +6,7 @@ import { getAllTournaments } from '../services/tournamentService';
 import React from 'react';
 import { AxiosError } from 'axios';
 import { getTournamentById } from '../services/tournamentService';
+import { formatSimpleDate } from '../utils/dateUtils';
 
 interface AddGameFormProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -106,14 +107,14 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
               )}
               {defaultTournament && (
                 <option key={defaultTournament.id} value={defaultTournament.id}>
-                  {defaultTournament.name}
+                  {defaultTournament.name} {formatSimpleDate(new Date(defaultTournament.from_date))}-{formatSimpleDate(new Date(defaultTournament.to_date))}
                 </option>
               )}
               {tournaments
                 .filter(tournament => tournament.id !== defaultTournament?.id)
                 .map((tournament) => (
                   <option key={tournament.id} value={tournament.id}>
-                    {tournament.name}
+                    {tournament.name} {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
                   </option>
                 ))}
             </select>
