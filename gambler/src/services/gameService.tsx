@@ -36,7 +36,7 @@ export const removeGame = (id: string) => {
 };
 
 
-export const editGame = (id: string, newObject: Game) => {
+export const editGame = (id: string, newObject: NewGame) => {
   const config = {
     headers: { Authorization: token },
   };

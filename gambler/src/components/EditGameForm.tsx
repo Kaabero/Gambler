@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Game } from '../types';
+import { Game, NewGame, Tournament } from '../types';
 import React from 'react';
 import { formatDateForInput } from '../utils/dateUtils';
 import { editGame } from '../services/gameService';
@@ -8,6 +8,8 @@ import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getGameById } from '../services/gameService';
 import { formatDate } from '../utils/dateUtils';
+import { getAllTournaments } from '../services/tournamentService';
+import { formatSimpleDate } from '../utils/dateUtils';
 
 interface EditGameFormProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -15,11 +17,13 @@ interface EditGameFormProps {
 }
 
 const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const { gameId } = useParams<{ gameId: string }>();
   const [game, setGame] = useState<Game | null>(null);
   const [date, setDate] = useState<string>('');
   const [visitorTeam, setVisitorTeam] = useState<string>('');
   const [homeTeam, setHomeTeam] = useState<string>('');
+  const [newTournament, setNewTournament] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +37,12 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
     }
   }, [gameId]);
 
+  useEffect(() => {
+    getAllTournaments().then(data => {
+      setTournaments(data);
+    });
+  }, []);
+
 
   const gameEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -45,11 +55,12 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
       return;
     }
     if (game) {
-      const updatedGame: Game = {
+      const updatedGame: NewGame = {
         ...game,
         date: new Date(date),
         home_team: homeTeam || game.home_team,
         visitor_team: visitorTeam || game.visitor_team,
+        tournament: newTournament || game.tournament?.id,
       };
 
       try {
@@ -85,7 +96,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
 
       <h2>Edit the game</h2>
       <hr />
-      { game && (
+      { game && game.tournament && (
         <div>
           <strong> Initial game information: </strong> <br />
           <p> Tournament: {game.tournament?.name}</p>
@@ -96,6 +107,25 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
           <strong> Edit game information: </strong> <br />
           <br />
           <form onSubmit={gameEdition}>
+            <p>Change the tournament</p>
+            <select
+              id="tournament-select"
+              value={newTournament}
+              onChange={({ target }) => setNewTournament(target.value)}
+              required
+            >
+
+              <option key={game.tournament.id} value={game.tournament.id}>
+                {game.tournament.name}: {formatSimpleDate(new Date(game.tournament.from_date))}-{formatSimpleDate(new Date(game.tournament.to_date))}
+              </option>
+              {tournaments
+                .filter(tournament => tournament.id !== game.tournament?.id)
+                .map((tournament) => (
+                  <option key={tournament.id} value={tournament.id}>
+                    {tournament.name}: {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
+                  </option>
+                ))}
+            </select>
             <div>
           Date:
               <br />

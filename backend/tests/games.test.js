@@ -248,6 +248,7 @@ describe('deletion of a game', () => {
 describe('modification of a game', () => {
   beforeEach(async () => {
     await Game.deleteMany({})
+    await Tournament.deleteMany({})
     await Game.insertMany(helper.initialGames)
   })
 
@@ -255,32 +256,50 @@ describe('modification of a game', () => {
     await api
       .post('/api/users')
       .send(testAdmin)
-    const response = await api
+    const loginresponse = await api
       .post('/api/login')
       .send(testAdmin)
 
+    token = loginresponse.body.token
 
-    token = response.body.token
+    const tournamentresponse = await api
+      .post('/api/tournaments')
+      .set('Authorization', `Bearer ${token}`)
+      .send(testTournament)
 
-    const gamesAtStart = await helper.gamesInDb()
+    const newGame = {
+      home_team: 'valid',
+      visitor_team: 'data',
+      date: '1.1.2025',
+      tournament: tournamentresponse.body.id
+    }
 
-    const gameToModify = gamesAtStart[0]
+    const newgameresponse = await api
+      .post('/api/games')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newGame)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
 
     const modifiedGame = {
       visitor_team: 'modified visitor_team',
+      tournament: tournamentresponse.body.id
     }
 
     const resultGame = await api
-      .put(`/api/games/${gameToModify.id}`)
+      .put(`/api/games/${newgameresponse.body.id}`)
       .send(modifiedGame)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    assert.deepStrictEqual(resultGame.body.id, gameToModify.id)
-    assert.deepStrictEqual(resultGame.body.home_team, gameToModify.home_team)
-    assert.deepStrictEqual(resultGame.body.date, gameToModify.date)
-    assert.notEqual(resultGame.body.visitor_team, gameToModify.visitor_team)
+
+
+    assert.deepStrictEqual(resultGame.body.id, newgameresponse.body.id)
+    assert.deepStrictEqual(resultGame.body.home_team, newgameresponse.body.home_team)
+    assert.deepStrictEqual(resultGame.body.date, newgameresponse.body.date)
+    assert.notEqual(resultGame.body.visitor_team, newgameresponse.body.visitor_team)
 
   })
 

@@ -10,7 +10,7 @@ gamesRouter.get('/', async (request, response) => {
   const games = await Game.find({})
     .populate({
       path: 'tournament',
-      select: 'name',
+      select: 'name from_date to_date',
     })
     .populate({
       path: 'bets',
@@ -32,7 +32,7 @@ gamesRouter.get('/:id', async (request, response) => {
   const game = await Game.findById(request.params.id)
     .populate({
       path: 'tournament',
-      select: 'name',
+      select: 'name from_date to_date',
     })
     .populate({
       path: 'outcome',
@@ -146,15 +146,35 @@ gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   if (!user.admin) {
     return response.status(400).json({ error: 'This operation is for admins only.' })
   }
-  const { home_team, visitor_team, date } = request.body
+  const { home_team, visitor_team, date, tournament } = request.body
+
+  const newTournament = await Tournament.findById(tournament)
+  const initialGame = await Game.findById(request.params.id)
+  const oldTournament = await Tournament.findById(initialGame.tournament)
 
   const updatedGame = await Game.findByIdAndUpdate(
     request.params.id,
-    { home_team, visitor_team, date },
+    { home_team, visitor_team, date, tournament },
     { new: true, runValidators: true, context: 'query' }
   )
 
-  response.status(200).json(updatedGame)
+  if (newTournament._id.equals(initialGame.tournament)) {
+    response.status(200).json(updatedGame)
+
+  } else {
+    await Tournament.findByIdAndUpdate(
+      oldTournament.id,
+      { $pull: { games: initialGame._id } }
+    )
+
+    await Tournament.findByIdAndUpdate(
+      newTournament.id,
+      { $push: { games: initialGame._id } }
+    )
+
+    response.status(200).json(updatedGame)
+
+  }
 
 })
 
