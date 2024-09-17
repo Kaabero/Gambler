@@ -37,6 +37,7 @@ interface MainComponentProps {
   setSelectedTournament: React.Dispatch<React.SetStateAction<string>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
+  setTournaments: React.Dispatch<React.SetStateAction<Tournament[]>>;
 }
 
 const MainComponent: React.FC<MainComponentProps> = ({
@@ -47,6 +48,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
   setSelectedTournament,
   setErrorMessage,
   setNotificationMessage,
+  setTournaments
 }) => {
   const location = useLocation();
 
@@ -108,7 +110,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
         <Route path="/results" element={user ? <GameResults loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/users" element={user ? <Users loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/addGame" element={(user && user.admin) ? <AddGameForm selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
-        <Route path="/addTournament" element={(user && user.admin) ? <AddTournamentForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
+        <Route path="/addTournament" element={(user && user.admin) ? <AddTournamentForm setTournaments={setTournaments} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
         <Route path="/games" element={user ? <Games selectedTournament={selectedTournament} loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/tournaments" element={(user && user.admin) ? <Tournaments loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
         <Route path="/bets/:userId" element={user ? <UsersBets selectedTournament={selectedTournament} loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />

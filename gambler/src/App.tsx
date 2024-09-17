@@ -32,6 +32,7 @@ const App = () => {
     <Router>
       <Notification errormessage={errormessage} notificationmessage={notificationmessage} />
       <MainComponent
+        setTournaments={setTournaments}
         errormessage={errormessage}
         notificationmessage={notificationmessage}
         user={user}

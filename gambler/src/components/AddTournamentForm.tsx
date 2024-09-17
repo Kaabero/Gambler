@@ -9,9 +9,10 @@ import { AxiosError } from 'axios';
 interface AddTournamentFormProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
+    setTournaments: React.Dispatch<React.SetStateAction<Tournament[]>>;
 }
 
-const AddTournamentForm: React.FC<AddTournamentFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const AddTournamentForm: React.FC<AddTournamentFormProps> = ({ setTournaments, setErrorMessage, setNotificationMessage }) => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [name, setName] = useState('');
@@ -30,7 +31,10 @@ const AddTournamentForm: React.FC<AddTournamentFormProps> = ({ setErrorMessage, 
         id: '1'
       };
 
-      await createTournament(newTournament);
+      const createdTournament = await createTournament(newTournament);
+
+      setTournaments(tournaments => [...tournaments, createdTournament]);
+
       setNotificationMessage('Tournament added successfully!');
       setTimeout(() => {
         setNotificationMessage('');
