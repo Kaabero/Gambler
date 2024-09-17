@@ -4,20 +4,16 @@ import { getAllOutcomes } from '../services/outcomeService';
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { useNavigate } from 'react-router-dom';
-import { removeScores } from '../services/scoreService';
-import { AxiosError } from 'axios';
 import { getTournamentById } from '../services/tournamentService';
 import { getAllBets } from '../services/betService';
 
 interface PointsProps {
-    setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-    setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
     loggedUser: User,
     selectedTournament: string
   }
 
 
-const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
+const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
   const navigate = useNavigate();
   const [showAdminTools, setShowAdminTools] = useState(false);
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
@@ -43,29 +39,6 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
       setBets(data);
     });
   }, []);
-
-  const handleRemovePoints = async (id: string) => {
-    try {
-      await removeScores(id);
-      setOutcomes(
-        outcomes.map(outcome => ({
-          ...outcome,
-          scores: outcome.scores?.filter(score => score.id !== id),
-        }))
-      );
-      setNotificationMessage('Points deleted successfully!');
-      setTimeout(() => {
-        setNotificationMessage('');
-      }, 3000);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 3000);
-      }
-    }
-  };
 
 
   const handleEditPointsClick = (scores: Scores) => {
@@ -155,7 +128,6 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser, setErr
                       <br />
                       { loggedUser.admin && showAdminTools && (
                         <>
-                          <button onClick={() => handleRemovePoints(score.id)}>Delete points</button>
                           <button onClick={() => handleEditPointsClick(score)}>Edit points</button><br />
                           <br />
                         </>

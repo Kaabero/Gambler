@@ -107,14 +107,14 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
               )}
               {defaultTournament && (
                 <option key={defaultTournament.id} value={defaultTournament.id}>
-                  {defaultTournament.name} {formatSimpleDate(new Date(defaultTournament.from_date))}-{formatSimpleDate(new Date(defaultTournament.to_date))}
+                  {defaultTournament.name}: {formatSimpleDate(new Date(defaultTournament.from_date))}-{formatSimpleDate(new Date(defaultTournament.to_date))}
                 </option>
               )}
               {tournaments
                 .filter(tournament => tournament.id !== defaultTournament?.id)
                 .map((tournament) => (
                   <option key={tournament.id} value={tournament.id}>
-                    {tournament.name} {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
+                    {tournament.name}: {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
                   </option>
                 ))}
             </select>

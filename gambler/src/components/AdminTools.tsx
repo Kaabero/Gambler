@@ -40,7 +40,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ loggedUser }) => {
           <Link style={padding} to="/bets">Edit and remove bets</Link><br />
           <br />
           <strong>Manage points:</strong><br />
-          <Link style={padding} to="/points">Edit and remove received points</Link><br />
+          <Link style={padding} to="/points">Edit received points</Link><br />
           <br />
           <strong>Manage users:</strong><br />
           <Link style={padding} to="/users">Remove users, add admin rights</Link><br />

@@ -92,14 +92,14 @@ outcomesRouter.post('/', middleware.userExtractor, async (request, response) => 
 
   const game = await Game.findById(body.game)
 
-  /*
+
   const date = new Date(game.date)
   const now = new Date()
 
   if (date > now) {
     return response.status(400).json({ error: 'Outcome can not be added for future games' })
   }
-*/
+
   if (body.goals_home === '' || body.goals_visitor === '') {
     return response.status(400).json({ error: 'Some of the required fields are missing' })
   }

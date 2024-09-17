@@ -97,7 +97,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
             </option>
             {tournaments.map((tournament) => (
               <option key={tournament.id} value={tournament.id}>
-                {tournament.name} {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
+                {tournament.name}: {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
               </option>
             ))}
           </select>
@@ -107,7 +107,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
         <Route path="/" element={user ? <Home /> : <Navigate replace to="/login" />} />
         <Route path="/adminTools" element={(user && user.admin) ? <AdminTools loggedUser={user} /> : <Navigate replace to="/" />} />
         <Route path="/bets" element={user ? <Bets loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
-        <Route path="/points" element={user ? <Points loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
+        <Route path="/points" element={user ? <Points loggedUser={user} selectedTournament={selectedTournament} /> : <Navigate replace to="/login" />} />
         <Route path="/results" element={user ? <GameResults loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/users" element={user ? <Users loggedUser={user} selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/addGame" element={(user && user.admin) ? <AddGameForm selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
