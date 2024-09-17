@@ -118,6 +118,10 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorM
 
   const gamesToShow = showAllGames ? sortedGames : futureGames;
 
+  const now = new Date();
+
+
+
   return (
     <div>
       <hr />
@@ -186,9 +190,14 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorM
                   Visitor Team: {game.visitor_team} <br />
                     <br />
                     <button onClick={() => handleCheckBetsClick(game)}>Check bets</button>
-                    {loggedUser && !game.outcome && !userHasBet(game) && (
+                    {loggedUser && new Date(game.date) > now && !userHasBet(game) && (
                       <>
                         <button onClick={() => handleAddBetClick(game)}>Add bet</button>
+                      </>
+                    )}
+                    {loggedUser && game.outcome &&(
+                      <>
+                        <button onClick={() => handleCheckResultClick(game)}>Check result</button>
                       </>
                     )}
                     {loggedUser.admin && showAdminTools && (
@@ -200,11 +209,6 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorM
                     {loggedUser.admin && !game.outcome && new Date(game.date) < new Date() && showAdminTools &&(
                       <>
                         <button onClick={() => handleAddResultClick(game)}>Add result and points</button>
-                      </>
-                    )}
-                    {loggedUser && game.outcome &&(
-                      <>
-                        <button onClick={() => handleCheckResultClick(game)}>Check result</button> <br />
                       </>
                     )}
                     <br />

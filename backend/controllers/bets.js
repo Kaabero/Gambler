@@ -97,11 +97,8 @@ betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
   const game = await Game.findById(bet.game)
   const user = request.user
 
-  const date = new Date(game.date)
-  const now = new Date()
-
-  if (date < now) {
-    return response.status(400).json({ error: 'Deleting bets is not allowed for past games' })
+  if (game.outcome) {
+    return response.status(400).json({ error: 'Deleting bets is not allowed for games that have already been scored.' })
   }
 
   if ( bet.user.toString() === user.id.toString() || user.admin ) {
@@ -124,11 +121,9 @@ betsRouter.put('/:id', middleware.userExtractor, async (request, response, next)
   const game = await Game.findById(bet.game)
   const user = request.user
 
-  const date = new Date(game.date)
-  const now = new Date()
 
-  if (date < now) {
-    return response.status(400).json({ error: 'Editing bets is not allowed for past games' })
+  if (game.outcome) {
+    return response.status(400).json({ error: 'Editing bets is not allowed for games that have already been scored.' })
   }
   if ( bet.user.toString() === user.id.toString() || user.admin ) {
 

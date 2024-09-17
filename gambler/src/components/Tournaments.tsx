@@ -10,9 +10,11 @@ interface TournamentsProps {
   loggedUser: User;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMainTournaments: React.Dispatch<React.SetStateAction<Tournament[]>>;
+  setSelectedTournament: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setErrorMessage, setNotificationMessage }) => {
+const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setSelectedTournament, setMainTournaments, setErrorMessage, setNotificationMessage }) => {
   const [tournaments, setTournamnets] = useState<Tournament[]>([]);
   const [showAdminTools, setShowAdminTools] = useState(false);
   const [showAllTournaments, setShowAllTournaments] = useState(false);
@@ -33,6 +35,8 @@ const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setErrorMessage, 
       if (confirm('Deleting tournament will also remove all related games, bets, game results and scores!')) {
         removeTournament(id).then(() => {
           setTournamnets(tournaments.filter(tournament => tournament.id !== id));
+          setMainTournaments(tournaments.filter(tournament => tournament.id !== id));
+          setSelectedTournament('');
           setNotificationMessage('Tournament deleted successfully!');
           setTimeout(() => {
             setNotificationMessage('');

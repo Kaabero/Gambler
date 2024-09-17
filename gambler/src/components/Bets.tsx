@@ -168,7 +168,7 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
                           {bet.goals_home} - {bet.goals_visitor}
                           <br />
                           <br />
-                          {loggedUser.admin && new Date(game.date) > new Date() && showAdminTools && (
+                          {loggedUser.admin && !game.outcome && showAdminTools && (
                             <>
                               <button onClick={() => handleRemoveBetClick(bet.id)}> Delete bet </button>
                               <button onClick={() => handleEditBetClick(bet)}>Edit bet</button><br />

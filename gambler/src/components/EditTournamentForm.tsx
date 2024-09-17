@@ -13,12 +13,12 @@ import { formatSimpleDate } from '../utils/dateUtils';
 interface EditTournamentFormProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
+  setTournaments: React.Dispatch<React.SetStateAction<Tournament[]>>;
 }
 
-const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setTournaments, setErrorMessage, setNotificationMessage }) => {
   const { tournamentId } = useParams<{ tournamentId: string }>();
   const [tournament, setTournament] = useState<Tournament | null>(null);
-  const [tournamentHasGames, setTournamentHasGames] = useState(false);
   const [fromDate, setFromDate] = useState<string>('');
   const [toDate, setToDate] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -40,14 +40,16 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setErrorMessage
   const tournamentEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    if (tournament && tournament.games && tournament.games.length>0) {
-      if (confirm('There are already games added to this tournament. You cannot change the tournament time period! Do you want to proceed with the other changes?')) {
-        setTournamentHasGames(true);
-      } else {
+    const hasGames = tournament && tournament.games && tournament.games.length > 0;
+
+    if (hasGames) {
+      const proceed = confirm(
+        'There are already games added to this tournament. You cannot change the tournament time period! Do you want to proceed with the other changes?'
+      );
+      if (!proceed) {
         return;
       }
     }
-
     if (fromDate === toDate || new Date(fromDate) >= new Date(toDate)) {
       setErrorMessage('Check the dates!');
       setTimeout(() => {
@@ -60,13 +62,16 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setErrorMessage
     if (tournament) {
       const updatedTournament: Tournament = {
         ...tournament,
-        from_date: tournamentHasGames ? new Date(fromDate) : tournament.from_date,
-        to_date: tournamentHasGames ? new Date(toDate) : tournament.to_date,
+        from_date: hasGames ? tournament.from_date : new Date(fromDate),
+        to_date: hasGames ? tournament.to_date : new Date(toDate),
         name: name || tournament.name,
       };
 
       try {
         await editTournament(updatedTournament.id, updatedTournament);
+        setTournaments(tournaments =>
+          tournaments.map(tournament => (tournament.id === updatedTournament.id ? updatedTournament : tournament))
+        );
         setNotificationMessage('Tournament updated successfully!');
         setTimeout(() => {
           setNotificationMessage('');

@@ -113,7 +113,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
         <Route path="/addGame" element={(user && user.admin) ? <AddGameForm selectedTournament={selectedTournament} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
         <Route path="/addTournament" element={(user && user.admin) ? <AddTournamentForm setTournaments={setTournaments} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
         <Route path="/games" element={user ? <Games selectedTournament={selectedTournament} loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
-        <Route path="/tournaments" element={(user && user.admin) ? <Tournaments loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
+        <Route path="/tournaments" element={(user && user.admin) ? <Tournaments loggedUser={user} setSelectedTournament={setSelectedTournament} setMainTournaments={setTournaments} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
         <Route path="/bets/:userId" element={user ? <UsersBets selectedTournament={selectedTournament} loggedUser={user} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/points/:userId" element={user ? <UsersPoints selectedTournament={selectedTournament} /> : <Navigate replace to="/login" />} />
         <Route path="/gamesbets/:gameId" element={user ? <GamesBets /> : <Navigate replace to="/login" />} />
@@ -122,7 +122,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
         <Route path="/login" element={!user ? <Login setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} setUser={setUser} /> : <Navigate replace to="/" />} />
         <Route path="/addBet/:gameId" element={user ? <AddBetForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/editGame/:gameId" element={(user && user.admin) ? <EditGameForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
-        <Route path="/editTournament/:tournamentId" element={(user && user.admin) ? <EditTournamentForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
+        <Route path="/editTournament/:tournamentId" element={(user && user.admin) ? <EditTournamentForm setTournaments={setTournaments} setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
         <Route path="/editScores/:scoresId" element={(user && user.admin) ? <EditScoresForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />
         <Route path="/editBet/:betId" element={user ? <EditBetForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/login" />} />
         <Route path="/addResult/:gameId" element={(user && user.admin) ? <AddOutcomeForm setErrorMessage={setErrorMessage} setNotificationMessage={setNotificationMessage} /> : <Navigate replace to="/" />} />

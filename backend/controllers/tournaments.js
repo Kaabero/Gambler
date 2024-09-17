@@ -124,6 +124,7 @@ tournamentsRouter.put('/:id', middleware.userExtractor, async (request, response
   }
   const { name, from_date, to_date } = request.body
 
+  const initialTournament = await Tournament.findById(request.params.id)
   const from = new Date(from_date)
   const to = new Date(to_date)
 
@@ -136,7 +137,8 @@ tournamentsRouter.put('/:id', middleware.userExtractor, async (request, response
     name: { $regex: new RegExp(`^${name}$`, 'i') },
   })
 
-  if (existingTournament) {
+
+  if (existingTournament && existingTournament.id !== initialTournament.id) {
     return response.status(400).json({ error: `Tournament ${name} already added. Choose another name for the tournament.` })
   }
 
