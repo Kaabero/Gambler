@@ -25,6 +25,8 @@ const testAdmin = {
 
 const testTournament = {
   name: 'testTournament',
+  from_date: '1.1.2024',
+  to_date: '1.1.2026'
 }
 
 let token
