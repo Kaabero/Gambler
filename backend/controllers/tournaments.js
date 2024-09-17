@@ -54,13 +54,11 @@ tournamentsRouter.post('/', middleware.userExtractor, async (request, response) 
   }
 
   const existingTournament = await Tournament.findOne({
-    name: body.name,
-    from_date: body.from_date,
-    to_date: body.to_date,
+    name: { $regex: new RegExp(`^${body.name}$`, 'i') },
   })
 
   if (existingTournament) {
-    return response.status(400).json({ error: `Tournament ${body.name} already added` })
+    return response.status(400).json({ error: `Tournament ${body.name} already added. Choose another name for the tournament.` })
   }
 
   if (body.to_date === body.from_date) {
@@ -70,8 +68,11 @@ tournamentsRouter.post('/', middleware.userExtractor, async (request, response) 
   const from = new Date(body.from_date)
   const to = new Date(body.to_date)
   const now = new Date()
+  now.setHours(0, 0, 0, 0)
 
-  if (process.env.NODE_ENV !== 'test' && from < now) {
+
+
+  if (process.env.NODE_ENV !== 'test' && from <= now) {
     return response.status(400).json({ error: 'Set a future starting date' })
   }
 
@@ -122,6 +123,22 @@ tournamentsRouter.put('/:id', middleware.userExtractor, async (request, response
     return response.status(400).json({ error: 'This operation is for admins only.' })
   }
   const { name, from_date, to_date } = request.body
+
+  const from = new Date(from_date)
+  const to = new Date(to_date)
+
+
+  if (from === to || from > to) {
+    return response.status(400).json({ error: 'Check the dates' })
+  }
+
+  const existingTournament = await Tournament.findOne({
+    name: { $regex: new RegExp(`^${name}$`, 'i') },
+  })
+
+  if (existingTournament) {
+    return response.status(400).json({ error: `Tournament ${name} already added. Choose another name for the tournament.` })
+  }
 
   const updatedTournament = await Tournament.findByIdAndUpdate(
     request.params.id,

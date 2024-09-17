@@ -54,6 +54,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
       }, 3000);
       return;
     }
+
     if (game) {
       const updatedGame: NewGame = {
         ...game,
@@ -107,7 +108,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
           <strong> Edit game information: </strong> <br />
           <br />
           <form onSubmit={gameEdition}>
-            <p>Change the tournament</p>
+            Tournament: <br />
             <select
               id="tournament-select"
               value={newTournament}
@@ -127,6 +128,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
                 ))}
             </select>
             <div>
+              <br />
           Date:
               <br />
               <input

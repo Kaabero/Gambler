@@ -78,18 +78,19 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
     return response.status(400).json({ error: 'Home team and visitor team must be different' })
   }
 
-  console.log('tournament', tournament)
   const date = new Date(body.date)
   const now = new Date()
   const tournamentFrom = new Date(tournament.from_date)
   const tournamentTo = new Date(tournament.to_date)
+  tournamentTo.setHours(23, 59, 0, 0)
+  now.setHours(0, 0, 0, 0)
 
-  if (process.env.NODE_ENV !== 'test' && date < now) {
+  if (process.env.NODE_ENV !== 'test' && date <= now) {
     return response.status(400).json({ error: 'Set a future date' })
   }
 
   if ( tournamentFrom > date || tournamentTo < date) {
-    return response.status(400).json({ error: 'Set a date inside tournament time period' })
+    return response.status(400).json({ error: 'Set the date inside tournament time period' })
   }
 
   const existingGame = await Game.findOne({
@@ -151,6 +152,17 @@ gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   const newTournament = await Tournament.findById(tournament)
   const initialGame = await Game.findById(request.params.id)
   const oldTournament = await Tournament.findById(initialGame.tournament)
+
+  const newDate = new Date(date)
+  const tournamentFrom = new Date(newTournament.from_date)
+  const tournamentTo = new Date(newTournament.to_date)
+  tournamentTo.setHours(23, 59, 0, 0)
+
+
+  if ( tournamentFrom > newDate || tournamentTo < newDate) {
+    return response.status(400).json({ error: 'Set the game date inside tournament time period' })
+  }
+
 
   const updatedGame = await Game.findByIdAndUpdate(
     request.params.id,

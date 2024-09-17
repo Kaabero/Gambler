@@ -18,6 +18,7 @@ interface EditTournamentFormProps {
 const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
   const { tournamentId } = useParams<{ tournamentId: string }>();
   const [tournament, setTournament] = useState<Tournament | null>(null);
+  const [tournamentHasGames, setTournamentHasGames] = useState(false);
   const [fromDate, setFromDate] = useState<string>('');
   const [toDate, setToDate] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -35,15 +36,32 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setErrorMessage
   }, [tournamentId]);
 
 
+
   const tournamentEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
+    if (tournament && tournament.games && tournament.games.length>0) {
+      if (confirm('There are already games added to this tournament. You cannot change the tournament time period! Do you want to proceed with the other changes?')) {
+        setTournamentHasGames(true);
+      } else {
+        return;
+      }
+    }
+
+    if (fromDate === toDate || new Date(fromDate) >= new Date(toDate)) {
+      setErrorMessage('Check the dates!');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return;
+
+    }
 
     if (tournament) {
       const updatedTournament: Tournament = {
         ...tournament,
-        from_date: new Date(fromDate),
-        to_date: new Date(toDate),
+        from_date: tournamentHasGames ? new Date(fromDate) : tournament.from_date,
+        to_date: tournamentHasGames ? new Date(toDate) : tournament.to_date,
         name: name || tournament.name,
       };
 

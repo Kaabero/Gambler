@@ -39,7 +39,7 @@ const AddTournamentForm: React.FC<AddTournamentFormProps> = ({ setTournaments, s
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
-      navigate('/tournaments');
+      navigate('/adminTools');
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(`${error.response?.data.error}`);
