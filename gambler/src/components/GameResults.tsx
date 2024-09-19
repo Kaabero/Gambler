@@ -15,15 +15,29 @@ interface GameResultsProps {
   selectedTournament: string
 }
 
-const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
+const GameResults: React.FC<GameResultsProps> = ({
+  selectedTournament,
+  loggedUser,
+  setErrorMessage,
+  setNotificationMessage }) => {
   const navigate = useNavigate();
   const [showAdminTools, setShowAdminTools] = useState(false);
   const [outcomes, setOutcomes] = useState<Outcome[]>([
-    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
+    { id: '1',
+      goals_home: '1',
+      goals_visitor: '1',
+      game: {
+        id: '1',
+        date: new Date() ,
+        home_team: 'HomeTeam',
+        visitor_team: 'VisitorTeam' } }
   ]);
 
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
+    { id: '1',
+      name: 'TestTournament',
+      from_date: new Date(),
+      to_date: new Date() }
   );
 
   useEffect(() => {
@@ -43,7 +57,9 @@ const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, loggedUse
       try {
         await removeOutcome(id);
         setOutcomes(outcomes.filter(outcome => outcome.id !== id));
-        setNotificationMessage('Result and related scores deleted successfully!');
+        setNotificationMessage(
+          'Result and related scores deleted successfully!'
+        );
         setTimeout(() => {
           setNotificationMessage('');
         }, 3000);
@@ -69,16 +85,21 @@ const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, loggedUse
     navigate(-1);
   };
 
-  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeAdmin = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAdminTools(value === 'showadmin');
   };
 
-  const sortedOutcomes = [...outcomes].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
+  const sortedOutcomes = [...outcomes]
+    .sort((a, b) =>
+      new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
-  const filteredOutcomes = sortedOutcomes.filter(
-    (outcome) => outcome.game.tournament && outcome.game.tournament.id === tournament.id
-  );
+  const filteredOutcomes = sortedOutcomes
+    .filter((outcome) =>
+      outcome.game.tournament && outcome.game.tournament.id === tournament.id
+    );
 
   return (
     <div>
@@ -127,10 +148,16 @@ const GameResults: React.FC<GameResultsProps> = ({ selectedTournament, loggedUse
                 <strong>Result:</strong> <br />
                 {outcome.goals_home} - {outcome.goals_visitor} <br />
                 <br />
-                <button onClick={() => handleCheckPoints(outcome)}>Check received points</button>
+                <button onClick={() =>
+                  handleCheckPoints(outcome)}>
+                    Check received points
+                </button>
                 {loggedUser.admin && showAdminTools && (
                   <>
-                    <button onClick={() => handleRemoveResultClick(outcome.id)}>Delete the result and related scores</button>
+                    <button onClick={() =>
+                      handleRemoveResultClick(outcome.id)}>
+                        Delete the result and related scores
+                    </button>
                   </>
                 )}
               </li>

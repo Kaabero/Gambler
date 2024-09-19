@@ -18,7 +18,10 @@ interface EditScoresFormProps {
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const EditScoresForm: React.FC<EditScoresFormProps> = ({
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const { scoresId } = useParams<{ scoresId: string }>();
   const [scores, setScores] = useState<Scores | null>(null);
   const [points, setPoints] = useState<string>('');
@@ -80,7 +83,8 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
 
   const usersBet = (user: User, outcome: Outcome): string => {
     const bet = bets.find(
-      (bet) => bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
+      (bet) =>
+        bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
     );
     return `${bet?.goals_home}-${bet?.goals_visitor}`;
   };
@@ -95,8 +99,10 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
           <p>Tournament: {scores.outcome.game.tournament?.name}</p>
           <div>
             {formatDate(new Date(scores.outcome.game.date))}<br />
-            {scores.outcome.game.home_team}-{scores.outcome.game.visitor_team} <br />
-            <p>Game result: {scores.outcome.goals_home}-{scores.outcome.goals_visitor} </p>
+            {scores.outcome.game.home_team}
+            -{scores.outcome.game.visitor_team} <br />
+            <p>Game result:&nbsp;
+              {scores.outcome.goals_home}-{scores.outcome.goals_visitor} </p>
             <hr />
             <p>User: {scores.user.username}</p>
             <p>Bet: {usersBet(scores.user, scores.outcome)} </p>
@@ -124,7 +130,9 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({ setErrorMessage, setNot
 
       ) : (
         <>
-          <p>There are no points to edit in the selected game for this user</p><br />
+          <p>
+            There are no points to edit in the selected game for this user
+          </p><br />
           <br />
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>

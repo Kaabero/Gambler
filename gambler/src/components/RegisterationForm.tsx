@@ -10,13 +10,17 @@ interface RegisterationProps {
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const RegisterationForm: React.FC<RegisterationProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const RegisterationForm: React.FC<RegisterationProps> = ({
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
 
-  const handleRegisteration = async (event: { preventDefault: () => void; }) => {
+  const handleRegisteration = async (
+    event: { preventDefault: () => void; }) => {
     event.preventDefault();
 
     try {

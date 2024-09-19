@@ -14,7 +14,11 @@ interface AddTournamentFormProps {
     setTournaments: React.Dispatch<React.SetStateAction<Tournament[]>>;
 }
 
-const AddTournamentForm: React.FC<AddTournamentFormProps> = ({ setTournaments, setErrorMessage, setNotificationMessage }) => {
+const AddTournamentForm: React.FC<AddTournamentFormProps> = ({
+  setTournaments,
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [name, setName] = useState('');

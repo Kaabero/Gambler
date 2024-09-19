@@ -12,7 +12,10 @@ interface LoginFormProps {
   setUser: React.Dispatch<React.SetStateAction<Credentials | null | undefined>>;
 }
 
-const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessage, setUser }) => {
+const Login: React.FC<LoginFormProps> = ({
+  setErrorMessage,
+  setNotificationMessage,
+  setUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -55,11 +58,14 @@ const Login: React.FC<LoginFormProps> = ({ setErrorMessage, setNotificationMessa
         <h2>Welcome to the Gambler app!</h2>
 
         <div>
-          You can now compete with your betting group for the title of the best score predictor! <br />
+          You can now compete with your betting group&nbsp;
+          for the title of the best score predictor! <br />
           <br />
-          Log in to select your preferred tournament from the menu, view the tournament's games, and add your predictions. <br />
+          Log in to select your preferred tournament from the menu,&nbsp;
+          view the tournament's games, and add your predictions. <br />
           <br />
-          If you haven't registered yet, create an account to get started! <br />
+          If you haven't registered yet,&nbsp;
+          create an account to get started! <br />
           <br />
           <hr />
 

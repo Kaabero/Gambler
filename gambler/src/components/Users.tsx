@@ -19,15 +19,37 @@ interface UsersProps {
   selectedTournament: string
 }
 
-const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
+const Users: React.FC<UsersProps> = ({
+  selectedTournament,
+  loggedUser,
+  setErrorMessage,
+  setNotificationMessage }) => {
   const [users, setUsers] = useState<User[]>([
     { id: '1', username: 'TestUser', password: 'Password', admin: false }
   ]);
   const [scores, setScores] = useState<Scores[]>([
-    { id: '1', points: '0', outcome: { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date(), home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }, user: { id: '1', username: 'TestUser', password: 'Password', admin: false } }
+    { id: '1',
+      points: '0',
+      outcome: {
+        id: '1',
+        goals_home: '1',
+        goals_visitor: '1',
+        game: {
+          id: '1',
+          date: new Date(),
+          home_team: 'HomeTeam',
+          visitor_team: 'VisitorTeam' } },
+      user: {
+        id: '1',
+        username: 'TestUser',
+        password: 'Password',
+        admin: false } }
   ]);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
+    { id: '1',
+      name: 'TestTournament',
+      from_date: new Date(),
+      to_date: new Date() }
   );
   const [bets, setBets] = useState<Bet[]>([]);
   const [showOnlyUsersWithBets, setShowOnlyUsersWithBets] = useState(true);
@@ -59,7 +81,10 @@ const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorM
   }, []);
 
   const handleRemoveUserClick = async (id: string) => {
-    if (confirm('Deleting user will also remove related bets and scores in all tournaments!')) {
+    if (confirm(
+      `Deleting user will also remove
+      related bets and scores in all tournaments!`
+    )) {
       try {
         await removeUser(id);
         setUsers(users.filter(user => user.id !== id));
@@ -82,12 +107,15 @@ const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorM
 
   const getTotalPoints = (user: User): number => {
     return scores
-      .filter(score => score.user.id === user.id && score.outcome.game.tournament?.id===tournament.id)
+      .filter(score =>
+        score.user.id === user.id &&
+        score.outcome.game.tournament?.id===tournament.id)
       .reduce((total, score) => total + parseInt(score.points), 0);
   };
 
   const getTotalBets = (user: User): number => {
-    const filteredBets= bets.filter(bet => bet.user.id === user.id && bet.game.tournament?.id===tournament.id);
+    const filteredBets= bets.filter(bet =>
+      bet.user.id === user.id && bet.game.tournament?.id===tournament.id);
     return filteredBets.length;
   };
 
@@ -109,18 +137,24 @@ const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorM
     !showOnlyUsersWithBets || getTotalBets(user) > 0
   );
 
-  const handleRadioChangeBets = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeBets = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowOnlyUsersWithBets(value === 'withbets');
   };
 
-  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeAdmin = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAdminTools(value === 'showadmin');
   };
 
 
-  const handleManageAdminRightsClick = async (id: string, operation: string ) => {
+  const handleManageAdminRightsClick = async (
+    id: string,
+    operation: string ) => {
 
     const user = await getUserById(id);
 
@@ -233,29 +267,48 @@ const Users: React.FC<UsersProps> = ({ selectedTournament, loggedUser, setErrorM
               <br />
               {tournament.id!=='1' &&(
                 <>
-                  <p>Total points for tournament {tournament.name}: {getTotalPoints(user)}</p>
-                  <p>Total bets for tournament {tournament.name}: {getTotalBets(user)}</p>
+                  <p>Total points for tournament&nbsp;
+                    {tournament.name}: {getTotalPoints(user)}</p>
+                  <p>Total bets for tournament&nbsp;
+                    {tournament.name}: {getTotalBets(user)}</p>
                 </>
               )}
               {tournament.id==='1' &&(
                 <>
-                  <p>Total points for selected tournament: {getTotalPoints(user)}</p>
-                  <p>Total bets for selected tournament: {getTotalBets(user)}</p>
+                  <p>Total points for selected tournament:&nbsp;
+                    {getTotalPoints(user)}</p>
+                  <p>Total bets for selected tournament:&nbsp;
+                    {getTotalBets(user)}</p>
                 </>
               )}
-              <button onClick={() => handleCheckBetsClick(user)}>Check bets</button>
-              <button onClick={() => handleCheckPointsClick(user)}>Check received points</button>
+              <button onClick={() =>
+                handleCheckBetsClick(user)}>
+                  Check bets
+              </button>
+              <button onClick={() =>
+                handleCheckPointsClick(user)}>
+                  Check received points
+              </button>
               {loggedUser.admin && !user.admin && showAdminTools &&(
                 <>
-                  <button onClick={() => handleRemoveUserClick(user.id)}>Delete user</button> <br />
-                  <button onClick={() => handleManageAdminRightsClick(user.id, 'makeadmin')}>Give admin rights</button> <br />
+                  <button onClick={() =>
+                    handleRemoveUserClick(user.id)}>
+                      Delete user
+                  </button> <br />
+                  <button onClick={() =>
+                    handleManageAdminRightsClick(user.id, 'makeadmin')}>
+                      Give admin rights
+                  </button> <br />
                   <br />
                   <br />
                 </>
               )}
               {loggedUser.admin && user.admin && showAdminTools &&(
                 <>
-                  <button onClick={() => handleManageAdminRightsClick(user.id, 'removeadmin')}>Remove admin rights</button> <br />
+                  <button onClick={() =>
+                    handleManageAdminRightsClick(user.id, 'removeadmin')}>
+                      Remove admin rights
+                  </button> <br />
                   <br />
                   <br />
                 </>

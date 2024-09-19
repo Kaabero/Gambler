@@ -16,11 +16,19 @@ interface BetsProps {
   selectedTournament: string
 }
 
-const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
+const Bets: React.FC<BetsProps> = ({
+  selectedTournament,
+  loggedUser,
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(false);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
+    { id: '1',
+      name: 'TestTournament',
+      from_date: new Date(),
+      to_date: new Date() }
   );
   const [showAdminTools, setShowAdminTools] = useState(false);
   const navigate = useNavigate();
@@ -41,11 +49,15 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
     (game) => game.tournament && game.tournament.id === tournament.id
   );
 
-  const gamesWithBets = filteredGames.filter((game) => !game.bets || game.bets.length > 0);
+  const gamesWithBets = filteredGames
+    .filter((game) => !game.bets || game.bets.length > 0);
 
-  const sortedGames = [...gamesWithBets].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const sortedGames = [...gamesWithBets]
+    .sort((a, b) =>
+      new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
+  const futureGames = sortedGames
+    .filter((game) => new Date(game.date) > new Date());
 
   const gamesToShow = showAllGames ? sortedGames : futureGames;
 
@@ -72,7 +84,9 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
     }
   };
 
-  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeAdmin = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAdminTools(value === 'showadmin');
   };
@@ -86,7 +100,9 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
     navigate(-1);
   };
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAllGames(value === 'all');
   };
@@ -169,10 +185,18 @@ const Bets: React.FC<BetsProps> = ({ selectedTournament, loggedUser, setErrorMes
                           {bet.goals_home} - {bet.goals_visitor}
                           <br />
                           <br />
-                          {loggedUser.admin && !game.outcome && showAdminTools && (
+                          {loggedUser.admin &&
+                          !game.outcome &&
+                          showAdminTools && (
                             <>
-                              <button onClick={() => handleRemoveBetClick(bet.id)}> Delete bet </button>
-                              <button onClick={() => handleEditBetClick(bet)}>Edit bet</button><br />
+                              <button onClick={() =>
+                                handleRemoveBetClick(bet.id)}>
+                                Delete bet
+                              </button>
+                              <button onClick={() =>
+                                handleEditBetClick(bet)}>
+                                  Edit bet
+                              </button><br />
                               <br />
                             </>
                           )}

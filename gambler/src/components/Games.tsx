@@ -15,12 +15,20 @@ interface GamesProps {
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
+const Games: React.FC<GamesProps> = ({
+  selectedTournament,
+  loggedUser,
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const [games, setGames] = useState<Game[]>([]);
   const [showAllGames, setShowAllGames] = useState(false);
   const [showAdminTools, setShowAdminTools] = useState(false);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
+    { id: '1',
+      name: 'TestTournament',
+      from_date: new Date(),
+      to_date: new Date() }
   );
   const navigate = useNavigate();
 
@@ -42,7 +50,9 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorM
   const handleRemoveGame = (id: string) => {
     try {
 
-      if (confirm('Deleting game will also remove related bets, game results and scores!')) {
+      if (confirm(
+        'Deleting game will also remove related bets, game results and scores!'
+      )) {
         removeGame(id).then(() => {
           setGames(games.filter(game => game.id !== id));
           setNotificationMessage('Game deleted successfully!');
@@ -85,7 +95,8 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorM
   };
 
   const userHasBet = (game: Game) => {
-    return game.bets?.some(bet => bet.user && bet.user.username === loggedUser.username);
+    return game.bets?.some(bet =>
+      bet.user && bet.user.username === loggedUser.username);
   };
 
 
@@ -93,12 +104,16 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorM
     navigate(`/editGame/${game.id}`);
   };
 
-  const handleRadioChangeGames = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeGames = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAllGames(value === 'all');
   };
 
-  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeAdmin = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAdminTools(value === 'showadmin');
   };
@@ -113,9 +128,11 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorM
     (game) => game.tournament && game.tournament.id === tournament.id
   );
 
-  const sortedGames = [...filteredGames].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const sortedGames = [...filteredGames]
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  const futureGames = sortedGames.filter((game) => new Date(game.date) > new Date());
+  const futureGames = sortedGames
+    .filter((game) => new Date(game.date) > new Date());
 
   const gamesToShow = showAllGames ? sortedGames : futureGames;
 
@@ -190,26 +207,49 @@ const Games: React.FC<GamesProps> = ({ selectedTournament, loggedUser, setErrorM
                   Home Team: {game.home_team} <br />
                   Visitor Team: {game.visitor_team} <br />
                     <br />
-                    <button onClick={() => handleCheckBetsClick(game)}>Check bets</button>
-                    {loggedUser && new Date(game.date) > now && !userHasBet(game) && (
+                    <button onClick={() =>
+                      handleCheckBetsClick(game)}>
+                        Check bets
+                    </button>
+                    {loggedUser &&
+                    new Date(game.date) > now &&
+                    !userHasBet(game) && (
                       <>
-                        <button onClick={() => handleAddBetClick(game)}>Add bet</button>
+                        <button onClick={() =>
+                          handleAddBetClick(game)}>
+                            Add bet
+                        </button>
                       </>
                     )}
                     {loggedUser && game.outcome &&(
                       <>
-                        <button onClick={() => handleCheckResultClick(game)}>Check result</button>
+                        <button onClick={() =>
+                          handleCheckResultClick(game)}>
+                            Check result
+                        </button>
                       </>
                     )}
                     {loggedUser.admin && showAdminTools && (
                       <>
-                        <button onClick={() => handleRemoveGame(game.id)}>Delete game</button>
-                        <button onClick={() => handleEditGameClick(game)}>Edit game</button>
+                        <button onClick={() =>
+                          handleRemoveGame(game.id)}>
+                            Delete game
+                        </button>
+                        <button onClick={() =>
+                          handleEditGameClick(game)}>
+                            Edit game
+                        </button>
                       </>
                     )}
-                    {loggedUser.admin && !game.outcome && new Date(game.date) < new Date() && showAdminTools &&(
+                    {loggedUser.admin &&
+                    !game.outcome &&
+                    new Date(game.date) < new Date() &&
+                    showAdminTools &&(
                       <>
-                        <button onClick={() => handleAddResultClick(game)}>Add result and points</button>
+                        <button onClick={() =>
+                          handleAddResultClick(game)}>
+                            Add result and points
+                        </button>
                       </>
                     )}
                     <br />

@@ -17,7 +17,10 @@ interface EditGameFormProps {
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const EditGameForm: React.FC<EditGameFormProps> = ({
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const { gameId } = useParams<{ gameId: string }>();
   const [game, setGame] = useState<Game | null>(null);
@@ -118,13 +121,17 @@ const EditGameForm: React.FC<EditGameFormProps> = ({ setErrorMessage, setNotific
             >
 
               <option key={game.tournament.id} value={game.tournament.id}>
-                {game.tournament.name}: {formatSimpleDate(new Date(game.tournament.from_date))}-{formatSimpleDate(new Date(game.tournament.to_date))}
+                {game.tournament.name}:&nbsp;
+                {formatSimpleDate(new Date(game.tournament.from_date))}-
+                {formatSimpleDate(new Date(game.tournament.to_date))}
               </option>
               {tournaments
                 .filter(tournament => tournament.id !== game.tournament?.id)
                 .map((tournament) => (
                   <option key={tournament.id} value={tournament.id}>
-                    {tournament.name}: {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
+                    {tournament.name}:&nbsp;
+                    {formatSimpleDate(new Date(tournament.from_date))}-
+                    {formatSimpleDate(new Date(tournament.to_date))}
                   </option>
                 ))}
             </select>

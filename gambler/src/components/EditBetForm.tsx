@@ -16,7 +16,9 @@ interface EditBetFormProps {
 
 }
 
-const EditBetForm: React.FC<EditBetFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const EditBetForm: React.FC<EditBetFormProps> = ({
+  setErrorMessage,
+  setNotificationMessage }) => {
   const { betId } = useParams<{ betId: string }>();
   const [bet, setBet] = useState<Bet | null>(null);
   const [visitorGoals, setVisitorGoals] = useState<string>('');

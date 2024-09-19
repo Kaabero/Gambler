@@ -27,15 +27,20 @@ const AdminTools: React.FC<AdminToolsProps> = ({ loggedUser }) => {
       {loggedUser.admin && (
         <>
           <strong>Manage tournaments:</strong><br />
-          <Link style={padding} to="/addTournament">Add a new tournament</Link><br />
-          <Link style={padding} to="/tournaments">Edit and remove tournaments</Link><br />
+          <Link style={padding} to="/addTournament">
+          Add a new tournament</Link><br />
+          <Link style={padding} to="/tournaments">
+          Edit and remove tournaments</Link><br />
           <br />
           <strong>Manage games:</strong><br />
-          <Link style={padding} to="/addGame">Add a new game</Link><br />
-          <Link style={padding} to="/games">Edit and remove games, add game results</Link><br />
+          <Link style={padding} to="/addGame">
+          Add a new game</Link><br />
+          <Link style={padding} to="/games">
+          Edit and remove games, add game results</Link><br />
           <br />
           <strong>Manage game results:</strong><br />
-          <Link style={padding} to="/results">Delete game results and related scores</Link><br />
+          <Link style={padding} to="/results">
+          Delete game results and related scores</Link><br />
           <br />
           <strong>Manage bets:</strong><br />
           <Link style={padding} to="/bets">Edit and remove bets</Link><br />
@@ -44,7 +49,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ loggedUser }) => {
           <Link style={padding} to="/points">Edit received points</Link><br />
           <br />
           <strong>Manage users:</strong><br />
-          <Link style={padding} to="/users">Remove users, add admin rights</Link><br />
+          <Link style={padding} to="/users">
+          Remove users, add admin rights</Link><br />
 
           <br />
         </>

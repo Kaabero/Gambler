@@ -3,7 +3,10 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllTournaments, removeTournament } from '../services/tournamentService';
+import {
+  getAllTournaments,
+  removeTournament
+} from '../services/tournamentService';
 import { User, Tournament } from '../types';
 import { formatSimpleDate } from '../utils/dateUtils';
 
@@ -15,7 +18,13 @@ interface TournamentsProps {
   setSelectedTournament: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setSelectedTournament, setMainTournaments, setErrorMessage, setNotificationMessage }) => {
+const Tournaments: React.FC<TournamentsProps> = ({
+  loggedUser,
+  setSelectedTournament,
+  setMainTournaments,
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const [tournaments, setTournamnets] = useState<Tournament[]>([]);
   const [showAdminTools, setShowAdminTools] = useState(false);
   const [showAllTournaments, setShowAllTournaments] = useState(false);
@@ -33,10 +42,15 @@ const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setSelectedTourna
   const handleRemoveTournament = (id: string) => {
     try {
 
-      if (confirm('Deleting tournament will also remove all related games, bets, game results and scores!')) {
+      if (confirm(
+        `Deleting tournament will also remove all 
+      related games, bets, game results and scores!`
+      )) {
         removeTournament(id).then(() => {
-          setTournamnets(tournaments.filter(tournament => tournament.id !== id));
-          setMainTournaments(tournaments.filter(tournament => tournament.id !== id));
+          setTournamnets(tournaments
+            .filter(tournament => tournament.id !== id));
+          setMainTournaments(tournaments
+            .filter(tournament => tournament.id !== id));
           setSelectedTournament('');
           setNotificationMessage('Tournament deleted successfully!');
           setTimeout(() => {
@@ -67,12 +81,16 @@ const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setSelectedTourna
   };
 
 
-  const handleRadioChangeTournaments = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeTournaments = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAllTournaments(value === 'all');
   };
 
-  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeAdmin = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAdminTools(value === 'showadmin');
   };
@@ -82,11 +100,16 @@ const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setSelectedTourna
   };
 
 
-  const sortedTournaments = [...tournaments].sort((a, b) => new Date(a.from_date).getTime() - new Date(b.from_date).getTime());
+  const sortedTournaments = [...tournaments]
+    .sort((a, b) =>
+      new Date(a.from_date).getTime()
+    - new Date(b.from_date).getTime());
 
-  const filteredTournaments = sortedTournaments.filter((tournament) => new Date(tournament.to_date) > new Date());
+  const filteredTournaments = sortedTournaments
+    .filter((tournament) => new Date(tournament.to_date) > new Date());
 
-  const tournamentsToShow = showAllTournaments ? sortedTournaments : filteredTournaments;
+  const tournamentsToShow = showAllTournaments ? sortedTournaments
+    : filteredTournaments;
 
 
 
@@ -152,13 +175,20 @@ const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setSelectedTourna
                 <li key={tournament.id}>
                   <hr />
                   {tournament.name} <br />
-                  {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}<br />
+                  {formatSimpleDate(new Date(tournament.from_date))}-
+                  {formatSimpleDate(new Date(tournament.to_date))}<br />
                   Games: {tournament.games?.length}
                   <br />
                   {loggedUser.admin && showAdminTools && (
                     <>
-                      <button onClick={() => handleRemoveTournament(tournament.id)}>Delete tournament</button>
-                      <button onClick={() => handleEditTournamentClick(tournament)}>Edit tournament</button> <br />
+                      <button onClick={() =>
+                        handleRemoveTournament(tournament.id)}>
+                          Delete tournament
+                      </button>
+                      <button onClick={() =>
+                        handleEditTournamentClick(tournament)}>
+                          Edit tournament
+                      </button> <br />
                       <br />
                     </>
                   )}
@@ -175,7 +205,9 @@ const Tournaments: React.FC<TournamentsProps> = ({ loggedUser, setSelectedTourna
       {sortedTournaments.length === 0 && (
         <>
           <p> There are no tournaments </p>
-          <button type="button" onClick={handleAddTournamentClick}>Add a tournament</button>
+          <button type="button" onClick={handleAddTournamentClick}>
+            Add a tournament
+          </button>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}

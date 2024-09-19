@@ -14,7 +14,14 @@ const GamesPoints = () => {
   const navigate = useNavigate();
   const { outcomeId } = useParams();
   const [outcome, setOutcome] = useState<Outcome>(
-    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' } }
+    { id: '1',
+      goals_home: '1',
+      goals_visitor: '1',
+      game: {
+        id: '1',
+        date: new Date() ,
+        home_team: 'HomeTeam',
+        visitor_team: 'VisitorTeam' } }
   );
   const [scores, setScores] = useState<Scores[]>([]);
 

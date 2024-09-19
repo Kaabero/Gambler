@@ -20,14 +20,22 @@ interface UsersBetsProps {
   selectedTournament: string;
 }
 
-const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, setErrorMessage, setNotificationMessage }) => {
+const UsersBets: React.FC<UsersBetsProps> = ( {
+  selectedTournament,
+  loggedUser,
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState<User>(
     { id: '1', username: 'TestUser', password: 'Password', admin: false }
   );
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
+    { id: '1',
+      name: 'TestTournament',
+      from_date: new Date(),
+      to_date: new Date() }
   );
   const [bets, setBets] = useState<Bet[]>([]);
   const [showAllGames, setShowAllGames] = useState(true);
@@ -83,20 +91,27 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
     navigate(-1);
   };
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAllGames(value === 'all');
   };
 
 
-  const sortedBets = [...filteredBets].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
+  const sortedBets = [...filteredBets]
+    .sort((a, b) =>
+      new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
-  const futureGames = sortedBets.filter((bet) => new Date(bet.game.date) > new Date());
+  const futureGames = sortedBets
+    .filter((bet) =>
+      new Date(bet.game.date) > new Date());
 
 
   const betsToShow = showAllGames ? sortedBets : futureGames;
 
-  const tournamentBets = betsToShow.filter(bet => bet.game.tournament?.id === tournament.id);
+  const tournamentBets = betsToShow
+    .filter(bet => bet.game.tournament?.id === tournament.id);
 
 
   return (
@@ -145,10 +160,17 @@ const UsersBets: React.FC<UsersBetsProps> = ( { selectedTournament, loggedUser, 
                 <br />
                 <strong>Bet:</strong>
                 <div>{bet.goals_home} - {bet.goals_visitor}</div> <br />
-                {(user.id === loggedUser.id) && new Date(bet.game.date) > new Date() && (
+                {(user.id === loggedUser.id) &&
+                new Date(bet.game.date) > new Date() && (
                   <>
-                    <button onClick={() => handleRemoveBet(bet.id)}>Delete bet</button>
-                    <button onClick={() => handleEditBetClick(bet)}>Edit bet</button>
+                    <button onClick={() =>
+                      handleRemoveBet(bet.id)}>
+                        Delete bet
+                    </button>
+                    <button onClick={() =>
+                      handleEditBetClick(bet)}>
+                        Edit bet
+                    </button>
                   </>
                 )}
               </li>

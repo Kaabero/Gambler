@@ -112,7 +112,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
               )}
               {defaultTournament && (
                 <option key={defaultTournament.id} value={defaultTournament.id}>
-                  {defaultTournament.name}:
+                  {defaultTournament.name}:&nbsp;
                   {formatSimpleDate(new Date(defaultTournament.from_date))}-
                   {formatSimpleDate(new Date(defaultTournament.to_date))}
                 </option>
@@ -121,7 +121,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
                 .filter(tournament => tournament.id !== defaultTournament?.id)
                 .map((tournament) => (
                   <option key={tournament.id} value={tournament.id}>
-                    {tournament.name}-
+                    {tournament.name}:&nbsp;
                     {formatSimpleDate(new Date(tournament.from_date))}-
                     {formatSimpleDate(new Date(tournament.to_date))}
                   </option>

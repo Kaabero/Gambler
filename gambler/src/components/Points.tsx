@@ -19,7 +19,10 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
   const [showAdminTools, setShowAdminTools] = useState(false);
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
+    { id: '1',
+      name: 'TestTournament',
+      from_date: new Date(),
+      to_date: new Date() }
   );
   const [bets, setBets] = useState<Bet[]>([]);
 
@@ -50,22 +53,30 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
     navigate(-1);
   };
 
-  const outcomesWithScores = outcomes.filter((outcome) => !outcome.scores || outcome.scores.length > 0);
+  const outcomesWithScores = outcomes
+    .filter((outcome) => !outcome.scores || outcome.scores.length > 0);
 
-  const sortedOutcomes = [...outcomesWithScores].sort((a, b) => new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
+  const sortedOutcomes = [...outcomesWithScores]
+    .sort((a, b) =>
+      new Date(a.game.date).getTime() - new Date(b.game.date).getTime());
 
-  const filteredOutcomes = sortedOutcomes.filter(
-    (outcome) => outcome.game.tournament && outcome.game.tournament.id === tournament.id
-  );
+  const filteredOutcomes = sortedOutcomes
+    .filter(
+      (outcome) =>
+        outcome.game.tournament && outcome.game.tournament.id === tournament.id
+    );
 
   const usersBet = (user: User, outcome: Outcome): string => {
-    const bet = bets.find(
-      (bet) => bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
-    );
+    const bet = bets
+      .find((bet) =>
+        bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
+      );
     return `${bet?.goals_home}-${bet?.goals_visitor}`;
   };
 
-  const handleRadioChangeAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChangeAdmin = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setShowAdminTools(value === 'showadmin');
   };
@@ -125,11 +136,15 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
                       <strong>Points to user {score.user.username}: </strong>
                       {score.points}
                       <br />
-                      <strong>Users bet: </strong> {usersBet(score.user, outcome)} <br />
+                      <strong>Users bet: </strong>
+                      {usersBet(score.user, outcome)} <br />
                       <br />
                       { loggedUser.admin && showAdminTools && (
                         <>
-                          <button onClick={() => handleEditPointsClick(score)}>Edit points</button><br />
+                          <button onClick={() =>
+                            handleEditPointsClick(score)}>
+                              Edit points
+                          </button><br />
                           <br />
                         </>
                       )}

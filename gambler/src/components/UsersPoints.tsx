@@ -25,7 +25,10 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
   );
   const [scores, setScores] = useState<Scores[]>([]);
   const [tournament, setTournament] = useState<Tournament>(
-    { id: '1', name: 'TestTournament', from_date: new Date(), to_date: new Date() }
+    { id: '1',
+      name: 'TestTournament',
+      from_date: new Date(),
+      to_date: new Date() }
   );
   const [bets, setBets] = useState<Bet[]>([]);
 
@@ -68,14 +71,19 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
   };
 
 
-  const sortedScores = [...filteredScores].sort((a, b) => new Date(a.outcome.game.date).getTime() - new Date(b.outcome.game.date).getTime());
+  const sortedScores = [...filteredScores]
+    .sort((a, b) =>
+      new Date(a.outcome.game.date).getTime()
+    - new Date(b.outcome.game.date).getTime());
 
-  const tournamentScores = sortedScores.filter(score => score.outcome.game.tournament?.id === tournament.id);
+  const tournamentScores = sortedScores
+    .filter(score => score.outcome.game.tournament?.id === tournament.id);
 
   const usersBet = (user: User, outcome: Outcome): string => {
-    const bet = bets.find(
-      (bet) => bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
-    );
+    const bet = bets
+      .find((bet) =>
+        bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
+      );
     return `${bet?.goals_home}-${bet?.goals_visitor}`;
   };
 
@@ -93,9 +101,12 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
               <br />
               {formatDate(new Date(score.outcome.game.date))}<br />
               <br />
-              {score.outcome.game.home_team}-{score.outcome.game.visitor_team} <br />
+              {score.outcome.game.home_team}-
+              {score.outcome.game.visitor_team} <br />
               <br />
-              <strong>Result:</strong> {score.outcome.goals_home}-{score.outcome.goals_visitor} <br />
+              <strong>Result: </strong>
+              {score.outcome.goals_home}-
+              {score.outcome.goals_visitor} <br />
               <br />
 
               <strong>Bet:</strong> {usersBet(score.user, score.outcome)}<br />

@@ -16,7 +16,11 @@ interface EditTournamentFormProps {
   setTournaments: React.Dispatch<React.SetStateAction<Tournament[]>>;
 }
 
-const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setTournaments, setErrorMessage, setNotificationMessage }) => {
+const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
+  setTournaments,
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const { tournamentId } = useParams<{ tournamentId: string }>();
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [fromDate, setFromDate] = useState<string>('');
@@ -40,11 +44,16 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setTournaments,
   const tournamentEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    const hasGames = tournament && tournament.games && tournament.games.length > 0;
+    const hasGames = tournament &&
+    tournament.games && tournament.games.length > 0;
 
     if (hasGames) {
       const proceed = confirm(
-        'There are already games added to this tournament. You cannot change the tournament time period! Do you want to proceed with the other changes?'
+        `
+        There are already games added to this tournament. 
+        You cannot change the tournament time period! 
+        Do you want to proceed with the other changes?
+        `
       );
       if (!proceed) {
         return;
@@ -70,7 +79,9 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({ setTournaments,
       try {
         await editTournament(updatedTournament.id, updatedTournament);
         setTournaments(tournaments =>
-          tournaments.map(tournament => (tournament.id === updatedTournament.id ? updatedTournament : tournament))
+          tournaments.map(tournament =>
+            (tournament.id === updatedTournament.id ? updatedTournament
+              : tournament))
         );
         setNotificationMessage('Tournament updated successfully!');
         setTimeout(() => {

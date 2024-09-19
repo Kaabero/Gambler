@@ -12,7 +12,10 @@ import { formatDate } from '../utils/dateUtils';
 const GameResult = () => {
   const { gameId } = useParams();
   const [game, setGame] = useState<Game>(
-    { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
+    { id: '1',
+      date: new Date() ,
+      home_team: 'HomeTeam',
+      visitor_team: 'VisitorTeam' }
   );
   const navigate = useNavigate();
 
@@ -44,9 +47,13 @@ const GameResult = () => {
           {game.home_team}-{game.visitor_team}<br />
           {formatDate(new Date(game.date))}<br />
           <br />
-          <strong>Result:</strong> {game.outcome.goals_home}-{game.outcome.goals_visitor}<br />
+          <strong>Result:</strong>
+          {game.outcome.goals_home}-{game.outcome.goals_visitor}<br />
           <br />
-          <button onClick={() => game.outcome && handleCheckPoints(game.outcome)}>Check received points</button>
+          <button onClick={() =>
+            game.outcome && handleCheckPoints(game.outcome)}>
+            Check received points
+          </button>
         </div>
       )}
       {!game.outcome && (

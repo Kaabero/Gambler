@@ -15,7 +15,10 @@ const GamesBets = () => {
   const navigate = useNavigate();
   const { gameId } = useParams();
   const [game, setGame] = useState<Game>(
-    { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
+    { id: '1',
+      date: new Date() ,
+      home_team: 'HomeTeam',
+      visitor_team: 'VisitorTeam' }
   );
   const [bets, setBets] = useState<Bet[]>([]);
 
@@ -58,7 +61,8 @@ const GamesBets = () => {
                   <hr />
                   <strong>User:</strong> {bet.user.username}<br />
                   <br />
-                  <strong>Bet: </strong> {bet.goals_home}-{bet.goals_visitor}<br />
+                  <strong>Bet: </strong>
+                  {bet.goals_home}-{bet.goals_visitor}<br />
                   <br />
                 </li>
               )}

@@ -6,7 +6,10 @@ interface NotificationProps {
     notificationmessage: string
 }
 
-const Notification = ({ errormessage, notificationmessage }: NotificationProps) => {
+const Notification = ({
+  errormessage,
+  notificationmessage
+}: NotificationProps) => {
   if (errormessage === '' && notificationmessage === '') {
     return null;
   }

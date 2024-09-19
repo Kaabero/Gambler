@@ -10,7 +10,11 @@ interface LogoutProps {
   setSelectedTournament: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Logout: React.FC<LogoutProps> = ({ setSelectedTournament, setNotificationMessage, setUser }) => {
+const Logout: React.FC<LogoutProps> = ({
+  setSelectedTournament,
+  setNotificationMessage,
+  setUser
+}) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
