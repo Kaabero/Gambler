@@ -8,7 +8,8 @@ const middleware = require('../utils/middleware')
 
 
 const validatePassword = (password) => {
-  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  const regex
+  = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
   return regex.test(password)
 }
 
@@ -73,7 +74,11 @@ usersRouter.post('/', async (request, response) => {
   }
 
   if (!validatePassword(password)) {
-    return response.status(400).json({ error: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character' })
+    return response.status(400)
+      .json({ error:
+      `Password must be at least 8 characters long and include uppercase,
+       lowercase, number, and special character`
+      })
   }
 
   const saltRounds = 10
@@ -94,20 +99,24 @@ usersRouter.post('/', async (request, response) => {
 })
 
 
-usersRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
-  }
-  const user = request.user
+usersRouter
+  .delete('/:id', middleware.userExtractor, async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
+    const user = request.user
 
-  if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
-  }
+    if (!user.admin) {
+      return response.status(400)
+        .json({ error:
+      'This operation is for admins only.'
+        })
+    }
 
-  await User.findByIdAndDelete(request.params.id)
-  response.status(204).end()
-})
+    await User.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  })
 
 usersRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -118,7 +127,10 @@ usersRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   const user = request.user
 
   if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
+    return response.status(400)
+      .json({ error:
+      'This operation is for admins only.'
+      })
   }
   const { admin } = request.body
 

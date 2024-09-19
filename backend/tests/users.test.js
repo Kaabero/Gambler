@@ -1,17 +1,17 @@
 const assert = require('node:assert')
 const { test, after, describe, beforeEach } = require('node:test')
 
+const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 
 const app = require('../app')
-
 const api = supertest(app)
 const User = require('../models/user')
 
 const helper = require('./test_helper')
 
-const bcrypt = require('bcrypt')
+
 
 describe('when there is initially one user at db', () => {
   beforeEach(async () => {
@@ -44,47 +44,58 @@ describe('when there is initially one user at db', () => {
     assert(usernames.includes(newUser.username))
   })
 
-  test('creation fails with proper statuscode and message if username already taken', async () => {
-    const usersAtStart = await helper.usersInDb()
+  test(
+    `creation fails with proper statuscode and message 
+    if username already taken`,
+    async () => {
+      const usersAtStart = await helper.usersInDb()
 
-    const newUser = {
-      username: 'root',
-      password: 'Password1!',
+      const newUser = {
+        username: 'root',
+        password: 'Password1!',
+      }
+
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+      const usersAtEnd = await helper.usersInDb()
+      assert(result.body.error.includes('Username already taken'))
+
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
     }
-
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
-
-    const usersAtEnd = await helper.usersInDb()
-    assert(result.body.error.includes('Username already taken'))
-
-    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
-  })
+  )
 
 
-  test('creation fails with proper statuscode and message if password validation fails', async () => {
-    const usersAtStart = await helper.usersInDb()
+  test(
+    `creation fails with proper statuscode and message 
+    if password validation fails`,
+    async () => {
+      const usersAtStart = await helper.usersInDb()
 
-    const newUser = {
-      username: 'PasswordValidation',
-      password: 'password',
-    }
+      const newUser = {
+        username: 'PasswordValidation',
+        password: 'password',
+      }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
 
-    const usersAtEnd = await helper.usersInDb()
-    assert(result.body.error.includes('Password must be at least 8 characters long and include uppercase, lowercase, number, and special character'))
+      const usersAtEnd = await helper.usersInDb()
+      assert(result.body.error.includes(
+        `Password must be at least 8 characters long and include uppercase,
+       lowercase, number, and special character`
+      ))
 
-    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
-  })
-})
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+}
+)
 
 after(async () => {
   await User.deleteMany({})

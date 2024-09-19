@@ -55,17 +55,26 @@ betsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const now = new Date()
 
   if (date < now) {
-    return response.status(400).json({ error: 'Bet cannot be added for past games' })
+    return response.status(400)
+      .json({ error:
+      'Bet cannot be added for past games'
+      })
   }
 
   const existingBet = await Bet.findOne({ user: user._id, game: game._id })
 
   if (existingBet) {
-    return response.status(400).json({ error: 'User has already placed a bet on this game' })
+    return response.status(400)
+      .json({ error:
+      'User has already placed a bet on this game'
+      })
   }
 
   if (body.goals_home === '' || body.goals_visitor === '') {
-    return response.status(400).json({ error: 'Some of the required fields are missing' })
+    return response.status(400)
+      .json({ error:
+      'Some of the required fields are missing'
+      })
   }
 
   const bet = new Bet({
@@ -89,7 +98,8 @@ betsRouter.post('/', middleware.userExtractor, async (request, response) => {
 
 
 
-betsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
+{
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
@@ -99,7 +109,10 @@ betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
   const user = request.user
 
   if (game.outcome) {
-    return response.status(400).json({ error: 'Deleting bets is not allowed for games that have already been scored.' })
+    return response.status(400)
+      .json({ error:
+      'Deleting bets is not allowed for games that have already been scored.'
+      })
   }
 
   if ( bet.user.toString() === user.id.toString() || user.admin ) {
@@ -108,10 +121,12 @@ betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
   } else {
     response.status(401).json({ error: 'authorization failed' })
   }
-})
+}
+)
 
 
-betsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+betsRouter.put('/:id', middleware.userExtractor, async (request, response) =>
+{
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(400).end()
@@ -124,19 +139,20 @@ betsRouter.put('/:id', middleware.userExtractor, async (request, response, next)
 
 
   if (game.outcome) {
-    return response.status(400).json({ error: 'Editing bets is not allowed for games that have already been scored.' })
+    return response.status(400)
+      .json({ error:
+      'Editing bets is not allowed for games that have already been scored.'
+      })
   }
   if ( bet.user.toString() === user.id.toString() || user.admin ) {
 
-    Bet.findByIdAndUpdate(
+    const updatedBet =  await Bet.findByIdAndUpdate(
       request.params.id,
       { goals_home, goals_visitor },
       { new: true, runValidators: true, context: 'query' }
     )
-      .then(updatedBet => {
-        response.json(updatedBet)
-      })
-      .catch(error => next(error))
+
+    response.status(200).json(updatedBet)
 
   } else {
     response.status(401).json({ error: 'authorization failed' })

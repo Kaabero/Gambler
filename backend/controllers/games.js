@@ -67,16 +67,25 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   const user = request.user
 
   if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
+    return response.status(400)
+      .json({ error:
+      'This operation is for admins only.'
+      })
   }
 
   if (!body.home_team || !body.visitor_team || !body.date) {
-    return response.status(400).json({ error: 'Some of the required fields are missing' })
+    return response.status(400)
+      .json({ error:
+      'Some of the required fields are missing'
+      })
   }
 
 
   if (body.home_team.toLowerCase() === body.visitor_team.toLowerCase()) {
-    return response.status(400).json({ error: 'Home team and visitor team must be different' })
+    return response.status(400)
+      .json({ error:
+      'Home team and visitor team must be different'
+      })
   }
 
   const date = new Date(body.date)
@@ -91,7 +100,10 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   }
 
   if ( tournamentFrom > date || tournamentTo < date) {
-    return response.status(400).json({ error: 'Set the date inside tournament time period' })
+    return response.status(400)
+      .json({ error:
+      'Set the date inside tournament time period'
+      })
   }
 
   const existingGame = await Game.findOne({
@@ -103,7 +115,10 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   })
 
   if (existingGame) {
-    return response.status(400).json({ error: 'A game with the same teams and date already exists in this tournament.' })
+    return response.status(400)
+      .json({ error:
+      'A game with the same teams and date already exists in this tournament.'
+      })
   }
 
   const game = new Game({
@@ -120,21 +135,26 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
 
 })
 
-gamesRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(400).end()
+gamesRouter
+  .delete('/:id', middleware.userExtractor, async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(400).end()
+    }
+
+    const user = request.user
+
+    if (!user.admin) {
+      return response.status(400)
+        .json({ error:
+        'This operation is for admins only.'
+        })
+    }
+
+    await Game.findByIdAndDelete(request.params.id)
+    response.status(204).end()
   }
-
-  const user = request.user
-
-  if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
-  }
-
-  await Game.findByIdAndDelete(request.params.id)
-  response.status(204).end()
-})
+  )
 
 
 gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
@@ -146,7 +166,10 @@ gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   const user = request.user
 
   if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
+    return response.status(400)
+      .json({ error:
+      'This operation is for admins only.'
+      })
   }
   const { home_team, visitor_team, date, tournament } = request.body
 
@@ -161,7 +184,10 @@ gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
 
 
   if ( tournamentFrom > newDate || tournamentTo < newDate) {
-    return response.status(400).json({ error: 'Set the game date inside tournament time period' })
+    return response.status(400)
+      .json({ error:
+      'Set the game date inside tournament time period'
+      })
   }
 
 

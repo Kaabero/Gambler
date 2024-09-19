@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 
 const app = require('../app')
-
 const api = supertest(app)
 const Game = require('../models/game')
 const Tournament = require('../models/tournament')
@@ -98,7 +97,7 @@ describe('viewing a specific game', () => {
       .expect(404)
   })
 
-  test('fails with statuscode 400 id is invalid', async () => {
+  test('fails with statuscode 400 if id is invalid', async () => {
     const invalidId = '5a3d5da59070081a82a3445'
 
     await api
@@ -156,26 +155,27 @@ describe('addition of a new game', () => {
     assert(home_teams.includes('valid'))
   })
 
-  test('fails with status code 401 and proper message if token is invalid', async () => {
+  test(
+    'fails with status code 401 and proper message if token is invalid',
+    async () => {
+      const newGame = {
+        home_team: 'token',
+        visitor_team: 'invalid',
+        date: '1.1.2025',
+      }
 
-    const newGame = {
-      home_team: 'token',
-      visitor_team: 'invalid',
-      date: '1.1.2025'
+      const result = await api
+        .post('/api/games')
+        .send(newGame)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      assert(result.body.error.includes('token missing or invalid'))
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
     }
-
-    const result = await api
-      .post('/api/games')
-      .send(newGame)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
-
-
-    const gamesAtEnd = await helper.gamesInDb()
-    assert(result.body.error.includes('token missing or invalid'))
-
-    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
-  })
+  )
 
 
 
@@ -256,7 +256,7 @@ describe('modification of a game', () => {
     await Game.insertMany(helper.initialGames)
   })
 
-  test('succeeds with status code 200 with valid data and valid id', async () => {
+  test('succeeds with status code 200 with valid data and id', async () => {
     await api
       .post('/api/users')
       .send(testAdmin)
@@ -301,13 +301,20 @@ describe('modification of a game', () => {
 
 
     assert.deepStrictEqual(resultGame.body.id, newgameresponse.body.id)
-    assert.deepStrictEqual(resultGame.body.home_team, newgameresponse.body.home_team)
-    assert.deepStrictEqual(resultGame.body.date, newgameresponse.body.date)
-    assert.notEqual(resultGame.body.visitor_team, newgameresponse.body.visitor_team)
+    assert.deepStrictEqual(
+      resultGame.body.home_team, newgameresponse.body.home_team
+    )
+    assert.deepStrictEqual(
+      resultGame.body.date, newgameresponse.body.date
+    )
+    assert.notEqual(
+      resultGame.body.visitor_team,
+      newgameresponse.body.visitor_team
+    )
 
   })
 
-  test('fails with status code 400 if data invalid', async () => {
+  test('fails with status code 400 if data is invalid', async () => {
     const gamesAtStart = await helper.gamesInDb()
 
     const gameToModify = gamesAtStart[0]
@@ -366,7 +373,7 @@ describe('operations without admin rights: ', () => {
 
   })
 
-  test('modification of a game fails with valid data and valid id', async () => {
+  test('modification of a game fails with valid data and id', async () => {
 
 
     const gamesAtStart = await helper.gamesInDb()

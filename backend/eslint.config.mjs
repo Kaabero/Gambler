@@ -31,6 +31,7 @@ export default [
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
+      'max-len': ['error', { code: 80, tabWidth: 2, ignoreUrls: true }],
       '@stylistic/js/linebreak-style': [
         'error',
         'unix'

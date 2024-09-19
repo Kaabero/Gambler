@@ -74,11 +74,17 @@ scoresRouter.post('/', middleware.userExtractor, async (request, response) => {
   const pointsToUser = await User.findById(body.user)
 
   if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
+    return response.status(400)
+      .json({ error:
+      'This operation is for admins only.'
+      })
   }
 
   if (!body.outcome || !body.user || body.points === '') {
-    return response.status(400).json({ error: 'Some of the required fields are missing' })
+    return response.status(400)
+      .json({ error:
+      'Some of the required fields are missing'
+      })
   }
 
   const outcome = await Outcome.findById(body.outcome)
@@ -88,10 +94,13 @@ scoresRouter.post('/', middleware.userExtractor, async (request, response) => {
     return response.status(400).json({ error: 'Outcome not found' })
   }
 
-  const existingScores = await Scores.findOne({ outcome: outcome._id, user: body.user })
+  const existingScores = await Scores
+    .findOne({ outcome: outcome._id, user: body.user })
 
   if (existingScores) {
-    return response.status(400).json({ error: 'User has already received points for this outcome' })
+    return response.status(400)
+      .json({ error:
+      'User has already received points for this outcome' })
   }
 
   const scores = new Scores({
@@ -113,22 +122,27 @@ scoresRouter.post('/', middleware.userExtractor, async (request, response) => {
 
 })
 
-scoresRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(400).end()
-  }
-  const user = request.user
+scoresRouter
+  .delete('/:id', middleware.userExtractor, async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(400).end()
+    }
+    const user = request.user
 
-  if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
-  }
+    if (!user.admin) {
+      return response.status(400)
+        .json({ error:
+      'This operation is for admins only.'
+        })
+    }
 
-  await Scores.findByIdAndDelete(request.params.id)
-  response.status(204).end()
-})
+    await Scores.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  })
 
-scoresRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+scoresRouter.put('/:id', middleware.userExtractor, async (request, response) =>
+{
   const { points } = request.body
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
@@ -138,19 +152,20 @@ scoresRouter.put('/:id', middleware.userExtractor, async (request, response, nex
   const user = request.user
 
   if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
+    return response.status(400)
+      .json({ error:
+      'This operation is for admins only.'
+      })
   }
 
-  Scores.findByIdAndUpdate(
+  const updatedScores = await Scores.findByIdAndUpdate(
     request.params.id,
     { points },
     { new: true, runValidators: true, context: 'query' }
   )
-    .then(updatedScores => {
-      response.json(updatedScores)
-    })
-    .catch(error => next(error))
-})
+  response.status(200).json(updatedScores)
+}
+)
 
 
 module.exports = scoresRouter

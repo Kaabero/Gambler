@@ -15,7 +15,11 @@ const initialGames = [
 ]
 
 const nonExistingGameId = async () => {
-  const game = new Game({ home_team: 'FIN', visitor_team: 'BEL', date: '2.2.2024' })
+  const game = new Game({
+    home_team: 'FIN',
+    visitor_team: 'BEL',
+    date: '2.2.2024'
+  })
   await game.save()
   await game.deleteOne()
 

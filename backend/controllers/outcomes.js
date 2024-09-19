@@ -77,7 +77,8 @@ outcomesRouter.get('/:id', async (request, response) => {
   }
 })
 
-outcomesRouter.post('/', middleware.userExtractor, async (request, response) => {
+outcomesRouter.post('/', middleware.userExtractor, async (request, response) =>
+{
   const body = request.body
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -88,7 +89,10 @@ outcomesRouter.post('/', middleware.userExtractor, async (request, response) => 
   const user = request.user
 
   if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
+    return response.status(400)
+      .json({ error:
+      'This operation is for admins only.'
+      })
   }
 
   const game = await Game.findById(body.game)
@@ -98,11 +102,17 @@ outcomesRouter.post('/', middleware.userExtractor, async (request, response) => 
   const now = new Date()
 
   if (date > now) {
-    return response.status(400).json({ error: 'Outcome can not be added for future games' })
+    return response.status(400)
+      .json({ error:
+      'Outcome can not be added for future games'
+      })
   }
 
   if (body.goals_home === '' || body.goals_visitor === '') {
-    return response.status(400).json({ error: 'Some of the required fields are missing' })
+    return response.status(400)
+      .json({ error:
+      'Some of the required fields are missing'
+      })
   }
 
   const outcome = new Outcome({
@@ -116,47 +126,28 @@ outcomesRouter.post('/', middleware.userExtractor, async (request, response) => 
   await game.save()
   response.status(201).json(savedOutcome)
 
-})
+}
+)
 
-outcomesRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(400).end()
-  }
+outcomesRouter
+  .delete('/:id', middleware.userExtractor, async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(400).end()
+    }
 
-  const user = request.user
+    const user = request.user
 
-  if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
-  }
+    if (!user.admin) {
+      return response.status(400)
+        .json({ error:
+      'This operation is for admins only.'
+        })
+    }
 
-  await Outcome.findByIdAndDelete(request.params.id)
-  response.status(204).end()
-})
+    await Outcome.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  })
 
-
-outcomesRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
-  const { goals_home, goals_visitor, game } = request.body
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(400).end()
-  }
-
-  const user = request.user
-
-  if (!user.admin) {
-    return response.status(400).json({ error: 'This operation is for admins only.' })
-  }
-
-  Outcome.findByIdAndUpdate(
-    request.params.id,
-    { goals_home, goals_visitor, game },
-    { new: true, runValidators: true, context: 'query' }
-  )
-    .then(updatedOutcome => {
-      response.json(updatedOutcome)
-    })
-    .catch(error => next(error))
-})
 
 module.exports = outcomesRouter

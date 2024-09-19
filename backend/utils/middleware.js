@@ -23,8 +23,13 @@ const errorHandler = (error, request, response, next) => {
     response.status(400).json({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     response.status(400).json({ error: error.message })
-  } else if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')) {
-    response.status(400).json({ error: 'some of the fields is required to be unique' })
+  } else if (
+    error.name === 'MongoServerError' && error.message.includes(
+      'E11000 duplicate key error'
+    ))
+  {
+    response.status(400)
+      .json({ error: 'some of the fields is required to be unique' })
   } else if (error.name === 'JsonWebTokenError') {
     response.status(400).json({ error: 'token missing or invalid' })
   } else if (error.name === 'TokenExpiredError') {

@@ -43,7 +43,7 @@ const Login: React.FC<LoginFormProps> = ({
       navigate('/');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (exception) {
-      setErrorMessage('wrong credentials');
+      setErrorMessage('Wrong credentials');
       setUsername('');
       setPassword('');
       setTimeout(() => {
