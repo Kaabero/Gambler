@@ -32,4 +32,5 @@
 | 13.9.2024. | 5   | refaktorointia ja sivujen ulkoasua |
 | 16.9.2024. | 6   | homepage ja admintools -sivut, turnauksen lisäys, poisto ja editointi |
 | 17.9.2024. | 6   | testien korjausta, peliin liitettyä turnausta voi muuttaa, validointeja |
-| yht        | 122 |            | 
+| 19.9.2024. | 1   | eslint asetuksia |
+| yht        | 123 |            | 

@@ -1,6 +1,7 @@
 const tournamentsRouter = require('express').Router()
-const Tournament = require('../models/tournament')
 const jwt = require('jsonwebtoken')
+
+const Tournament = require('../models/tournament')
 const middleware = require('../utils/middleware')
 
 

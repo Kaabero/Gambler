@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Outcome, User, Tournament } from '../types';
-import { getAllOutcomes, removeOutcome } from '../services/outcomeService';
-import React from 'react';
-import { formatDate } from '../utils/dateUtils';
 import { AxiosError } from 'axios';
+import { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { getAllOutcomes, removeOutcome } from '../services/outcomeService';
 import { getTournamentById } from '../services/tournamentService';
+import { Outcome, User, Tournament } from '../types';
+import { formatDate } from '../utils/dateUtils';
 
 interface GameResultsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;

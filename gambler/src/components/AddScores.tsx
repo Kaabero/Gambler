@@ -1,7 +1,9 @@
-import { addScores } from '../services/scoreService';
-import { getOutcomeById } from '../services/outcomeService';
-import { NewScores, User, Bet } from '../types';
 import { AxiosError } from 'axios';
+
+import { getOutcomeById } from '../services/outcomeService';
+import { addScores } from '../services/scoreService';
+import { NewScores, User, Bet } from '../types';
+
 
 interface HandleAddScoresProps {
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -10,7 +12,12 @@ interface HandleAddScoresProps {
     event: React.SyntheticEvent;
 }
 
-export const handleAddScores = async ({ outcomeId, bets, setErrorMessage, event }: HandleAddScoresProps): Promise<void> => {
+export const handleAddScores = async ({
+  outcomeId,
+  bets,
+  setErrorMessage,
+  event
+}: HandleAddScoresProps): Promise<void> => {
   event.preventDefault();
 
   const outcome = await getOutcomeById(outcomeId);
@@ -64,7 +71,10 @@ export const handleAddScores = async ({ outcomeId, bets, setErrorMessage, event 
   };
 
   const usersWithRightBets = bets
-    .filter(bet => bet.game.id === outcome.game.id && bet.goals_home === outcome.goals_home && bet.goals_visitor === outcome.goals_visitor)
+    .filter(bet =>
+      bet.game.id === outcome.game.id
+      && bet.goals_home === outcome.goals_home
+      && bet.goals_visitor === outcome.goals_visitor)
     .map(bet => bet.user);
 
   if (usersWithRightBets.length > 0) {
@@ -73,7 +83,8 @@ export const handleAddScores = async ({ outcomeId, bets, setErrorMessage, event 
 
   if (outcome.goals_home > outcome.goals_visitor) {
     const usersWithHomeTeamWins = bets
-      .filter(bet => bet.game.id === outcome.game.id && bet.goals_home > bet.goals_visitor)
+      .filter(bet =>
+        bet.game.id === outcome.game.id && bet.goals_home > bet.goals_visitor)
       .map(bet => bet.user);
 
     const filteredUsersWithHomeWins = usersWithHomeTeamWins.filter(user2 =>
@@ -87,12 +98,14 @@ export const handleAddScores = async ({ outcomeId, bets, setErrorMessage, event 
 
   if (outcome.goals_home < outcome.goals_visitor) {
     const usersWithVisitorTeamWins = bets
-      .filter(bet => bet.game.id === outcome.game.id && bet.goals_home < bet.goals_visitor)
+      .filter(bet =>
+        bet.game.id === outcome.game.id && bet.goals_home < bet.goals_visitor)
       .map(bet => bet.user);
 
-    const filteredUsersWithVisitorWins = usersWithVisitorTeamWins.filter(user2 =>
-      !usersWithRightBets.some(user1 => user1.id === user2.id)
-    );
+    const filteredUsersWithVisitorWins = usersWithVisitorTeamWins
+      .filter(user2 =>
+        !usersWithRightBets.some(user1 => user1.id === user2.id)
+      );
 
     if (filteredUsersWithVisitorWins.length > 0) {
       await addOnePoint(filteredUsersWithVisitorWins, event);
@@ -102,7 +115,8 @@ export const handleAddScores = async ({ outcomeId, bets, setErrorMessage, event 
 
   if (outcome.goals_home === outcome.goals_visitor) {
     const usersWithDraw = bets
-      .filter(bet => bet.game.id === outcome.game.id && bet.goals_home === bet.goals_visitor)
+      .filter(bet =>
+        bet.game.id === outcome.game.id && bet.goals_home === bet.goals_visitor)
       .map(bet => bet.user);
 
     const filteredUsersWithDraw = usersWithDraw.filter(user2 =>

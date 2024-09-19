@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Game, Outcome } from '../types';
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 import { getGameById } from '../services/gameService';
+import { Game, Outcome } from '../types';
 import { formatDate } from '../utils/dateUtils';
 
 

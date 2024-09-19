@@ -1,7 +1,8 @@
 const gamesRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
+
 const Game = require('../models/game')
 const Tournament = require('../models/tournament')
-const jwt = require('jsonwebtoken')
 const middleware = require('../utils/middleware')
 
 

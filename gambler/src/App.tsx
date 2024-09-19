@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Credentials, Tournament } from './types';
-import { setToken } from './utils/setToken';
+
+import MainComponent from './components/MainComponent';
 import Notification from './components/Notification';
 import { getAllTournaments } from './services/tournamentService';
-import MainComponent from './components/MainComponent';
+import { Credentials, Tournament } from './types';
+import { setToken } from './utils/setToken';
 
 const App = () => {
   const [errormessage, setErrorMessage] = useState('');
@@ -30,7 +31,10 @@ const App = () => {
 
   return (
     <Router>
-      <Notification errormessage={errormessage} notificationmessage={notificationmessage} />
+      <Notification
+        errormessage={errormessage}
+        notificationmessage={notificationmessage}
+      />
       <MainComponent
         setTournaments={setTournaments}
         errormessage={errormessage}

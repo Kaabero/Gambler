@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { User, Scores, Tournament, Bet, Outcome } from '../types';
 import React from 'react';
-import { getUserById } from '../services/userService';
-import { formatDate } from '../utils/dateUtils';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+import { getAllBets } from '../services/betService';
 import { getAllScores } from '../services/scoreService';
 import { getTournamentById } from '../services/tournamentService';
-import { useNavigate } from 'react-router-dom';
-import { getAllBets } from '../services/betService';
+import { getUserById } from '../services/userService';
+import { User, Scores, Tournament, Bet, Outcome } from '../types';
+import { formatDate } from '../utils/dateUtils';
+
+
 
 
 interface UsersPointsProps {

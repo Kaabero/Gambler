@@ -1,8 +1,9 @@
 const scoresRouter = require('express').Router()
-const Scores = require('../models/scores')
-const Outcome = require('../models/outcome')
-const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+
+const Outcome = require('../models/outcome')
+const Scores = require('../models/scores')
+const User = require('../models/user')
 const middleware = require('../utils/middleware')
 
 

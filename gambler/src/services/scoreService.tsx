@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { Scores, NewScores } from '../types';
 import { token } from '../utils/setToken';
 const baseUrl = '/api/scores';

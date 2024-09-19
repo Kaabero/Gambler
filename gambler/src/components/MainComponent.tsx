@@ -1,31 +1,36 @@
 import React from 'react';
 import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
+
 import { Credentials, Tournament } from '../types';
-import Bets from './Bets';
-import GameResults from './GameResults';
-import Login from './Login';
-import Games from './Games';
-import Users from './Users';
-import AddBetForm from './AddBetForm';
-import AddOutcomeForm from './AddOutcomeForm';
-import CreateAccount from './RegisterationForm';
-import GameResult from './GameResult';
-import UsersBets from './UsersBets';
-import GamesBets from './GamesBets';
-import Points from './Points';
-import UsersPoints from './UsersPoints';
-import GamesPoints from './GamesPoints';
-import EditGameForm from './EditGameForm';
-import EditBetForm from './EditBetForm';
-import EditScoresForm from './EditScoresForm';
-import AddGameForm from './AddGameForm';
-import Logout from './Logout';
-import Home from './WelcomePage';
-import AdminTools from './AdminTools';
-import AddTournamentForm from './AddTournamentForm';
-import Tournaments from './Tournaments';
-import EditTournamentForm from './EditTournamentForm';
 import { formatSimpleDate } from '../utils/dateUtils';
+
+import AddBetForm from './AddBetForm';
+import AddGameForm from './AddGameForm';
+import AddOutcomeForm from './AddOutcomeForm';
+import AddTournamentForm from './AddTournamentForm';
+import AdminTools from './AdminTools';
+import Bets from './Bets';
+import EditBetForm from './EditBetForm';
+import EditGameForm from './EditGameForm';
+import EditScoresForm from './EditScoresForm';
+import EditTournamentForm from './EditTournamentForm';
+import GameResult from './GameResult';
+import GameResults from './GameResults';
+import Games from './Games';
+import GamesBets from './GamesBets';
+import GamesPoints from './GamesPoints';
+import Login from './Login';
+import Logout from './Logout';
+import Points from './Points';
+import CreateAccount from './RegisterationForm';
+import Tournaments from './Tournaments';
+import Users from './Users';
+import UsersBets from './UsersBets';
+import UsersPoints from './UsersPoints';
+import Home from './WelcomePage';
+
+
+
 
 
 interface MainComponentProps {

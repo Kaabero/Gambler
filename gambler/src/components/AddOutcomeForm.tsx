@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Outcome, Game, NewOutcome, Bet } from '../types';
-import React from 'react';
-import { getAllOutcomes, addOutcome } from '../services/outcomeService';
 import { AxiosError } from 'axios';
+import { useState, useEffect } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { getGameById } from '../services/gameService';
+
 import { getAllBets } from '../services/betService';
-import { handleAddScores } from './AddScores';
+import { getGameById } from '../services/gameService';
+import { getAllOutcomes, addOutcome } from '../services/outcomeService';
+import { Outcome, Game, NewOutcome, Bet } from '../types';
 import { formatDate } from '../utils/dateUtils';
+
+import { handleAddScores } from './AddScores';
 
 
 
@@ -18,17 +20,35 @@ interface AddOutcomeFormProps {
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const { gameId } = useParams<{ gameId: string }>();
   const [game, setGame] = useState<Game>(
-    { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
+    {
+      id: '1',
+      date: new Date() ,
+      home_team: 'HomeTeam',
+      visitor_team: 'VisitorTeam' }
   );
   const [visitorGoals, setVisitorGoals] = useState('');
   const [homeGoals, setHomeGoals] = useState('');
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [bets, setBets] = useState<Bet[]>([
-    { id: '1', goals_home: '1', goals_visitor: '1', game: { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }, user: {
-      id: '1', username: 'TestUser', password: 'Password', admin: false } }
+    { id: '1',
+      goals_home: '1',
+      goals_visitor: '1',
+      game: {
+        id: '1',
+        date: new Date() ,
+        home_team: 'HomeTeam',
+        visitor_team: 'VisitorTeam' },
+      user: {
+        id: '1',
+        username: 'TestUser',
+        password: 'Password',
+        admin: false } }
   ]);
   const navigate = useNavigate();
 

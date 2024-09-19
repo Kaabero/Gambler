@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { User, NewUser } from '../types';
 import { token } from '../utils/setToken';
 

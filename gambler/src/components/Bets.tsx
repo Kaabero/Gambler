@@ -1,12 +1,13 @@
+import { AxiosError } from 'axios';
 import { useState, useEffect } from 'react';
-import { Bet, User, Game, Tournament } from '../types';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { removeBet } from '../services/betService';
 import { getAllGames } from '../services/gameService';
-import React from 'react';
-import { formatDate } from '../utils/dateUtils';
-import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { getTournamentById } from '../services/tournamentService';
+import { Bet, User, Game, Tournament } from '../types';
+import { formatDate } from '../utils/dateUtils';
 
 interface BetsProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Outcome, User, Scores, Tournament, Bet } from '../types';
-import { getAllOutcomes } from '../services/outcomeService';
 import React from 'react';
-import { formatDate } from '../utils/dateUtils';
 import { useNavigate } from 'react-router-dom';
-import { getTournamentById } from '../services/tournamentService';
+
 import { getAllBets } from '../services/betService';
+import { getAllOutcomes } from '../services/outcomeService';
+import { getTournamentById } from '../services/tournamentService';
+import { Outcome, User, Scores, Tournament, Bet } from '../types';
+import { formatDate } from '../utils/dateUtils';
 
 interface PointsProps {
     loggedUser: User,

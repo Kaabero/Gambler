@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
-import { User, Scores, Tournament, Bet } from '../types';
-import { getAllUsers, removeUser } from '../services/userService';
-import { getAllScores } from '../services/scoreService';
-import React from 'react';
-import { getAllBets } from '../services/betService';
-import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { getAllBets } from '../services/betService';
+import { getAllScores } from '../services/scoreService';
 import { getTournamentById } from '../services/tournamentService';
+import { getAllUsers, removeUser } from '../services/userService';
 import { getUserById } from '../services/userService';
 import { editUser } from '../services/userService';
+import { User, Scores, Tournament, Bet } from '../types';
 
 
 interface UsersProps {

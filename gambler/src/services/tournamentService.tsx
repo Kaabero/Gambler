@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { Tournament } from '../types';
 import { token } from '../utils/setToken';
 

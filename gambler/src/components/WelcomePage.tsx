@@ -1,7 +1,8 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
+
 import { getAllUsers } from '../services/userService';
 import { User } from '../types';
-import { useState, useEffect } from 'react';
 
 
 

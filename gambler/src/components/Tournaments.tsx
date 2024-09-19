@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-import { User, Tournament } from '../types';
-import { useNavigate } from 'react-router-dom';
-import { getAllTournaments, removeTournament } from '../services/tournamentService';
-import React from 'react';
 import { AxiosError } from 'axios';
+import { useState, useEffect } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { getAllTournaments, removeTournament } from '../services/tournamentService';
+import { User, Tournament } from '../types';
 import { formatSimpleDate } from '../utils/dateUtils';
 
 interface TournamentsProps {

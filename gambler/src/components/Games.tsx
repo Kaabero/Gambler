@@ -1,10 +1,11 @@
+import { AxiosError } from 'axios';
 import { useState, useEffect } from 'react';
-import { Game, User, Tournament } from '../types';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { getAllGames, removeGame } from '../services/gameService';
 import { getTournamentById } from '../services/tournamentService';
-import React from 'react';
-import { AxiosError } from 'axios';
+import { Game, User, Tournament } from '../types';
 import { formatDate } from '../utils/dateUtils';
 
 interface GamesProps {

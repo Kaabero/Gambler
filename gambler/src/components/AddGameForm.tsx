@@ -1,11 +1,12 @@
+import { AxiosError } from 'axios';
 import { useState, useEffect } from 'react';
-import { Game, NewGame, Tournament } from '../types';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { getAllGames, createGame } from '../services/gameService';
 import { getAllTournaments } from '../services/tournamentService';
-import React from 'react';
-import { AxiosError } from 'axios';
 import { getTournamentById } from '../services/tournamentService';
+import { Game, NewGame, Tournament } from '../types';
 import { formatSimpleDate } from '../utils/dateUtils';
 
 interface AddGameFormProps {
@@ -14,7 +15,11 @@ interface AddGameFormProps {
     selectedTournament: string;
 }
 
-const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorMessage, setNotificationMessage }) => {
+const AddGameForm: React.FC<AddGameFormProps> = ({
+  selectedTournament,
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const [date, setDate] = useState('');
   const [visitorTeam, setVisitorTeam] = useState('');
   const [homeTeam, setHomeTeam] = useState('');
@@ -107,14 +112,18 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
               )}
               {defaultTournament && (
                 <option key={defaultTournament.id} value={defaultTournament.id}>
-                  {defaultTournament.name}: {formatSimpleDate(new Date(defaultTournament.from_date))}-{formatSimpleDate(new Date(defaultTournament.to_date))}
+                  {defaultTournament.name}:
+                  {formatSimpleDate(new Date(defaultTournament.from_date))}-
+                  {formatSimpleDate(new Date(defaultTournament.to_date))}
                 </option>
               )}
               {tournaments
                 .filter(tournament => tournament.id !== defaultTournament?.id)
                 .map((tournament) => (
                   <option key={tournament.id} value={tournament.id}>
-                    {tournament.name}: {formatSimpleDate(new Date(tournament.from_date))}-{formatSimpleDate(new Date(tournament.to_date))}
+                    {tournament.name}-
+                    {formatSimpleDate(new Date(tournament.from_date))}-
+                    {formatSimpleDate(new Date(tournament.to_date))}
                   </option>
                 ))}
             </select>
@@ -158,7 +167,8 @@ const AddGameForm: React.FC<AddGameFormProps> = ({ selectedTournament, setErrorM
         <>
           <p> There isn't any tournaments where you can add a game </p>
           <br />
-          <button type="button" onClick={handleAddTournamentClick}>Add a tournament</button>
+          <button type="button" onClick={handleAddTournamentClick}>
+            Add a tournament</button>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setToken } from '../utils/setToken';
+
 import { Credentials } from '../types';
+import { setToken } from '../utils/setToken';
 
 interface LogoutProps {
   setUser: React.Dispatch<React.SetStateAction<Credentials | null | undefined>>;

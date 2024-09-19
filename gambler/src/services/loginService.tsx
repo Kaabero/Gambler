@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { Credentials } from '../types';
 
 const baseUrl = '/api/login';

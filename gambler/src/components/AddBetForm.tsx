@@ -1,11 +1,12 @@
-import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { NewBet, Game } from '../types';
-import React from 'react';
-import { addBet } from '../services/betService';
 import { AxiosError } from 'axios';
-import { getGameById } from '../services/gameService';
+import { useState, useEffect } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
+import { addBet } from '../services/betService';
+import { getGameById } from '../services/gameService';
+import { NewBet, Game } from '../types';
 import { formatDate } from '../utils/dateUtils';
 
 interface AddBetFormProps {
@@ -13,10 +14,17 @@ interface AddBetFormProps {
   setNotificationMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const AddBetForm: React.FC<AddBetFormProps> = ({ setErrorMessage, setNotificationMessage }) => {
+const AddBetForm: React.FC<AddBetFormProps> = ({
+  setErrorMessage,
+  setNotificationMessage
+}) => {
   const { gameId } = useParams<{ gameId: string }>();
   const [game, setGame] = useState<Game>(
-    { id: '1', date: new Date() , home_team: 'HomeTeam', visitor_team: 'VisitorTeam' }
+    {
+      id: '1',
+      date: new Date() ,
+      home_team: 'HomeTeam',
+      visitor_team: 'VisitorTeam' }
   );
   const [visitorGoals, setVisitorGoals] = useState('');
   const [homeGoals, setHomeGoals] = useState('');

@@ -1,6 +1,7 @@
 import globals from "globals";
 import stylisticJs from '@stylistic/eslint-plugin-js'
 import js from '@eslint/js'
+import importPlugin from 'eslint-plugin-import-x';
 
 export default [
   js.configs.recommended,
@@ -14,12 +15,21 @@ export default [
       ecmaVersion: "latest",
     },
     plugins: {
-      '@stylistic/js': stylisticJs
+      '@stylistic/js': stylisticJs,
+      import: importPlugin,
     },
     rules: {
       '@stylistic/js/indent': [
         'error',
         2
+      ],
+      'import/order': [
+        'error',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
       ],
       '@stylistic/js/linebreak-style': [
         'error',

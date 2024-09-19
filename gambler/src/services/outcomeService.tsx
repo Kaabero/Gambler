@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { Outcome, NewOutcome } from '../types';
 import { token } from '../utils/setToken';
 

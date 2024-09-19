@@ -1,13 +1,17 @@
-const { test, after, describe, beforeEach } = require('node:test')
 const assert = require('node:assert')
+const { test, after, describe, beforeEach } = require('node:test')
+
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+
 const app = require('../app')
+
 const api = supertest(app)
-const helper = require('./test_helper')
-const User = require('../models/user')
 const Game = require('../models/game')
 const Tournament = require('../models/tournament')
+const User = require('../models/user')
+
+const helper = require('./test_helper')
 
 
 const testUser = {

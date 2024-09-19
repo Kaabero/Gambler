@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Outcome, Scores } from '../types';
 import React from 'react';
-import { getOutcomeById } from '../services/outcomeService';
-import { formatDate } from '../utils/dateUtils';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
+import { getOutcomeById } from '../services/outcomeService';
+import { Outcome, Scores } from '../types';
+import { formatDate } from '../utils/dateUtils';
+
 
 
 

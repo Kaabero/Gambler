@@ -3,6 +3,7 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
+import importPlugin from 'eslint-plugin-import-x';
 
 export default tseslint.config({
   extends: [js.configs.recommended, ...tseslint.configs.recommended],
@@ -15,6 +16,7 @@ export default tseslint.config({
   plugins: {
     'react-hooks': reactHooks,
     'react-refresh': reactRefresh,
+    import: importPlugin,
   },
   rules: {
     ...reactHooks.configs.recommended.rules,
@@ -22,8 +24,17 @@ export default tseslint.config({
       'warn',
       { allowConstantExport: true },
     ],
+    'import/order': [
+        'error',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
+    ],
     'indent': ['error', 2],
     'semi': ['error', 'always'],
+    'max-len': ['error', { code: 80, tabWidth: 2, ignoreUrls: true }],
     'array-bracket-spacing': ['error', 'never'], 
     'object-curly-spacing': ['error', 'always'],
     'brace-style': ['error', '1tbs', { 'allowSingleLine': true }],
