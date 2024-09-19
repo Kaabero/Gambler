@@ -197,19 +197,31 @@ describe('addition of a new game', () => {
   })
 
   test('fails with status code 400 if home_team = visitor_team', async () => {
+    const response = await api
+      .post('/api/tournaments')
+      .set('Authorization', `Bearer ${token}`)
+      .send(testTournament)
+
     const newGame = {
       home_team: 'team',
-      visitor_team: 'team',
-      date: '1.1.2025'
+      visitor_team: 'Team',
+      date: '1.1.2025',
+      tournament: response.body.id
     }
 
-    await api
+    const result = await api
       .post('/api/games')
+      .set('Authorization', `Bearer ${token}`)
       .send(newGame)
       .expect(400)
+      .expect('Content-Type', /application\/json/)
 
 
     const gamesAtEnd = await helper.gamesInDb()
+
+    assert(result.body.error.includes(
+      'Home team and visitor team must be different'
+    ))
 
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
   })
