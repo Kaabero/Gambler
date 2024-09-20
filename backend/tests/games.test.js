@@ -34,6 +34,16 @@ const testTournament = {
 
 let token
 
+let tournamentId
+
+let initialGame
+
+beforeEach(async () => {
+  await Game.deleteMany({})
+  await User.deleteMany({})
+  await Tournament.deleteMany({})
+})
+
 
 describe('returning initial games', () => {
   beforeEach(async () => {
@@ -110,31 +120,34 @@ describe('addition of a new game', () => {
 
   beforeEach(async () => {
     await Game.deleteMany({})
+    await Tournament.deleteMany({})
     await Game.insertMany(helper.initialGames)
     await api
       .post('/api/users')
       .send(testAdmin)
-    const response = await api
+    const loginresponse = await api
       .post('/api/login')
       .send(testAdmin)
 
-    token = response.body.token
+    token = loginresponse.body.token
+    const tournamentresponse = await api
+      .post('/api/tournaments')
+      .set('Authorization', `Bearer ${token}`)
+      .send(testTournament)
+
+    tournamentId = tournamentresponse.body.id
 
 
   })
 
   test('succeeds with valid data and admin rights', async () => {
 
-    const response = await api
-      .post('/api/tournaments')
-      .set('Authorization', `Bearer ${token}`)
-      .send(testTournament)
 
     const newGame = {
       home_team: 'valid',
       visitor_team: 'data',
       date: '1.1.2025',
-      tournament: response.body.id
+      tournament: tournamentId
     }
 
     await api
@@ -143,9 +156,6 @@ describe('addition of a new game', () => {
       .send(newGame)
       .expect(201)
       .expect('Content-Type', /application\/json/)
-
-
-
 
 
     const gamesAtEnd = await helper.gamesInDb()
@@ -162,6 +172,33 @@ describe('addition of a new game', () => {
         home_team: 'token',
         visitor_team: 'invalid',
         date: '1.1.2025',
+        tournament: tournamentId
+      }
+
+      const invalidToken = 'invalidtoken'
+
+      const result = await api
+        .post('/api/games')
+        .send(newGame)
+        .set('Authorization', `Bearer ${invalidToken}`)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      assert(result.body.error.includes('Token missing or invalid'))
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+    }
+  )
+
+  test(
+    'fails with status code 400 if token is missing',
+    async () => {
+      const newGame = {
+        home_team: 'token',
+        visitor_team: 'missing',
+        date: '1.1.2025',
+        tournament: tournamentId
       }
 
       const result = await api
@@ -172,41 +209,115 @@ describe('addition of a new game', () => {
 
       const gamesAtEnd = await helper.gamesInDb()
 
-      assert(result.body.error.includes('token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid'))
       assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
     }
   )
 
+  test('fails with status code 400 if date is outside tournament time period',
+    async () => {
 
 
-  test('fails with status code 400 if data invalid', async () => {
-    const newGame = {
-      visitor_team: 'data invalid',
-      date: '1.1.2025'
+      const newGame = {
+        home_team: 'outside',
+        visitor_team: 'time period',
+        date: '2.1.2026',
+        tournament: tournamentId
+      }
+
+      const result = await api
+        .post('/api/games')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newGame)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      assert(result.body.error.includes(
+        'Set the date inside tournament time period'
+      ))
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
     }
+  )
 
-    await api
-      .post('/api/games')
-      .send(newGame)
-      .expect(400)
+  test('fails with status code 400 if game already added',
+    async () => {
 
 
-    const gamesAtEnd = await helper.gamesInDb()
+      const newGame = {
+        home_team: 'same',
+        visitor_team: 'again',
+        date: '1.1.2025',
+        tournament: tournamentId
+      }
 
-    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
-  })
+      await api
+        .post('/api/games')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newGame)
+
+      const sameGame = {
+        home_team: 'same',
+        visitor_team: 'again',
+        date: '1.1.2025',
+        tournament: tournamentId
+      }
+
+      const result = await api
+        .post('/api/games')
+        .set('Authorization', `Bearer ${token}`)
+        .send(sameGame)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      assert(result.body.error.includes(
+        'A game with the same teams and date already exists in this tournament.'
+      ))
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length+1)
+    }
+  )
+
+  test(
+    'fails with status code 400 and proper error message if data invalid',
+    async () => {
+      const newGame = {
+        visitor_team: 'data invalid',
+        date: '1.1.2025',
+        tournament: tournamentId
+      }
+
+      const result = await api
+        .post('/api/games')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newGame)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+
+      assert(result.body.error.includes(
+        'Some of the required fields are missing'
+      ))
+    }
+  )
 
   test('fails with status code 400 if home_team = visitor_team', async () => {
-    const response = await api
-      .post('/api/tournaments')
-      .set('Authorization', `Bearer ${token}`)
-      .send(testTournament)
+
 
     const newGame = {
       home_team: 'team',
       visitor_team: 'Team',
       date: '1.1.2025',
-      tournament: response.body.id
+      tournament: tournamentId
     }
 
     const result = await api
@@ -259,6 +370,41 @@ describe('deletion of a game', () => {
 
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length - 1)
   })
+
+  test('fails with status code 400 if token is missing', async () => {
+    const gamesAtStart = await helper.gamesInDb()
+    const gameToDelete = gamesAtStart[0]
+
+    const result = await api
+      .delete(`/api/games/${gameToDelete.id}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const gamesAtEnd = await helper.gamesInDb()
+
+    assert(result.body.error.includes('Token missing or invalid'))
+    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+
+  })
+
+  test('fails with status code 400 if token is invalid', async () => {
+    const gamesAtStart = await helper.gamesInDb()
+    const gameToDelete = gamesAtStart[0]
+
+    const invalidToken = 'invalidtoken'
+
+    const result = await api
+      .delete(`/api/games/${gameToDelete.id}`)
+      .set('Authorization', `Bearer ${invalidToken}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const gamesAtEnd = await helper.gamesInDb()
+
+    assert(result.body.error.includes('Token missing or invalid'))
+    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+
+  })
 })
 
 describe('modification of a game', () => {
@@ -266,9 +412,6 @@ describe('modification of a game', () => {
     await Game.deleteMany({})
     await Tournament.deleteMany({})
     await Game.insertMany(helper.initialGames)
-  })
-
-  test('succeeds with status code 200 with valid data and id', async () => {
     await api
       .post('/api/users')
       .send(testAdmin)
@@ -277,17 +420,18 @@ describe('modification of a game', () => {
       .send(testAdmin)
 
     token = loginresponse.body.token
-
     const tournamentresponse = await api
       .post('/api/tournaments')
       .set('Authorization', `Bearer ${token}`)
       .send(testTournament)
 
+    tournamentId = tournamentresponse.body.id
+
     const newGame = {
       home_team: 'valid',
       visitor_team: 'data',
       date: '1.1.2025',
-      tournament: tournamentresponse.body.id
+      tournament: tournamentId
     }
 
     const newgameresponse = await api
@@ -297,45 +441,78 @@ describe('modification of a game', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
+    initialGame = newgameresponse.body
+
+  })
+
+  test('succeeds with status code 200 with valid data and id', async () => {
 
     const modifiedGame = {
       visitor_team: 'modified visitor_team',
-      tournament: tournamentresponse.body.id
+      tournament: tournamentId
     }
 
     const resultGame = await api
-      .put(`/api/games/${newgameresponse.body.id}`)
+      .put(`/api/games/${initialGame.id}`)
       .send(modifiedGame)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
+    const gamesAtEnd = await helper.gamesInDb()
 
-
-    assert.deepStrictEqual(resultGame.body.id, newgameresponse.body.id)
+    assert.deepStrictEqual(resultGame.body.id, initialGame.id)
     assert.deepStrictEqual(
-      resultGame.body.home_team, newgameresponse.body.home_team
+      resultGame.body.home_team, initialGame.home_team
     )
     assert.deepStrictEqual(
-      resultGame.body.date, newgameresponse.body.date
+      resultGame.body.date, initialGame.date
     )
     assert.notEqual(
       resultGame.body.visitor_team,
-      newgameresponse.body.visitor_team
+      initialGame.visitor_team
     )
-
+    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length+1)
   })
 
-  test('fails with status code 400 if data is invalid', async () => {
-    const gamesAtStart = await helper.gamesInDb()
+  test(
+    `fails with status code 400 and proper message 
+    if date is outside tournament time period`,
+    async () => {
 
-    const gameToModify = gamesAtStart[0]
+      const modifiedGame = {
+        visitor_team: 'improper date',
+        date: '2.1.2026',
+        tournament: tournamentId
+      }
+
+      const result = await api
+        .put(`/api/games/${initialGame.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(modifiedGame)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      const visitor_teams = gamesAtEnd.map(g => g.visitor_team)
+      assert(result.body.error.includes(
+        'Set the game date inside tournament time period'
+      ))
+      assert(!visitor_teams.includes(modifiedGame.visitor_team))
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length+1)
+    }
+  )
+
+  test('fails with status code 400 if data is invalid', async () => {
 
     const modifiedGame = {
       visitor_team: 1,
+      tournament: tournamentId
     }
     await api
-      .put(`/api/games/${gameToModify.id}`)
+      .put(`/api/games/${initialGame.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(modifiedGame)
       .expect(400)
 
@@ -343,9 +520,148 @@ describe('modification of a game', () => {
 
     const visitor_teams = gamesAtEnd.map(g => g.visitor_team)
     assert(!visitor_teams.includes(modifiedGame.visitor_team))
-    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length+1)
 
   })
+
+  test('fails with status code 400 if token is missing', async () => {
+
+    const modifiedGame = {
+      visitor_team: 'token missing',
+      tournament: tournamentId
+    }
+    const result = await api
+      .put(`/api/games/${initialGame.id}`)
+      .send(modifiedGame)
+      .expect(400)
+
+    const gamesAtEnd = await helper.gamesInDb()
+
+    assert(result.body.error.includes(
+      'Token missing or invalid'
+    ))
+
+    const visitor_teams = gamesAtEnd.map(g => g.visitor_team)
+    assert(!visitor_teams.includes(modifiedGame.visitor_team))
+    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length+1)
+
+  })
+  test('fails with status code 400 if token is invalid', async () => {
+
+    const modifiedGame = {
+      visitor_team: 'invalid token',
+      tournament: tournamentId
+    }
+
+    const invalidToken = 'invalidtoken'
+
+    const result = await api
+      .put(`/api/games/${initialGame.id}`)
+      .set('Authorization', `Bearer ${invalidToken}`)
+      .send(modifiedGame)
+      .expect(400)
+
+    const gamesAtEnd = await helper.gamesInDb()
+
+    assert(result.body.error.includes('Token missing or invalid'))
+
+    const visitor_teams = gamesAtEnd.map(g => g.visitor_team)
+    assert(!visitor_teams.includes(modifiedGame.visitor_team))
+    assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
+  })
+
+  test(
+    'succeeds with status code 200 when tournament is changed',
+    async () => {
+
+      const oldTournament = {
+        name: 'oldTournament',
+        from_date: '1.1.2024',
+        to_date: '1.1.2026'
+      }
+
+      const oldtournamentresponse = await api
+        .post('/api/tournaments')
+        .set('Authorization', `Bearer ${token}`)
+        .send(oldTournament)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const newGame = {
+        home_team: 'changing',
+        visitor_team: 'tournament',
+        date: '1.1.2025',
+        tournament: oldtournamentresponse.body.id
+      }
+
+      const newgameresponse = await api
+        .post('/api/games')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newGame)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+
+      const newTournament = {
+        name: 'newTournament',
+        from_date: '1.1.2024',
+        to_date: '1.1.2026'
+      }
+
+      const newtournamentresponse = await api
+        .post('/api/tournaments')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newTournament)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const modifiedGame = {
+        visitor_team: 'modified visitor_team and tournament',
+        tournament: newtournamentresponse.body.id
+      }
+
+      const resultGame = await api
+        .put(`/api/games/${newgameresponse.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(modifiedGame)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      assert.deepStrictEqual(resultGame.body.id, newgameresponse.body.id)
+      assert.deepStrictEqual(
+        resultGame.body.home_team, newgameresponse.body.home_team
+      )
+      assert.deepStrictEqual(
+        resultGame.body.date, newgameresponse.body.date
+      )
+      assert.notEqual(
+        resultGame.body.visitor_team,
+        newgameresponse.body.visitor_team
+      )
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length+2)
+
+      const updatedOldTournament = await api
+        .get(`/api/tournaments/${oldtournamentresponse.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const updatedNewTournament = await api
+        .get(`/api/tournaments/${newtournamentresponse.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(updatedOldTournament.body.games.length, 0)
+      assert.strictEqual(updatedNewTournament.body.games.length, 1)
+      assert.strictEqual(
+        updatedNewTournament.body.games[0].id,
+        newgameresponse.body.id
+      )
+    }
+  )
 })
 
 describe('operations without admin rights: ', () => {

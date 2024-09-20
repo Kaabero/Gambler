@@ -33,4 +33,5 @@
 | 16.9.2024. | 6   | homepage ja admintools -sivut, turnauksen lisäys, poisto ja editointi |
 | 17.9.2024. | 6   | testien korjausta, peliin liitettyä turnausta voi muuttaa, validointeja |
 | 19.9.2024. | 5   | eslint asetuksia ja korjauksia, testikattavuus työkalun ongelmia |
-| yht        | 127 |            | 
+| 20.9.2024. | 5   | backendin testejä |
+| yht        | 132 |            | 
