@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach } = require('node:test')
+const { test, after, describe, beforeEach, afterEach } = require('node:test')
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -26,10 +26,12 @@ const testAdmin = {
   admin: true
 }
 
-const testTournament = {
-  name: 'testTournament',
-  from_date: '1.1.2024',
-  to_date: '1.1.2026'
+const tournamentForGameTesting = {
+  name: 'tournamentForGameTesting',
+  from_date:
+  new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+  to_date:
+  new Date(new Date().setFullYear(new Date().getFullYear() + 3)).toISOString(),
 }
 
 let token
@@ -38,17 +40,20 @@ let tournamentId
 
 let initialGame
 
-beforeEach(async () => {
-  await Game.deleteMany({})
-  await User.deleteMany({})
-  await Tournament.deleteMany({})
-})
+
 
 
 describe('returning initial games', () => {
   beforeEach(async () => {
     await Game.deleteMany({})
+    await Tournament.deleteMany({})
     await Game.insertMany(helper.initialGames)
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
   })
 
   test('games are returned as json', async () => {
@@ -81,7 +86,14 @@ describe('returning initial games', () => {
 describe('viewing a specific game', () => {
   beforeEach(async () => {
     await Game.deleteMany({})
+    await Tournament.deleteMany({})
     await Game.insertMany(helper.initialGames)
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
   })
 
   test('succeeds with a valid id', async () => {
@@ -133,11 +145,17 @@ describe('addition of a new game', () => {
     const tournamentresponse = await api
       .post('/api/tournaments')
       .set('Authorization', `Bearer ${token}`)
-      .send(testTournament)
+      .send(tournamentForGameTesting)
 
     tournamentId = tournamentresponse.body.id
 
 
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
   })
 
   test('succeeds with valid data and admin rights', async () => {
@@ -146,7 +164,9 @@ describe('addition of a new game', () => {
     const newGame = {
       home_team: 'valid',
       visitor_team: 'data',
-      date: '1.1.2025',
+      date:
+      new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+        .toISOString(),
       tournament: tournamentId
     }
 
@@ -171,7 +191,9 @@ describe('addition of a new game', () => {
       const newGame = {
         home_team: 'token',
         visitor_team: 'invalid',
-        date: '1.1.2025',
+        date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+          .toISOString(),
         tournament: tournamentId
       }
 
@@ -197,7 +219,9 @@ describe('addition of a new game', () => {
       const newGame = {
         home_team: 'token',
         visitor_team: 'missing',
-        date: '1.1.2025',
+        date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+          .toISOString(),
         tournament: tournamentId
       }
 
@@ -221,7 +245,9 @@ describe('addition of a new game', () => {
       const newGame = {
         home_team: 'outside',
         visitor_team: 'time period',
-        date: '2.1.2026',
+        date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 4))
+          .toISOString(),
         tournament: tournamentId
       }
 
@@ -242,6 +268,36 @@ describe('addition of a new game', () => {
     }
   )
 
+  test('fails with status code 400 if date is in the past',
+    async () => {
+
+
+      const newGame = {
+        home_team: 'in the',
+        visitor_team: 'past',
+        date:
+        new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+          .toISOString(),
+        tournament: tournamentId
+      }
+
+      const result = await api
+        .post('/api/games')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newGame)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      assert(result.body.error.includes(
+        'Set a future date'
+      ))
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
+    }
+  )
+
   test('fails with status code 400 if game already added',
     async () => {
 
@@ -249,7 +305,9 @@ describe('addition of a new game', () => {
       const newGame = {
         home_team: 'same',
         visitor_team: 'again',
-        date: '1.1.2025',
+        date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+          .toISOString(),
         tournament: tournamentId
       }
 
@@ -258,12 +316,7 @@ describe('addition of a new game', () => {
         .set('Authorization', `Bearer ${token}`)
         .send(newGame)
 
-      const sameGame = {
-        home_team: 'same',
-        visitor_team: 'again',
-        date: '1.1.2025',
-        tournament: tournamentId
-      }
+      const sameGame = { ...newGame }
 
       const result = await api
         .post('/api/games')
@@ -316,7 +369,9 @@ describe('addition of a new game', () => {
     const newGame = {
       home_team: 'team',
       visitor_team: 'Team',
-      date: '1.1.2025',
+      date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+          .toISOString(),
       tournament: tournamentId
     }
 
@@ -342,6 +397,7 @@ describe('deletion of a game', () => {
 
   beforeEach(async () => {
     await Game.deleteMany({})
+    await Tournament.deleteMany({})
     await Game.insertMany(helper.initialGames)
     await api
       .post('/api/users')
@@ -352,6 +408,12 @@ describe('deletion of a game', () => {
 
 
     token = response.body.token
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
   })
 
   test('succeeds with status code 204 if id is valid', async () => {
@@ -423,14 +485,16 @@ describe('modification of a game', () => {
     const tournamentresponse = await api
       .post('/api/tournaments')
       .set('Authorization', `Bearer ${token}`)
-      .send(testTournament)
+      .send(tournamentForGameTesting)
 
     tournamentId = tournamentresponse.body.id
 
     const newGame = {
       home_team: 'valid',
       visitor_team: 'data',
-      date: '1.1.2025',
+      date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+          .toISOString(),
       tournament: tournamentId
     }
 
@@ -443,6 +507,12 @@ describe('modification of a game', () => {
 
     initialGame = newgameresponse.body
 
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
   })
 
   test('succeeds with status code 200 with valid data and id', async () => {
@@ -482,7 +552,9 @@ describe('modification of a game', () => {
 
       const modifiedGame = {
         visitor_team: 'improper date',
-        date: '2.1.2026',
+        date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 4))
+          .toISOString(),
         tournament: tournamentId
       }
 
@@ -576,8 +648,12 @@ describe('modification of a game', () => {
 
       const oldTournament = {
         name: 'oldTournament',
-        from_date: '1.1.2024',
-        to_date: '1.1.2026'
+        from_date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+          .toISOString(),
+        to_date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 3))
+          .toISOString(),
       }
 
       const oldtournamentresponse = await api
@@ -590,7 +666,9 @@ describe('modification of a game', () => {
       const newGame = {
         home_team: 'changing',
         visitor_team: 'tournament',
-        date: '1.1.2025',
+        date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+          .toISOString(),
         tournament: oldtournamentresponse.body.id
       }
 
@@ -604,8 +682,12 @@ describe('modification of a game', () => {
 
       const newTournament = {
         name: 'newTournament',
-        from_date: '1.1.2024',
-        to_date: '1.1.2026'
+        from_date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+          .toISOString(),
+        to_date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 3))
+          .toISOString(),
       }
 
       const newtournamentresponse = await api
@@ -687,7 +769,9 @@ describe('operations without admin rights: ', () => {
     const newGame = {
       home_team: 'not',
       visitor_team: 'admin',
-      date: '1.1.2025',
+      date:
+      new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+        .toISOString()
     }
 
     const result = await api

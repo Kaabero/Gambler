@@ -95,7 +95,7 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   tournamentTo.setHours(23, 59, 0, 0)
   now.setHours(0, 0, 0, 0)
 
-  if (process.env.NODE_ENV !== 'test' && date <= now) {
+  if (date <= now) {
     return response.status(400).json({ error: 'Set a future date' })
   }
 

@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach } = require('node:test')
+const { test, after, describe, beforeEach, afterEach } = require('node:test')
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -27,10 +27,11 @@ const testAdmin = {
   admin: true
 }
 
-const testTournament = {
-  name: 'testTournament',
+const tournamentForOutcomeTesting = {
+  name: 'tournamentForOutcomeTesting',
   from_date: '1.1.2024',
-  to_date: '1.1.2026'
+  to_date:
+  new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString(),
 }
 
 let admintoken
@@ -44,6 +45,8 @@ let gameTwoId
 let gameThreeId
 
 let tournamentId
+
+
 
 
 
@@ -74,12 +77,11 @@ const insertInitialData = async () => {
 
   usertoken = userloginresponse.body.token
 
-  const tournamentresponse = await api
-    .post('/api/tournaments')
-    .set('Authorization', `Bearer ${admintoken}`)
-    .send(testTournament)
+  await Tournament.insertMany([tournamentForOutcomeTesting])
 
-  tournamentId = tournamentresponse.body.id
+  const tournaments = await helper.tournamentsInDb()
+
+  tournamentId = tournaments[0].id
 
   const gameOne = {
     home_team: 'game',
@@ -102,33 +104,14 @@ const insertInitialData = async () => {
     tournament: tournamentId
   }
 
+  await Game.insertMany([gameOne, gameTwo, gameThree])
 
-  const gameoneresponse = await api
-    .post('/api/games')
-    .set('Authorization', `Bearer ${admintoken}`)
-    .send(gameOne)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-  const gametworesponse = await api
-    .post('/api/games')
-    .set('Authorization', `Bearer ${admintoken}`)
-    .send(gameTwo)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-  const gamethreeresponse = await api
-    .post('/api/games')
-    .set('Authorization', `Bearer ${admintoken}`)
-    .send(gameThree)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+  const games = await helper.gamesInDb()
 
 
-
-  gameOneId = gameoneresponse.body.id
-  gameTwoId = gametworesponse.body.id
-  gameThreeId = gamethreeresponse.body.id
+  gameOneId = games[0].id
+  gameTwoId = games[1].id
+  gameThreeId = games[2].id
 
   const outcomeOne = {
     goals_home: '1',
@@ -142,8 +125,6 @@ const insertInitialData = async () => {
     game: gameTwoId,
   }
 
-
-
   await Outcome.insertMany([outcomeOne, outcometTwo])
 }
 
@@ -152,6 +133,13 @@ const insertInitialData = async () => {
 describe('returning initial outcomes', () => {
   beforeEach(async () => {
     await insertInitialData()
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
   })
 
   test('outcomes are returned as json', async () => {
@@ -183,6 +171,13 @@ describe('returning initial outcomes', () => {
 describe('viewing a specific outcome', () => {
   beforeEach(async () => {
     await insertInitialData()
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
   })
 
   test('succeeds with a valid id', async () => {
@@ -227,6 +222,13 @@ describe('addition of a new outcome', () => {
 
   beforeEach(async () => {
     await insertInitialData()
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
   })
 
   test('succeeds with valid data and token', async () => {
@@ -366,7 +368,9 @@ describe('addition of a new outcome', () => {
       const gameInFuture = {
         home_team: 'past',
         visitor_team: 'game',
-        date: '1.1.2025',
+        date:
+        new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+          .toISOString(),
         tournament: tournamentId
       }
 
@@ -408,6 +412,13 @@ describe('deletion of a outcome', () => {
 
   beforeEach(async () => {
     await insertInitialData()
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
   })
 
   test('succeeds with status code 204 if id is valid', async () => {

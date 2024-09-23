@@ -81,7 +81,7 @@ tournamentsRouter
 
 
 
-    if (process.env.NODE_ENV !== 'test' && from <= now) {
+    if (from <= now) {
       return response.status(400).json({ error: 'Set a future starting date' })
     }
 

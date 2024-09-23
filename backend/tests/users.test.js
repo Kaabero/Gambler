@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach } = require('node:test')
+const { test, after, describe, beforeEach, afterEach } = require('node:test')
 
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
@@ -11,9 +11,7 @@ const User = require('../models/user')
 
 const helper = require('./test_helper')
 
-beforeEach(async () => {
-  await User.deleteMany({})
-})
+
 
 
 
@@ -25,6 +23,10 @@ describe('when there is initially one user at db', () => {
     const user = new User({ username: 'root', passwordHash })
 
     await user.save()
+  })
+
+  afterEach(async () => {
+    await User.deleteMany({})
   })
 
   test('creation succeeds with a fresh username', async () => {

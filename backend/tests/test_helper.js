@@ -1,6 +1,8 @@
 const Bet = require('../models/bet')
 const Game = require('../models/game')
 const Outcome = require('../models/outcome')
+const Scores = require('../models/scores')
+const Tournament = require('../models/tournament')
 const User = require('../models/user')
 
 
@@ -49,7 +51,24 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
+const tournamentsInDb = async () => {
+  const tournaments = await Tournament.find({})
+  return tournaments.map(t => t.toJSON())
+}
+
+const scoresInDb = async () => {
+  const scores = await Scores.find({})
+  return scores.map(s => s.toJSON())
+}
+
 
 module.exports = {
-  initialGames, nonExistingId, gamesInDb, usersInDb, betsInDb, outcomesInDb
+  initialGames,
+  nonExistingId,
+  gamesInDb,
+  usersInDb,
+  betsInDb,
+  outcomesInDb,
+  tournamentsInDb,
+  scoresInDb
 }

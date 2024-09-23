@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach } = require('node:test')
+const { test, after, describe, beforeEach, afterEach } = require('node:test')
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -28,10 +28,12 @@ const testAdmin = {
   admin: true
 }
 
-const testTournament = {
-  name: 'testTournament',
-  from_date: '1.1.2024',
-  to_date: '1.1.2026'
+const tournamentForBetTesting = {
+  name: 'tournamentForBetTesting',
+  from_date:
+  new Date(new Date().setFullYear(new Date().getFullYear() - 2)).toISOString(),
+  to_date:
+  new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString(),
 }
 
 let admintoken
@@ -49,6 +51,8 @@ let tournamentId
 let adminId
 
 let userId
+
+
 
 
 const insertInitialData = async () => {
@@ -83,58 +87,48 @@ const insertInitialData = async () => {
 
   userId = userloginresponse.body.id
 
-  const tournamentresponse = await api
-    .post('/api/tournaments')
-    .set('Authorization', `Bearer ${admintoken}`)
-    .send(testTournament)
+  await Tournament.insertMany([tournamentForBetTesting])
 
-  tournamentId = tournamentresponse.body.id
+  const tournaments = await helper.tournamentsInDb()
+
+  tournamentId = tournaments[0].id
 
   const gameOne = {
     home_team: 'game',
     visitor_team: 'one',
-    date: '1.1.2025',
+    date:
+    new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+      .toISOString(),
     tournament: tournamentId
   }
 
   const gameTwo = {
     home_team: 'game',
     visitor_team: 'two',
-    date: '1.1.2025',
+    date:
+    new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+      .toISOString(),
     tournament: tournamentId
   }
 
   const gameThree = {
     home_team: 'game',
     visitor_team: 'three',
-    date: '1.2.2024',
+    date: new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+      .toISOString(),
     tournament: tournamentId
   }
 
-  const gameoneresponse = await api
-    .post('/api/games')
-    .set('Authorization', `Bearer ${admintoken}`)
-    .send(gameOne)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
 
-  const gametworesponse = await api
-    .post('/api/games')
-    .set('Authorization', `Bearer ${admintoken}`)
-    .send(gameTwo)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+  await Game.insertMany([gameOne, gameTwo, gameThree])
 
-  const gamethreeresponse = await api
-    .post('/api/games')
-    .set('Authorization', `Bearer ${admintoken}`)
-    .send(gameThree)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+  const games = await helper.gamesInDb()
 
-  gameOneId = gameoneresponse.body.id
-  gameTwoId = gametworesponse.body.id
-  gameThreeId = gamethreeresponse.body.id
+
+  gameOneId = games[0].id
+  gameTwoId = games[1].id
+  gameThreeId = games[2].id
+
 
   const betOne = {
     goals_home: '1',
@@ -165,6 +159,14 @@ const insertInitialData = async () => {
 describe('returning initial bets', () => {
   beforeEach(async () => {
     await insertInitialData()
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
+    await Bet.deleteMany({})
   })
 
   test('bets are returned as json', async () => {
@@ -198,6 +200,13 @@ describe('returning initial bets', () => {
 describe('viewing a specific bet', () => {
   beforeEach(async () => {
     await insertInitialData()
+  })
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
+    await Bet.deleteMany({})
   })
 
   test('succeeds with a valid id', async () => {
@@ -243,6 +252,13 @@ describe('addition of a new bet', () => {
 
   beforeEach(async () => {
     await insertInitialData()
+  })
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
+    await Bet.deleteMany({})
   })
 
   test('succeeds with valid data and token', async () => {
@@ -385,25 +401,10 @@ describe('addition of a new bet', () => {
     async () => {
       const betsAtStart = await helper.betsInDb()
 
-      const gameInPast = {
-        home_team: 'past',
-        visitor_team: 'game',
-        date: '1.2.2024',
-        tournament: tournamentId
-      }
-
-      const gameresponse = await api
-        .post('/api/games')
-        .set('Authorization', `Bearer ${admintoken}`)
-        .send(gameInPast)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
-
-
       const newBet = {
         goals_home: '2',
         goals_visitor: '2',
-        game: gameresponse.body.id,
+        game: gameThreeId,
         user: userId
       }
 
@@ -431,6 +432,14 @@ describe('deletion of a bet', () => {
 
   beforeEach(async () => {
     await insertInitialData()
+  })
+
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
+    await Bet.deleteMany({})
   })
 
   test('succeeds with status code 204 if id is valid', async () => {
@@ -550,6 +559,13 @@ describe('deletion of a bet', () => {
 describe('modification of a bet', () => {
   beforeEach(async () => {
     await insertInitialData()
+  })
+  afterEach(async () => {
+    await Game.deleteMany({})
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
+    await Bet.deleteMany({})
   })
 
   test('succeeds with status code 200 with valid data and id', async () => {
