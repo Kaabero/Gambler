@@ -34,4 +34,5 @@
 | 17.9.2024. | 6   | testien korjausta, peliin liitettyä turnausta voi muuttaa, validointeja |
 | 19.9.2024. | 5   | eslint asetuksia ja korjauksia, testikattavuus työkalun ongelmia |
 | 20.9.2024. | 5   | backendin testejä |
-| yht        | 132 |            | 
+| 23.9.2024. | 2  | backendin testejä |
+| yht        | 134 |            | 

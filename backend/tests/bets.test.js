@@ -8,8 +8,10 @@ const app = require('../app')
 const api = supertest(app)
 const Bet = require('../models/bet')
 const Game = require('../models/game')
+const Outcome = require('../models/outcome')
 const Tournament = require('../models/tournament')
 const User = require('../models/user')
+
 
 const helper = require('./test_helper')
 
@@ -40,6 +42,8 @@ let gameOneId
 
 let gameTwoId
 
+let gameThreeId
+
 let tournamentId
 
 let adminId
@@ -52,6 +56,7 @@ const insertInitialData = async () => {
   await Game.deleteMany({})
   await User.deleteMany({})
   await Tournament.deleteMany({})
+  await Outcome.deleteMany({})
 
   await api
     .post('/api/users')
@@ -99,6 +104,13 @@ const insertInitialData = async () => {
     tournament: tournamentId
   }
 
+  const gameThree = {
+    home_team: 'game',
+    visitor_team: 'three',
+    date: '1.2.2024',
+    tournament: tournamentId
+  }
+
   const gameoneresponse = await api
     .post('/api/games')
     .set('Authorization', `Bearer ${admintoken}`)
@@ -113,8 +125,16 @@ const insertInitialData = async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
+  const gamethreeresponse = await api
+    .post('/api/games')
+    .set('Authorization', `Bearer ${admintoken}`)
+    .send(gameThree)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
   gameOneId = gameoneresponse.body.id
   gameTwoId = gametworesponse.body.id
+  gameThreeId = gamethreeresponse.body.id
 
   const betOne = {
     goals_home: '1',
@@ -130,16 +150,16 @@ const insertInitialData = async () => {
     user: adminId
   }
 
-  await Bet.insertMany([betOne, betTwo])
+  const betThree = {
+    goals_home: '3',
+    goals_visitor: '2',
+    game: gameThreeId,
+    user: adminId
+  }
+
+  await Bet.insertMany([betOne, betTwo, betThree])
 }
 
-
-beforeEach(async () => {
-  await Game.deleteMany({})
-  await Bet.deleteMany({})
-  await User.deleteMany({})
-  await Tournament.deleteMany({})
-})
 
 
 describe('returning initial bets', () => {
@@ -156,7 +176,7 @@ describe('returning initial bets', () => {
 
   test('all bets are returned', async () => {
     const response = await api.get('/api/bets')
-    assert.strictEqual(response.body.length, 2)
+    assert.strictEqual(response.body.length, 3)
   })
 
   test('a specific bet is within the returned bets', async () => {
@@ -203,7 +223,7 @@ describe('viewing a specific bet', () => {
 
 
   test('fails with statuscode 404 if bet does not exist', async () => {
-    const validNonexistingId = await helper.nonExistingGameId()
+    const validNonexistingId = await helper.nonExistingId()
 
     await api
       .get(`/api/bets/${validNonexistingId}`)
@@ -365,17 +385,17 @@ describe('addition of a new bet', () => {
     async () => {
       const betsAtStart = await helper.betsInDb()
 
-      const gameinPast = {
+      const gameInPast = {
         home_team: 'past',
         visitor_team: 'game',
         date: '1.2.2024',
         tournament: tournamentId
       }
 
-      const gameoneresponse = await api
+      const gameresponse = await api
         .post('/api/games')
         .set('Authorization', `Bearer ${admintoken}`)
-        .send(gameinPast)
+        .send(gameInPast)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
@@ -383,7 +403,7 @@ describe('addition of a new bet', () => {
       const newBet = {
         goals_home: '2',
         goals_visitor: '2',
-        game: gameoneresponse.body.id,
+        game: gameresponse.body.id,
         user: userId
       }
 
@@ -407,12 +427,320 @@ describe('addition of a new bet', () => {
 
 })
 
+describe('deletion of a bet', () => {
+
+  beforeEach(async () => {
+    await insertInitialData()
+  })
+
+  test('succeeds with status code 204 if id is valid', async () => {
+    const betsAtStart = await helper.betsInDb()
+    const betToDelete = betsAtStart[0]
+
+    await api
+      .delete(`/api/bets/${betToDelete.id}`)
+      .set('Authorization', `Bearer ${admintoken}`)
+      .expect(204)
+
+    const betsAtEnd = await helper.betsInDb()
+
+    const ids = betsAtEnd.map(bet => bet.id)
+    assert(!ids.includes(betToDelete.id))
+
+    assert.strictEqual(betsAtEnd.length, betsAtStart.length - 1)
+  })
+
+  test(
+    'fails with status code 401 if user has no rights to delete this bet',
+    async () => {
+      const betsAtStart = await helper.betsInDb()
+      const betToDelete = betsAtStart[0]
+
+      const result = await api
+        .delete(`/api/bets/${betToDelete.id}`)
+        .set('Authorization', `Bearer ${usertoken}`)
+        .expect(401)
+
+      const betsAtEnd = await helper.betsInDb()
+
+      const ids = betsAtEnd.map(bet => bet.id)
+      assert(ids.includes(betToDelete.id))
+
+      assert(result.body.error.includes('Authorization failed'))
+      assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+    }
+  )
+
+  test('fails with status code 400 if token is missing', async () => {
+    const betsAtStart = await helper.betsInDb()
+    const betToDelete = betsAtStart[0]
+
+    const result = await api
+      .delete(`/api/bets/${betToDelete.id}`)
+      .expect(400)
+
+    const betsAtEnd = await helper.betsInDb()
+
+    const ids = betsAtEnd.map(bet => bet.id)
+    assert(ids.includes(betToDelete.id))
+
+    assert(result.body.error.includes('Token missing or invalid'))
+    assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+
+  })
+
+  test('fails with status code 400 if token is invalid', async () => {
+    const betsAtStart = await helper.betsInDb()
+    const betToDelete = betsAtStart[0]
+
+    const invalidToken = 'invalidtoken'
+
+    const result = await api
+      .delete(`/api/bets/${betToDelete.id}`)
+      .set('Authorization', `Bearer ${invalidToken}`)
+      .expect(400)
+
+    const betsAtEnd = await helper.betsInDb()
+
+    const ids = betsAtEnd.map(bet => bet.id)
+    assert(ids.includes(betToDelete.id))
+
+    assert(result.body.error.includes('Token missing or invalid'))
+    assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+
+  })
+
+  test(
+    'fails with status code 400 if game already has an outcome',
+    async () => {
+      const betsAtStart = await helper.betsInDb()
+      const betToDelete = betsAtStart[2]
+
+      const outCome = {
+        goals_home: '1',
+        goals_visitor: '1',
+        game: gameThreeId,
+      }
+
+      await api
+        .post('/api/outcomes')
+        .set('Authorization', `Bearer ${admintoken}`)
+        .send(outCome)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const result = await api
+        .delete(`/api/bets/${betToDelete.id}`)
+        .set('Authorization', `Bearer ${admintoken}`)
+        .expect(400)
+
+      const betsAtEnd = await helper.betsInDb()
+
+      const ids = betsAtEnd.map(bet => bet.id)
+      assert(ids.includes(betToDelete.id))
+
+      assert(result.body.error.includes(
+        'Deleting bets is not allowed for games that have already been scored.'
+      ))
+      assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+    }
+  )
+})
+
+describe('modification of a bet', () => {
+  beforeEach(async () => {
+    await insertInitialData()
+  })
+
+  test('succeeds with status code 200 with valid data and id', async () => {
+
+    const betsAtStart = await helper.betsInDb()
+    const betToModify = betsAtStart[0]
+
+    const modifiedBet = {
+      goals_visitor: '6',
+    }
+
+    const result = await api
+      .put(`/api/bets/${betToModify.id.toString()}`)
+      .send(modifiedBet)
+      .set('Authorization', `Bearer ${admintoken}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const betsAtEnd = await helper.betsInDb()
+
+    assert.deepStrictEqual(result.body.id, betToModify.id.toString())
+    assert.deepStrictEqual(
+      result.body.goals_home, betToModify.goals_home
+    )
+    assert.deepStrictEqual(
+      result.body.game, betToModify.game.toString()
+    )
+    assert.notEqual(
+      result.body.goals_visitor,
+      betToModify.goals_visitor
+    )
+    assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+  })
+
+  test(
+    `fails with status code 400 and proper message 
+      if game already has an outcome`,
+    async () => {
+
+      const betsAtStart = await helper.betsInDb()
+      const betToModify = betsAtStart[2]
+
+      const outCome = {
+        goals_home: '1',
+        goals_visitor: '1',
+        game: gameThreeId,
+      }
+
+      await api
+        .post('/api/outcomes')
+        .set('Authorization', `Bearer ${admintoken}`)
+        .send(outCome)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const modifiedBet = {
+        goals_visitor_team: '10',
+      }
+
+      const result = await api
+        .put(`/api/bets/${betToModify.id.toString()}`)
+        .set('Authorization', `Bearer ${admintoken}`)
+        .send(modifiedBet)
+        .expect(400)
+
+      const betsAtEnd = await helper.betsInDb()
+
+
+      assert(result.body.error.includes(
+        'Editing bets is not allowed for games that have already been scored.'
+      ))
+
+      const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
+
+      assert(!visitor_goals.includes(modifiedBet.visitor_goals))
+      assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+    }
+  )
+
+  test('fails with status code 400 if data is invalid', async () => {
+
+    const betsAtStart = await helper.betsInDb()
+    const betToModify = betsAtStart[0]
+
+    const modifiedBet = {
+      goals_visitor: 'a',
+    }
+    await api
+      .put(`/api/bets/${betToModify.id.toString()}`)
+      .set('Authorization', `Bearer ${admintoken}`)
+      .send(modifiedBet)
+      .expect(400)
+
+    const betsAtEnd = await helper.betsInDb()
+
+    const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
+    assert(!visitor_goals.includes(modifiedBet.visitor_goals))
+    assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+
+  })
+
+  test('fails with status code 400 if token is missing', async () => {
+
+    const betsAtStart = await helper.betsInDb()
+    const betToModify = betsAtStart[0]
+
+    const modifiedBet = {
+      goals_visitor: '12',
+    }
+
+    const result = await api
+      .put(`/api/bets/${betToModify.id.toString()}`)
+      .send(modifiedBet)
+      .expect(400)
+
+    const betsAtEnd = await helper.betsInDb()
+
+    assert(result.body.error.includes(
+      'Token missing or invalid'
+    ))
+
+    const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
+    assert(!visitor_goals.includes(modifiedBet.visitor_goals))
+    assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+
+  })
+  test('fails with status code 400 if token is invalid', async () => {
+
+    const betsAtStart = await helper.betsInDb()
+    const betToModify = betsAtStart[0]
+
+    const modifiedBet = {
+      goals_visitor: '12',
+    }
+
+    const invalidToken = 'invalidtoken'
+
+    const result = await api
+      .put(`/api/bets/${betToModify.id.toString()}`)
+      .set('Authorization', `Bearer ${invalidToken}`)
+      .send(modifiedBet)
+      .expect(400)
+
+    const betsAtEnd = await helper.betsInDb()
+
+    assert(result.body.error.includes(
+      'Token missing or invalid'
+    ))
+
+    const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
+    assert(!visitor_goals.includes(modifiedBet.visitor_goals))
+    assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+  })
+
+  test(
+    'fails with status code 401 if user has no rights to edit this bet',
+    async () => {
+
+      const betsAtStart = await helper.betsInDb()
+      const betToModify = betsAtStart[0]
+
+      const modifiedBet = {
+        goals_visitor: '22',
+      }
+
+      const result = await api
+        .put(`/api/bets/${betToModify.id.toString()}`)
+        .send(modifiedBet)
+        .set('Authorization', `Bearer ${usertoken}`)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+      const betsAtEnd = await helper.betsInDb()
+
+      assert(result.body.error.includes('Authorization failed'))
+
+      const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
+      assert(!visitor_goals.includes(modifiedBet.visitor_goals))
+      assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+    }
+  )
+
+})
+
 
 after(async () => {
   await Bet.deleteMany({})
   await User.deleteMany({})
   await Game.deleteMany({})
   await Tournament.deleteMany({})
+  await Outcome.deleteMany({})
   await mongoose.connection.close()
 })
 

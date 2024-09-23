@@ -1,5 +1,6 @@
 const Bet = require('../models/bet')
 const Game = require('../models/game')
+const Outcome = require('../models/outcome')
 const User = require('../models/user')
 
 
@@ -16,7 +17,7 @@ const initialGames = [
   },
 ]
 
-const nonExistingGameId = async () => {
+const nonExistingId = async () => {
   const game = new Game({
     home_team: 'FIN',
     visitor_team: 'BEL',
@@ -38,6 +39,11 @@ const betsInDb = async () => {
   return bets.map(bet => bet.toJSON())
 }
 
+const outcomesInDb = async () => {
+  const outcomes = await Outcome.find({})
+  return outcomes.map(outcome => outcome.toJSON())
+}
+
 const usersInDb = async () => {
   const users = await User.find({})
   return users.map(u => u.toJSON())
@@ -45,5 +51,5 @@ const usersInDb = async () => {
 
 
 module.exports = {
-  initialGames, nonExistingGameId, gamesInDb, usersInDb, betsInDb
+  initialGames, nonExistingId, gamesInDb, usersInDb, betsInDb, outcomesInDb
 }

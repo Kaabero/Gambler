@@ -100,7 +100,7 @@ describe('viewing a specific game', () => {
 
 
   test('fails with statuscode 404 if game does not exist', async () => {
-    const validNonexistingId = await helper.nonExistingGameId()
+    const validNonexistingId = await helper.nonExistingId()
 
     await api
       .get(`/api/games/${validNonexistingId}`)
@@ -365,7 +365,7 @@ describe('deletion of a game', () => {
 
     const gamesAtEnd = await helper.gamesInDb()
 
-    const ids = gamesAtEnd.map(r => r.id)
+    const ids = gamesAtEnd.map(game => game.id)
     assert(!ids.includes(gameToDelete.id))
 
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length - 1)

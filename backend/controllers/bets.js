@@ -45,7 +45,7 @@ betsRouter.post('/', middleware.userExtractor, async (request, response) => {
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
+    return response.status(400).end()
   }
   const user = request.user
 
@@ -108,6 +108,7 @@ betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
   const game = await Game.findById(bet.game)
   const user = request.user
 
+
   if (game.outcome) {
     return response.status(400)
       .json({ error:
@@ -119,7 +120,7 @@ betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
     await Bet.findByIdAndDelete(request.params.id)
     response.status(204).end()
   } else {
-    response.status(401).json({ error: 'authorization failed' })
+    response.status(401).json({ error: 'Authorization failed' })
   }
 }
 )
@@ -155,7 +156,7 @@ betsRouter.put('/:id', middleware.userExtractor, async (request, response) =>
     response.status(200).json(updatedBet)
 
   } else {
-    response.status(401).json({ error: 'authorization failed' })
+    response.status(401).json({ error: 'Authorization failed' })
   }
 })
 
