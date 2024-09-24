@@ -134,6 +134,16 @@ usersRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   }
   const { admin } = request.body
 
+  const userToModify = await User.findById(request.params.id)
+
+  if (userToModify.username === 'admin' && admin === false) {
+    return response.status(400)
+      .json({ error:
+      'You cannot remove admin rights from this user.'
+      })
+
+  }
+
   const updatedUser = await User.findByIdAndUpdate(
     request.params.id,
     { admin },

@@ -16,44 +16,6 @@ const User = require('../models/user')
 const helper = require('./test_helper')
 
 
-const testUser = {
-  username: 'testuser',
-  password: 'Password1!',
-  admin: false
-}
-
-const testAdmin = {
-  username: 'testadmin',
-  password: 'Password1!',
-  admin: true
-}
-
-const tournamentForBetTesting = {
-  name: 'tournamentForBetTesting',
-  from_date:
-  new Date(new Date().setFullYear(new Date().getFullYear() - 2)).toISOString(),
-  to_date:
-  new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString(),
-}
-
-let admintoken
-
-let usertoken
-
-let gameOneId
-
-let gameTwoId
-
-let gameThreeId
-
-let tournamentId
-
-let adminId
-
-let userId
-
-
-
 
 const insertInitialData = async () => {
   await Bet.deleteMany({})
@@ -61,6 +23,28 @@ const insertInitialData = async () => {
   await User.deleteMany({})
   await Tournament.deleteMany({})
   await Outcome.deleteMany({})
+
+  const testUser = {
+    username: 'testuser',
+    password: 'Password1!',
+    admin: false
+  }
+
+  const testAdmin = {
+    username: 'testadmin',
+    password: 'Password1!',
+    admin: true
+  }
+
+  const tournamentForBetTesting = {
+    name: 'tournamentForBetTesting',
+    from_date:
+    new Date(new Date().setFullYear(new Date().getFullYear() - 2))
+      .toISOString(),
+    to_date:
+    new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+      .toISOString(),
+  }
 
   await api
     .post('/api/users')
@@ -79,19 +63,19 @@ const insertInitialData = async () => {
     .send(testUser)
 
 
-  admintoken = adminloginresponse.body.token
+  const admintoken = adminloginresponse.body.token
 
-  usertoken = userloginresponse.body.token
+  const usertoken = userloginresponse.body.token
 
-  adminId = adminloginresponse.body.id
+  const adminId = adminloginresponse.body.id
 
-  userId = userloginresponse.body.id
+  const userId = userloginresponse.body.id
 
   await Tournament.insertMany([tournamentForBetTesting])
 
   const tournaments = await helper.tournamentsInDb()
 
-  tournamentId = tournaments[0].id
+  const tournamentId = tournaments[0].id
 
   const gameOne = {
     home_team: 'game',
@@ -125,9 +109,9 @@ const insertInitialData = async () => {
   const games = await helper.gamesInDb()
 
 
-  gameOneId = games[0].id
-  gameTwoId = games[1].id
-  gameThreeId = games[2].id
+  const gameOneId = games[0].id
+  const gameTwoId = games[1].id
+  const gameThreeId = games[2].id
 
 
   const betOne = {
@@ -152,13 +136,25 @@ const insertInitialData = async () => {
   }
 
   await Bet.insertMany([betOne, betTwo, betThree])
+
+  return {
+    admintoken,
+    usertoken,
+    gameOneId,
+    gameTwoId,
+    gameThreeId,
+    tournamentId,
+    adminId,
+    userId
+  }
 }
 
 
 
 describe('returning initial bets', () => {
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -183,6 +179,7 @@ describe('returning initial bets', () => {
 
   test('a specific bet is within the returned bets', async () => {
     const response = await api.get('/api/bets')
+    const { gameOneId, adminId } = values
 
     const games = response.body.map(bet => bet.game)
     const users = response.body.map(bet => bet.user)
@@ -249,9 +246,9 @@ describe('viewing a specific bet', () => {
 })
 
 describe('addition of a new bet', () => {
-
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
   afterEach(async () => {
     await Game.deleteMany({})
@@ -263,6 +260,7 @@ describe('addition of a new bet', () => {
 
   test('succeeds with valid data and token', async () => {
     const betsAtStart = await helper.betsInDb()
+    const { gameOneId, userId, usertoken } = values
 
     const newBet = {
       goals_home: '2',
@@ -289,6 +287,7 @@ describe('addition of a new bet', () => {
     'fails with status code 401 and proper message if token is invalid',
     async () => {
       const betsAtStart = await helper.betsInDb()
+      const { gameOneId, userId } = values
       const newBet = {
         goals_home: '2',
         goals_visitor: '3',
@@ -316,6 +315,7 @@ describe('addition of a new bet', () => {
     'fails with status code 400 if token is missing',
     async () => {
       const betsAtStart = await helper.betsInDb()
+      const { gameOneId, userId } = values
       const newBet = {
         goals_home: '2',
         goals_visitor: '3',
@@ -342,6 +342,7 @@ describe('addition of a new bet', () => {
     'fails with status code 400 if user already has a bet in the game',
     async () => {
       const betsAtStart = await helper.betsInDb()
+      const { gameOneId, adminId, admintoken } = values
 
 
       const newBet = {
@@ -369,6 +370,7 @@ describe('addition of a new bet', () => {
     'fails with status code 400 and proper error message if data invalid',
     async () => {
       const betsAtStart = await helper.betsInDb()
+      const { gameOneId, userId, usertoken } = values
 
       const newBet = {
         goals_home: '2',
@@ -400,6 +402,7 @@ describe('addition of a new bet', () => {
     if game date is in the past`,
     async () => {
       const betsAtStart = await helper.betsInDb()
+      const { gameThreeId, userId, usertoken } = values
 
       const newBet = {
         goals_home: '2',
@@ -429,9 +432,9 @@ describe('addition of a new bet', () => {
 })
 
 describe('deletion of a bet', () => {
-
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -445,6 +448,7 @@ describe('deletion of a bet', () => {
   test('succeeds with status code 204 if id is valid', async () => {
     const betsAtStart = await helper.betsInDb()
     const betToDelete = betsAtStart[0]
+    const { admintoken } = values
 
     await api
       .delete(`/api/bets/${betToDelete.id}`)
@@ -464,6 +468,7 @@ describe('deletion of a bet', () => {
     async () => {
       const betsAtStart = await helper.betsInDb()
       const betToDelete = betsAtStart[0]
+      const { usertoken } = values
 
       const result = await api
         .delete(`/api/bets/${betToDelete.id}`)
@@ -524,6 +529,7 @@ describe('deletion of a bet', () => {
     async () => {
       const betsAtStart = await helper.betsInDb()
       const betToDelete = betsAtStart[2]
+      const { gameThreeId, admintoken } = values
 
       const outCome = {
         goals_home: '1',
@@ -557,8 +563,9 @@ describe('deletion of a bet', () => {
 })
 
 describe('modification of a bet', () => {
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
   afterEach(async () => {
     await Game.deleteMany({})
@@ -572,6 +579,7 @@ describe('modification of a bet', () => {
 
     const betsAtStart = await helper.betsInDb()
     const betToModify = betsAtStart[0]
+    const { admintoken } = values
 
     const modifiedBet = {
       goals_visitor: '6',
@@ -607,6 +615,7 @@ describe('modification of a bet', () => {
 
       const betsAtStart = await helper.betsInDb()
       const betToModify = betsAtStart[2]
+      const { gameThreeId, admintoken } = values
 
       const outCome = {
         goals_home: '1',
@@ -649,6 +658,7 @@ describe('modification of a bet', () => {
 
     const betsAtStart = await helper.betsInDb()
     const betToModify = betsAtStart[0]
+    const { admintoken } = values
 
     const modifiedBet = {
       goals_visitor: 'a',
@@ -726,6 +736,7 @@ describe('modification of a bet', () => {
 
       const betsAtStart = await helper.betsInDb()
       const betToModify = betsAtStart[0]
+      const { usertoken } = values
 
       const modifiedBet = {
         goals_visitor: '22',
@@ -759,4 +770,3 @@ after(async () => {
   await Outcome.deleteMany({})
   await mongoose.connection.close()
 })
-

@@ -15,46 +15,33 @@ const User = require('../models/user')
 const helper = require('./test_helper')
 
 
-const testUser = {
-  username: 'testuser',
-  password: 'Password1!',
-  admin: false
-}
-
-const testAdmin = {
-  username: 'testadmin',
-  password: 'Password1!',
-  admin: true
-}
-
-const tournamentForOutcomeTesting = {
-  name: 'tournamentForOutcomeTesting',
-  from_date: '1.1.2024',
-  to_date:
-  new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString(),
-}
-
-let admintoken
-
-let usertoken
-
-let gameOneId
-
-let gameTwoId
-
-let gameThreeId
-
-let tournamentId
-
-
-
-
 
 const insertInitialData = async () => {
   await Game.deleteMany({})
   await User.deleteMany({})
   await Tournament.deleteMany({})
   await Outcome.deleteMany({})
+
+  const testUser = {
+    username: 'testuser',
+    password: 'Password1!',
+    admin: false
+  }
+
+  const testAdmin = {
+    username: 'testadmin',
+    password: 'Password1!',
+    admin: true
+  }
+
+  const tournamentForOutcomeTesting = {
+    name: 'tournamentForOutcomeTesting',
+    from_date: '1.1.2024',
+    to_date:
+    new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+      .toISOString(),
+  }
+
 
   await api
     .post('/api/users')
@@ -73,15 +60,15 @@ const insertInitialData = async () => {
     .send(testUser)
 
 
-  admintoken = adminloginresponse.body.token
+  const admintoken = adminloginresponse.body.token
 
-  usertoken = userloginresponse.body.token
+  const usertoken = userloginresponse.body.token
 
   await Tournament.insertMany([tournamentForOutcomeTesting])
 
   const tournaments = await helper.tournamentsInDb()
 
-  tournamentId = tournaments[0].id
+  const tournamentId = tournaments[0].id
 
   const gameOne = {
     home_team: 'game',
@@ -109,9 +96,9 @@ const insertInitialData = async () => {
   const games = await helper.gamesInDb()
 
 
-  gameOneId = games[0].id
-  gameTwoId = games[1].id
-  gameThreeId = games[2].id
+  const gameOneId = games[0].id
+  const gameTwoId = games[1].id
+  const gameThreeId = games[2].id
 
   const outcomeOne = {
     goals_home: '1',
@@ -126,13 +113,18 @@ const insertInitialData = async () => {
   }
 
   await Outcome.insertMany([outcomeOne, outcometTwo])
+
+  return {
+    admintoken, usertoken, gameOneId, gameTwoId, gameThreeId, tournamentId
+  }
 }
 
 
 
 describe('returning initial outcomes', () => {
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -156,6 +148,7 @@ describe('returning initial outcomes', () => {
 
   test('a specific outcome is within the returned outcomes', async () => {
     const response = await api.get('/api/outcomes')
+    const { gameOneId } = values
 
     const games = response.body.map(outcome => outcome.game)
 
@@ -219,9 +212,9 @@ describe('viewing a specific outcome', () => {
 })
 
 describe('addition of a new outcome', () => {
-
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -233,6 +226,7 @@ describe('addition of a new outcome', () => {
 
   test('succeeds with valid data and token', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
+    const { gameThreeId, admintoken } = values
 
     const newOutcome = {
       goals_home: '2',
@@ -257,6 +251,7 @@ describe('addition of a new outcome', () => {
 
   test('fails with status code 400 without admin rights', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
+    const { gameThreeId, usertoken } = values
 
     const newOutcome = {
       goals_home: '2',
@@ -282,6 +277,7 @@ describe('addition of a new outcome', () => {
     'fails with status code 401 and proper message if token is invalid',
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
+      const { gameThreeId } = values
       const newOutcome = {
         goals_home: '2',
         goals_visitor: '3',
@@ -308,6 +304,7 @@ describe('addition of a new outcome', () => {
     'fails with status code 400 if token is missing',
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
+      const { gameThreeId } = values
 
       const newOutcome = {
         goals_home: '2',
@@ -334,6 +331,7 @@ describe('addition of a new outcome', () => {
     'fails with status code 400 and proper error message if data invalid',
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
+      const { gameThreeId, admintoken } = values
 
       const newOutcome = {
         goals_home: '2',
@@ -364,6 +362,7 @@ describe('addition of a new outcome', () => {
     if game date is in the future`,
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
+      const { tournamentId, admintoken } = values
 
       const gameInFuture = {
         home_team: 'past',
@@ -409,9 +408,9 @@ describe('addition of a new outcome', () => {
 })
 
 describe('deletion of a outcome', () => {
-
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -424,6 +423,7 @@ describe('deletion of a outcome', () => {
   test('succeeds with status code 204 if id is valid', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
     const outcomeToDelete = outcomesAtStart[0]
+    const { admintoken } = values
 
     await api
       .delete(`/api/outcomes/${outcomeToDelete.id}`)
@@ -443,6 +443,7 @@ describe('deletion of a outcome', () => {
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
       const outcomeToDelete = outcomesAtStart[0]
+      const { usertoken } = values
 
       const result = await api
         .delete(`/api/outcomes/${outcomeToDelete.id}`)

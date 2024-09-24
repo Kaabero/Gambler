@@ -58,20 +58,26 @@ tournamentsRouter
         })
     }
 
+    if (body.name === '' || !body.from_date || !body.to_date) {
+      return response.status(400)
+        .json({ error:
+        'Some of the required fields are missing'
+        })
+    }
+
     const existingTournament = await Tournament.findOne({
       name: { $regex: new RegExp(`^${body.name}$`, 'i') },
     })
 
     if (existingTournament) {
       return response.status(400)
-        .json({ error:
-      `Tournament ${body.name} already added. 
-      Choose another name for the tournament.`
+        .json({ error: `Tournament ${body.name} already added. 
+          Choose another name for the tournament.`
         })
     }
 
     if (body.to_date === body.from_date) {
-      return response.status(400).json({ error: 'Check the dates' })
+      return response.status(400).json({ error: 'Check the dates.' })
     }
 
     const from = new Date(body.from_date)
@@ -82,11 +88,11 @@ tournamentsRouter
 
 
     if (from <= now) {
-      return response.status(400).json({ error: 'Set a future starting date' })
+      return response.status(400).json({ error: 'Set a future starting date.' })
     }
 
     if (from === to || from > to) {
-      return response.status(400).json({ error: 'Check the dates' })
+      return response.status(400).json({ error: 'Check the dates.' })
     }
 
 
@@ -108,7 +114,7 @@ tournamentsRouter
   .delete('/:id', middleware.userExtractor, async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
     if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid' })
+      return response.status(400).end()
     }
     const user = request.user
 
@@ -147,7 +153,7 @@ tournamentsRouter
 
 
     if (from === to || from > to) {
-      return response.status(400).json({ error: 'Check the dates' })
+      return response.status(400).json({ error: 'Check the dates.' })
     }
 
     const existingTournament = await Tournament.findOne({

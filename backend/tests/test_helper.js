@@ -33,17 +33,17 @@ const nonExistingId = async () => {
 
 const gamesInDb = async () => {
   const games = await Game.find({})
-  return games.map(game => game.toJSON())
+  return games.map(g => g.toJSON())
 }
 
 const betsInDb = async () => {
   const bets = await Bet.find({})
-  return bets.map(bet => bet.toJSON())
+  return bets.map(b => b.toJSON())
 }
 
 const outcomesInDb = async () => {
   const outcomes = await Outcome.find({})
-  return outcomes.map(outcome => outcome.toJSON())
+  return outcomes.map(o => o.toJSON())
 }
 
 const usersInDb = async () => {

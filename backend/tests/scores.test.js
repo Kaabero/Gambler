@@ -16,43 +16,6 @@ const User = require('../models/user')
 const helper = require('./test_helper')
 
 
-const testUser = {
-  username: 'testuser',
-  password: 'Password1!',
-  admin: false
-}
-
-const testAdmin = {
-  username: 'testadmin',
-  password: 'Password1!',
-  admin: true
-}
-
-const tournamentForScoresTesting = {
-  name: 'tournamentForScoresTesting',
-  from_date: '1.1.2024',
-  to_date:
-  new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString(),
-}
-
-let admintoken
-
-let usertoken
-
-let gameOneId
-
-let gameTwoId
-
-let outcomeOneId
-
-let outcomeTwoId
-
-let tournamentId
-
-let adminId
-
-let userId
-
 
 
 const insertInitialData = async () => {
@@ -61,6 +24,26 @@ const insertInitialData = async () => {
   await Tournament.deleteMany({})
   await Outcome.deleteMany({})
   await Scores.deleteMany({})
+
+  const testUser = {
+    username: 'testuser',
+    password: 'Password1!',
+    admin: false
+  }
+
+  const testAdmin = {
+    username: 'testadmin',
+    password: 'Password1!',
+    admin: true
+  }
+
+  const tournamentForScoresTesting = {
+    name: 'tournamentForScoresTesting',
+    from_date: '1.1.2024',
+    to_date:
+    new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+      .toISOString(),
+  }
 
   await api
     .post('/api/users')
@@ -79,20 +62,20 @@ const insertInitialData = async () => {
     .send(testUser)
 
 
-  admintoken = adminloginresponse.body.token
+  const admintoken = adminloginresponse.body.token
 
-  usertoken = userloginresponse.body.token
+  const usertoken = userloginresponse.body.token
 
-  adminId = adminloginresponse.body.id
+  const adminId = adminloginresponse.body.id
 
-  userId = userloginresponse.body.id
+  const userId = userloginresponse.body.id
 
 
   await Tournament.insertMany([tournamentForScoresTesting])
 
   const tournaments = await helper.tournamentsInDb()
 
-  tournamentId = tournaments[0].id
+  const tournamentId = tournaments[0].id
 
   const gameOne = {
     home_team: 'game',
@@ -113,8 +96,8 @@ const insertInitialData = async () => {
   const games = await helper.gamesInDb()
 
 
-  gameOneId = games[0].id
-  gameTwoId = games[1].id
+  const gameOneId = games[0].id
+  const gameTwoId = games[1].id
 
   const outcomeOne = {
     goals_home: '1',
@@ -133,8 +116,8 @@ const insertInitialData = async () => {
   const outcomes = await helper.outcomesInDb()
 
 
-  outcomeOneId = outcomes[0].id
-  outcomeTwoId = outcomes[1].id
+  const outcomeOneId = outcomes[0].id
+  const outcomeTwoId = outcomes[1].id
 
   const ScoresOne = {
     points: '1',
@@ -149,13 +132,26 @@ const insertInitialData = async () => {
   }
 
   await Scores.insertMany([ScoresOne, ScoresTwo])
+
+  return {
+    admintoken,
+    usertoken,
+    gameOneId,
+    gameTwoId,
+    outcomeOneId,
+    outcomeTwoId,
+    tournamentId,
+    adminId,
+    userId
+  }
 }
 
 
 
 describe('returning initial scores', () => {
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -180,6 +176,7 @@ describe('returning initial scores', () => {
 
   test('a specific score is within the returned scores', async () => {
     const response = await api.get('/api/scores')
+    const { outcomeOneId, adminId } = values
 
     const points = response.body.map(score => score.points)
 
@@ -193,6 +190,7 @@ describe('returning initial scores', () => {
 })
 
 describe('viewing a specific scores', () => {
+
   beforeEach(async () => {
     await insertInitialData()
   })
@@ -246,9 +244,9 @@ describe('viewing a specific scores', () => {
 })
 
 describe('addition of a new scores', () => {
-
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -261,6 +259,7 @@ describe('addition of a new scores', () => {
 
   test('succeeds with valid data and token', async () => {
     const scoresAtStart = await helper.scoresInDb()
+    const { admintoken, outcomeTwoId, userId } = values
 
     const newScores = {
       points: '3',
@@ -285,6 +284,7 @@ describe('addition of a new scores', () => {
 
   test('fails with status code 400 without admin rights', async () => {
     const scoresAtStart = await helper.scoresInDb()
+    const { usertoken, outcomeTwoId, adminId } = values
 
     const newScores = {
       points: '3',
@@ -293,7 +293,7 @@ describe('addition of a new scores', () => {
     }
 
     const result = await api
-      .post('/api/scoress')
+      .post('/api/scores')
       .set('Authorization', `Bearer ${usertoken}`)
       .send(newScores)
       .expect(400)
@@ -310,6 +310,7 @@ describe('addition of a new scores', () => {
     'fails with status code 401 and proper message if token is invalid',
     async () => {
       const scoresAtStart = await helper.scoresInDb()
+      const { outcomeTwoId, userId } = values
 
       const newScores = {
         points: '3',
@@ -337,6 +338,7 @@ describe('addition of a new scores', () => {
     'fails with status code 400 if token is missing',
     async () => {
       const scoresAtStart = await helper.scoresInDb()
+      const { outcomeTwoId, userId } = values
 
       const newScores = {
         points: '3',
@@ -362,6 +364,7 @@ describe('addition of a new scores', () => {
     'fails with status code 400 and proper error message if data invalid',
     async () => {
       const scoresAtStart = await helper.scoresInDb()
+      const { admintoken, outcomeTwoId, userId } = values
 
       const newScores = {
         points: '',
@@ -391,6 +394,7 @@ describe('addition of a new scores', () => {
     if user has already scores for this outcome`,
     async () => {
       const scoresAtStart = await helper.scoresInDb()
+      const { admintoken, adminId, outcomeOneId } = values
 
       const newScores = {
         points: '7',
@@ -420,9 +424,10 @@ describe('addition of a new scores', () => {
 })
 
 describe('deletion of a score', () => {
+  let values
 
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -436,6 +441,7 @@ describe('deletion of a score', () => {
   test('succeeds with status code 204 if id is valid', async () => {
     const scoresAtStart = await helper.scoresInDb()
     const scoreToDelete = scoresAtStart[0]
+    const { admintoken } = values
 
     await api
       .delete(`/api/scores/${scoreToDelete.id}`)
@@ -455,6 +461,7 @@ describe('deletion of a score', () => {
     async () => {
       const scoresAtStart = await helper.scoresInDb()
       const scoreToDelete = scoresAtStart[0]
+      const { usertoken } = values
 
       const result = await api
         .delete(`/api/scores/${scoreToDelete.id}`)
@@ -514,8 +521,9 @@ describe('deletion of a score', () => {
 
 
 describe('modification of a score', () => {
+  let values
   beforeEach(async () => {
-    await insertInitialData()
+    values = await insertInitialData()
   })
 
   afterEach(async () => {
@@ -530,13 +538,14 @@ describe('modification of a score', () => {
 
     const scoresAtStart = await helper.scoresInDb()
     const scoreToModify = scoresAtStart[0]
+    const { admintoken } = values
 
     const modifiedScores = {
       points: '10'
     }
 
     const result = await api
-      .put(`/api/scores/${scoreToModify.id}`)
+      .put(`/api/scores/${scoreToModify.id.toString()}`)
       .send(modifiedScores)
       .set('Authorization', `Bearer ${admintoken}`)
       .expect(200)
@@ -545,13 +554,13 @@ describe('modification of a score', () => {
     const scoresAtEnd = await helper.scoresInDb()
 
     assert.deepStrictEqual(
-      result.body.outcome.id, scoreToModify.outcome.toString()
+      result.body.outcome, scoreToModify.outcome.toString()
     )
     assert.deepStrictEqual(
-      result.body.user.id, scoreToModify.user.toString()
+      result.body.user, scoreToModify.user.toString()
     )
 
-    assert.deepStrictEqual(result.body.id, scoreToModify.id)
+    assert.deepStrictEqual(result.body.id, scoreToModify.id.toString())
 
 
     assert.notEqual(
@@ -560,17 +569,47 @@ describe('modification of a score', () => {
     assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
   })
 
+  test('succeeds with status code 400 without admin rights', async () => {
+
+    const scoresAtStart = await helper.scoresInDb()
+    const scoreToModify = scoresAtStart[0]
+    const { usertoken } = values
+
+    const modifiedScores = {
+      points: '11'
+    }
+
+    const result = await api
+      .put(`/api/scores/${scoreToModify.id.toString()}`)
+      .send(modifiedScores)
+      .set('Authorization', `Bearer ${usertoken}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const scoresAtEnd = await helper.scoresInDb()
+
+    assert(result.body.error.includes(
+      'This operation is for admins only.'
+    ))
+
+
+    const points = scoresAtEnd.map(s => s.points)
+    assert(!points.includes(modifiedScores.points))
+    assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
+  })
+
 
   test('fails with status code 400 if data is invalid', async () => {
 
     const scoresAtStart = await helper.scoresInDb()
     const scoreToModify = scoresAtStart[0]
+    const { admintoken } = values
 
     const modifiedScores = {
       points: 'a'
     }
     await api
-      .put(`/api/scores/${scoreToModify.id}`)
+      .put(`/api/scores/${scoreToModify.id.toString()}`)
       .set('Authorization', `Bearer ${admintoken}`)
       .send(modifiedScores)
       .expect(400)
@@ -579,7 +618,7 @@ describe('modification of a score', () => {
 
     const points = scoresAtEnd.map(s => s.points)
     assert(!points.includes(modifiedScores.points))
-    assert.strictEqual(scoresAtEnd.length, scoresAtStart)
+    assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
 
   })
 
@@ -593,7 +632,7 @@ describe('modification of a score', () => {
     }
 
     const result = await api
-      .put(`/api/scores/${scoreToModify.id}`)
+      .put(`/api/scores/${scoreToModify.id.toString()}`)
       .send(modifiedScores)
       .expect(400)
       .expect('Content-Type', /application\/json/)
@@ -606,7 +645,7 @@ describe('modification of a score', () => {
 
     const points = scoresAtEnd.map(s => s.points)
     assert(!points.includes(modifiedScores.points))
-    assert.strictEqual(scoresAtEnd.length, scoresAtStart)
+    assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
 
   })
   test('fails with status code 400 if token is invalid', async () => {
@@ -634,7 +673,7 @@ describe('modification of a score', () => {
 
     const points = scoresAtEnd.map(s => s.points)
     assert(!points.includes(modifiedScores.points))
-    assert.strictEqual(scoresAtEnd.length, scoresAtStart)
+    assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
   })
 
 })
