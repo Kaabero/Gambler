@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach, afterEach } = require('node:test')
+
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -134,19 +134,19 @@ describe('returning initial outcomes', () => {
     await Outcome.deleteMany({})
   })
 
-  test('outcomes are returned as json', async () => {
+  it('outcomes are returned as json', async () => {
     await api
       .get('/api/outcomes')
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
-  test('all outcomes are returned', async () => {
+  it('all outcomes are returned', async () => {
     const response = await api.get('/api/outcomes')
     assert.strictEqual(response.body.length, 2)
   })
 
-  test('a specific outcome is within the returned outcomes', async () => {
+  it('a specific outcome is within the returned outcomes', async () => {
     const response = await api.get('/api/outcomes')
     const { gameOneId } = values
 
@@ -173,7 +173,7 @@ describe('viewing a specific outcome', () => {
     await Outcome.deleteMany({})
   })
 
-  test('succeeds with a valid id', async () => {
+  it('succeeds with a valid id', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
 
     const outcomeToView = outcomesAtStart[0]
@@ -194,7 +194,7 @@ describe('viewing a specific outcome', () => {
   })
 
 
-  test('fails with statuscode 404 if outcome does not exist', async () => {
+  it('fails with statuscode 404 if outcome does not exist', async () => {
     const validNonexistingId = await helper.nonExistingId()
 
     await api
@@ -202,7 +202,7 @@ describe('viewing a specific outcome', () => {
       .expect(404)
   })
 
-  test('fails with statuscode 400 if id is invalid', async () => {
+  it('fails with statuscode 400 if id is invalid', async () => {
     const invalidId = '5a3d5da59070081a82a3445'
 
     await api
@@ -224,7 +224,7 @@ describe('addition of a new outcome', () => {
     await Outcome.deleteMany({})
   })
 
-  test('succeeds with valid data and token', async () => {
+  it('succeeds with valid data and token', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
     const { gameThreeId, admintoken } = values
 
@@ -249,7 +249,7 @@ describe('addition of a new outcome', () => {
     assert(visitor_goals.includes(3))
   })
 
-  test('fails with status code 400 without admin rights', async () => {
+  it('fails with status code 400 without admin rights', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
     const { gameThreeId, usertoken } = values
 
@@ -273,7 +273,7 @@ describe('addition of a new outcome', () => {
     assert.strictEqual(outcomesAtEnd.length, outcomesAtStart.length)
   })
 
-  test(
+  it(
     'fails with status code 401 and proper message if token is invalid',
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
@@ -300,7 +300,7 @@ describe('addition of a new outcome', () => {
     }
   )
 
-  test(
+  it(
     'fails with status code 400 if token is missing',
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
@@ -327,7 +327,7 @@ describe('addition of a new outcome', () => {
   )
 
 
-  test(
+  it(
     'fails with status code 400 and proper error message if data invalid',
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
@@ -357,7 +357,7 @@ describe('addition of a new outcome', () => {
     }
   )
 
-  test(
+  it(
     `fails with status code 400 and proper error message 
     if game date is in the future`,
     async () => {
@@ -420,7 +420,7 @@ describe('deletion of a outcome', () => {
     await Outcome.deleteMany({})
   })
 
-  test('succeeds with status code 204 if id is valid', async () => {
+  it('succeeds with status code 204 if id is valid', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
     const outcomeToDelete = outcomesAtStart[0]
     const { admintoken } = values
@@ -438,7 +438,7 @@ describe('deletion of a outcome', () => {
     assert.strictEqual(outcomesAtEnd.length, outcomesAtStart.length - 1)
   })
 
-  test(
+  it(
     'fails with status code 401 if user has no rights to delete this outcome',
     async () => {
       const outcomesAtStart = await helper.outcomesInDb()
@@ -460,7 +460,7 @@ describe('deletion of a outcome', () => {
     }
   )
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
     const outcomeToDelete = outcomesAtStart[0]
 
@@ -478,7 +478,7 @@ describe('deletion of a outcome', () => {
 
   })
 
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
     const outcomesAtStart = await helper.outcomesInDb()
     const outcomeToDelete = outcomesAtStart[0]
 
@@ -502,12 +502,12 @@ describe('deletion of a outcome', () => {
 })
 
 
-
-
 after(async () => {
-  await User.deleteMany({})
-  await Game.deleteMany({})
-  await Tournament.deleteMany({})
-  await Outcome.deleteMany({})
+  if (mongoose.connection.readyState === 1) {
+    await User.deleteMany({})
+    await Game.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
+  }
   await mongoose.connection.close()
 })

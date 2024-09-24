@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach, afterEach } = require('node:test')
+
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -162,19 +162,19 @@ describe('returning initial scores', () => {
     await Scores.deleteMany({})
   })
 
-  test('scores are returned as json', async () => {
+  it('scores are returned as json', async () => {
     await api
       .get('/api/scores')
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
-  test('all scores are returned', async () => {
+  it('all scores are returned', async () => {
     const response = await api.get('/api/scores')
     assert.strictEqual(response.body.length, 2)
   })
 
-  test('a specific score is within the returned scores', async () => {
+  it('a specific score is within the returned scores', async () => {
     const response = await api.get('/api/scores')
     const { outcomeOneId, adminId } = values
 
@@ -203,7 +203,7 @@ describe('viewing a specific scores', () => {
     await Scores.deleteMany({})
   })
 
-  test('succeeds with a valid id', async () => {
+  it('succeeds with a valid id', async () => {
     const scoresAtStart = await helper.scoresInDb()
 
     const scoreToView = scoresAtStart[0]
@@ -226,7 +226,7 @@ describe('viewing a specific scores', () => {
   })
 
 
-  test('fails with statuscode 404 if score does not exist', async () => {
+  it('fails with statuscode 404 if score does not exist', async () => {
     const validNonexistingId = await helper.nonExistingId()
 
     await api
@@ -234,7 +234,7 @@ describe('viewing a specific scores', () => {
       .expect(404)
   })
 
-  test('fails with statuscode 400 if id is invalid', async () => {
+  it('fails with statuscode 400 if id is invalid', async () => {
     const invalidId = '5a3d5da59070081a82a3445'
 
     await api
@@ -257,7 +257,7 @@ describe('addition of a new scores', () => {
     await Scores.deleteMany({})
   })
 
-  test('succeeds with valid data and token', async () => {
+  it('succeeds with valid data and token', async () => {
     const scoresAtStart = await helper.scoresInDb()
     const { admintoken, outcomeTwoId, userId } = values
 
@@ -282,7 +282,7 @@ describe('addition of a new scores', () => {
     assert(points.includes(3))
   })
 
-  test('fails with status code 400 without admin rights', async () => {
+  it('fails with status code 400 without admin rights', async () => {
     const scoresAtStart = await helper.scoresInDb()
     const { usertoken, outcomeTwoId, adminId } = values
 
@@ -306,7 +306,7 @@ describe('addition of a new scores', () => {
     assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
   })
 
-  test(
+  it(
     'fails with status code 401 and proper message if token is invalid',
     async () => {
       const scoresAtStart = await helper.scoresInDb()
@@ -334,7 +334,7 @@ describe('addition of a new scores', () => {
     }
   )
 
-  test(
+  it(
     'fails with status code 400 if token is missing',
     async () => {
       const scoresAtStart = await helper.scoresInDb()
@@ -360,7 +360,7 @@ describe('addition of a new scores', () => {
   )
 
 
-  test(
+  it(
     'fails with status code 400 and proper error message if data invalid',
     async () => {
       const scoresAtStart = await helper.scoresInDb()
@@ -389,7 +389,7 @@ describe('addition of a new scores', () => {
     }
   )
 
-  test(
+  it(
     `fails with status code 400 and proper error message 
     if user has already scores for this outcome`,
     async () => {
@@ -438,7 +438,7 @@ describe('deletion of a score', () => {
     await Scores.deleteMany({})
   })
 
-  test('succeeds with status code 204 if id is valid', async () => {
+  it('succeeds with status code 204 if id is valid', async () => {
     const scoresAtStart = await helper.scoresInDb()
     const scoreToDelete = scoresAtStart[0]
     const { admintoken } = values
@@ -456,7 +456,7 @@ describe('deletion of a score', () => {
     assert.strictEqual(scoresAtEnd.length, scoresAtStart.length - 1)
   })
 
-  test(
+  it(
     'fails with status code 401 if user has no rights to delete scores',
     async () => {
       const scoresAtStart = await helper.scoresInDb()
@@ -478,7 +478,7 @@ describe('deletion of a score', () => {
     }
   )
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
     const scoresAtStart = await helper.scoresInDb()
     const scoreToDelete = scoresAtStart[0]
 
@@ -496,7 +496,7 @@ describe('deletion of a score', () => {
 
   })
 
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
     const scoresAtStart = await helper.scoresInDb()
     const scoreToDelete = scoresAtStart[0]
 
@@ -534,7 +534,7 @@ describe('modification of a score', () => {
     await Scores.deleteMany({})
   })
 
-  test('succeeds with status code 200 with valid data and id', async () => {
+  it('succeeds with status code 200 with valid data and id', async () => {
 
     const scoresAtStart = await helper.scoresInDb()
     const scoreToModify = scoresAtStart[0]
@@ -569,7 +569,7 @@ describe('modification of a score', () => {
     assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
   })
 
-  test('succeeds with status code 400 without admin rights', async () => {
+  it('succeeds with status code 400 without admin rights', async () => {
 
     const scoresAtStart = await helper.scoresInDb()
     const scoreToModify = scoresAtStart[0]
@@ -599,7 +599,7 @@ describe('modification of a score', () => {
   })
 
 
-  test('fails with status code 400 if data is invalid', async () => {
+  it('fails with status code 400 if data is invalid', async () => {
 
     const scoresAtStart = await helper.scoresInDb()
     const scoreToModify = scoresAtStart[0]
@@ -622,7 +622,7 @@ describe('modification of a score', () => {
 
   })
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
 
     const scoresAtStart = await helper.scoresInDb()
     const scoreToModify = scoresAtStart[0]
@@ -648,7 +648,7 @@ describe('modification of a score', () => {
     assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
 
   })
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
     const scoresAtStart = await helper.scoresInDb()
     const scoreToModify = scoresAtStart[0]
 
@@ -679,10 +679,12 @@ describe('modification of a score', () => {
 })
 
 after(async () => {
-  await User.deleteMany({})
-  await Game.deleteMany({})
-  await Tournament.deleteMany({})
-  await Outcome.deleteMany({})
-  await Scores.deleteMany({})
+  if (mongoose.connection.readyState === 1) {
+    await User.deleteMany({})
+    await Game.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
+    await Scores.deleteMany({})
+  }
   await mongoose.connection.close()
 })

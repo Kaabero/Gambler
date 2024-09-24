@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach, afterEach } = require('node:test')
+
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -88,20 +88,20 @@ describe('returning initial tournaments', () => {
     await Tournament.deleteMany({})
   })
 
-  test('tournaments are returned as json', async () => {
+  it('tournaments are returned as json', async () => {
     await api
       .get('/api/tournaments')
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
-  test('all tournaments are returned', async () => {
+  it('all tournaments are returned', async () => {
     const response = await api.get('/api/tournaments')
 
     assert.strictEqual(response.body.length, 2)
   })
 
-  test('a specific tournament is within the returned tournaments', async () => {
+  it('a specific tournament is within the returned tournaments', async () => {
     const response = await api.get('/api/tournaments')
 
     const names = response.body.map(tournament => tournament.name)
@@ -121,7 +121,7 @@ describe('viewing a specific tournament', () => {
     await Tournament.deleteMany({})
   })
 
-  test('succeeds with a valid id', async () => {
+  it('succeeds with a valid id', async () => {
     const tournamentsAtStart = await helper.tournamentsInDb()
 
     const tournamentToView = tournamentsAtStart[0]
@@ -135,7 +135,7 @@ describe('viewing a specific tournament', () => {
   })
 
 
-  test('fails with statuscode 404 if tournament does not exist', async () => {
+  it('fails with statuscode 404 if tournament does not exist', async () => {
     const validNonexistingId = await helper.nonExistingId()
 
     await api
@@ -143,7 +143,7 @@ describe('viewing a specific tournament', () => {
       .expect(404)
   })
 
-  test('fails with statuscode 400 if id is invalid', async () => {
+  it('fails with statuscode 400 if id is invalid', async () => {
     const invalidId = '5a3d5da59070081a82a3445'
 
     await api
@@ -164,7 +164,7 @@ describe('addition of a new tournament', () => {
     await Tournament.deleteMany({})
   })
 
-  test('succeeds with valid data and admin rights', async () => {
+  it('succeeds with valid data and admin rights', async () => {
 
     const tournamentsAtStart = await helper.tournamentsInDb()
     const { admintoken } = values
@@ -195,7 +195,7 @@ describe('addition of a new tournament', () => {
     assert(names.includes('valid data'))
   })
 
-  test(
+  it(
     'fails with status code 401 and proper message if token is invalid',
     async () => {
 
@@ -227,7 +227,7 @@ describe('addition of a new tournament', () => {
     }
   )
 
-  test(
+  it(
     'fails with status code 400 if token is missing',
     async () => {
       const tournamentsAtStart = await helper.tournamentsInDb()
@@ -255,7 +255,7 @@ describe('addition of a new tournament', () => {
     }
   )
 
-  test('fails with status code 400 if starting date is in the past',
+  it('fails with status code 400 if starting date is in the past',
     async () => {
       const tournamentsAtStart = await helper.tournamentsInDb()
       const { admintoken } = values
@@ -287,7 +287,7 @@ describe('addition of a new tournament', () => {
     }
   )
 
-  test('fails with status code 400 if name already exists',
+  it('fails with status code 400 if name already exists',
     async () => {
       const tournamentsAtStart = await helper.tournamentsInDb()
       const { admintoken } = values
@@ -319,7 +319,7 @@ describe('addition of a new tournament', () => {
     }
   )
 
-  test('fails with status code 400 if tournament from_date  === to_date',
+  it('fails with status code 400 if tournament from_date  === to_date',
     async () => {
 
       const tournamentsAtStart = await helper.tournamentsInDb()
@@ -354,7 +354,7 @@ describe('addition of a new tournament', () => {
     }
   )
 
-  test(
+  it(
     'fails with status code 400 and proper error message if data invalid',
     async () => {
 
@@ -389,7 +389,7 @@ describe('addition of a new tournament', () => {
     }
   )
 
-  test('fails with status code 400 if from_date > to_date', async () => {
+  it('fails with status code 400 if from_date > to_date', async () => {
 
     const tournamentsAtStart = await helper.tournamentsInDb()
     const { admintoken } = values
@@ -435,7 +435,7 @@ describe('deletion of a tournament', () => {
     await Tournament.deleteMany({})
   })
 
-  test('succeeds with status code 204 if id is valid', async () => {
+  it('succeeds with status code 204 if id is valid', async () => {
 
     const tournamentsAtStart = await helper.tournamentsInDb()
     const tournamentToDelete = tournamentsAtStart[0]
@@ -454,7 +454,7 @@ describe('deletion of a tournament', () => {
     assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length -1)
   })
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
     const tournamentsAtStart = await helper.tournamentsInDb()
     const tournamentToDelete = tournamentsAtStart[0]
 
@@ -470,7 +470,7 @@ describe('deletion of a tournament', () => {
 
   })
 
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
     const tournamentsAtStart = await helper.tournamentsInDb()
     const tournamentToDelete = tournamentsAtStart[0]
 
@@ -502,7 +502,7 @@ describe('modification of a tournament', () => {
     await Tournament.deleteMany({})
   })
 
-  test('succeeds with status code 200 with valid data and id', async () => {
+  it('succeeds with status code 200 with valid data and id', async () => {
 
     const tournamentsAtStart = await helper.tournamentsInDb()
     const tournamentToModify = tournamentsAtStart[0]
@@ -536,7 +536,7 @@ describe('modification of a tournament', () => {
     assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
   })
 
-  test(
+  it(
     `fails with status code 400 and proper message 
     if tournament name already exists`,
     async () => {
@@ -568,7 +568,7 @@ describe('modification of a tournament', () => {
     }
   )
 
-  test(
+  it(
     `fails with status code 400 and proper message 
     if from_date>to_date`,
     async () => {
@@ -606,7 +606,7 @@ describe('modification of a tournament', () => {
     }
   )
 
-  test('fails with status code 400 if data is invalid', async () => {
+  it('fails with status code 400 if data is invalid', async () => {
 
     const tournamentsAtStart = await helper.tournamentsInDb()
     const tournamentToModify = tournamentsAtStart[0]
@@ -630,7 +630,7 @@ describe('modification of a tournament', () => {
 
   })
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
 
     const tournamentsAtStart = await helper.tournamentsInDb()
     const tournamentToModify = tournamentsAtStart[0]
@@ -655,7 +655,7 @@ describe('modification of a tournament', () => {
     assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
 
   })
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
 
     const tournamentsAtStart = await helper.tournamentsInDb()
     const tournamentToModify = tournamentsAtStart[0]
@@ -696,7 +696,7 @@ describe('operations without admin rights: ', () => {
     await Tournament.deleteMany({})
   })
 
-  test('addition fails with valid data', async () => {
+  it('addition fails with valid data', async () => {
     const { usertoken } = values
 
     const newTournament = {
@@ -720,7 +720,7 @@ describe('operations without admin rights: ', () => {
 
   })
 
-  test(
+  it(
     'modification of a tournament fails with valid data and id',
     async () => {
       const { usertoken } = values
@@ -745,7 +745,7 @@ describe('operations without admin rights: ', () => {
     }
   )
 
-  test('deletion of a tournament fails with valid id', async () => {
+  it('deletion of a tournament fails with valid id', async () => {
     const tournamentsAtStart = await helper.tournamentsInDb()
     const tournamentToDelete = tournamentsAtStart[0]
     const { usertoken } = values
@@ -763,7 +763,9 @@ describe('operations without admin rights: ', () => {
 })
 
 after(async () => {
-  await User.deleteMany({})
-  await Tournament.deleteMany({})
+  if (mongoose.connection.readyState === 1) {
+    await User.deleteMany({})
+    await Tournament.deleteMany({})
+  }
   await mongoose.connection.close()
 })

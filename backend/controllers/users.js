@@ -76,8 +76,8 @@ usersRouter.post('/', async (request, response) => {
   if (!validatePassword(password)) {
     return response.status(400)
       .json({ error:
-      `Password must be at least 8 characters long and include uppercase,
-       lowercase, number, and special character`
+      `Password must be at least 8 characters long and include uppercase, 
+      lowercase, number, and special character`
       })
   }
 
@@ -103,7 +103,7 @@ usersRouter
   .delete('/:id', middleware.userExtractor, async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
     if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid' })
+      return response.status(400).end()
     }
     const user = request.user
 

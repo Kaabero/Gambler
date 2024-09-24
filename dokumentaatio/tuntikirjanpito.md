@@ -35,5 +35,5 @@
 | 19.9.2024. | 5   | eslint asetuksia ja korjauksia, testikattavuus työkalun ongelmia |
 | 20.9.2024. | 5   | backendin testejä |
 | 23.9.2024. | 5  | backendin testejä |
-| 23.9.2024. | 2  | backendin testejä ja ongelmia |
-| yht        | 139 |            | 
+| 23.9.2024. | 5  | backendin testejä ja ongelmia, vaihto mochaan |
+| yht        | 142 |            | 

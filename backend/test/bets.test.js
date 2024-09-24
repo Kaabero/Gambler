@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach, afterEach } = require('node:test')
+
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -165,19 +165,19 @@ describe('returning initial bets', () => {
     await Bet.deleteMany({})
   })
 
-  test('bets are returned as json', async () => {
+  it('bets are returned as json', async () => {
     await api
       .get('/api/bets')
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
-  test('all bets are returned', async () => {
+  it('all bets are returned', async () => {
     const response = await api.get('/api/bets')
     assert.strictEqual(response.body.length, 3)
   })
 
-  test('a specific bet is within the returned bets', async () => {
+  it('a specific bet is within the returned bets', async () => {
     const response = await api.get('/api/bets')
     const { gameOneId, adminId } = values
 
@@ -206,7 +206,7 @@ describe('viewing a specific bet', () => {
     await Bet.deleteMany({})
   })
 
-  test('succeeds with a valid id', async () => {
+  it('succeeds with a valid id', async () => {
     const betsAtStart = await helper.betsInDb()
 
     const betToView = betsAtStart[0]
@@ -228,7 +228,7 @@ describe('viewing a specific bet', () => {
   })
 
 
-  test('fails with statuscode 404 if bet does not exist', async () => {
+  it('fails with statuscode 404 if bet does not exist', async () => {
     const validNonexistingId = await helper.nonExistingId()
 
     await api
@@ -236,7 +236,7 @@ describe('viewing a specific bet', () => {
       .expect(404)
   })
 
-  test('fails with statuscode 400 if id is invalid', async () => {
+  it('fails with statuscode 400 if id is invalid', async () => {
     const invalidId = '5a3d5da59070081a82a3445'
 
     await api
@@ -258,7 +258,7 @@ describe('addition of a new bet', () => {
     await Bet.deleteMany({})
   })
 
-  test('succeeds with valid data and token', async () => {
+  it('succeeds with valid data and token', async () => {
     const betsAtStart = await helper.betsInDb()
     const { gameOneId, userId, usertoken } = values
 
@@ -283,7 +283,7 @@ describe('addition of a new bet', () => {
     const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
     assert(visitor_goals.includes(3))
   })
-  test(
+  it(
     'fails with status code 401 and proper message if token is invalid',
     async () => {
       const betsAtStart = await helper.betsInDb()
@@ -311,7 +311,7 @@ describe('addition of a new bet', () => {
     }
   )
 
-  test(
+  it(
     'fails with status code 400 if token is missing',
     async () => {
       const betsAtStart = await helper.betsInDb()
@@ -338,7 +338,7 @@ describe('addition of a new bet', () => {
   )
 
 
-  test(
+  it(
     'fails with status code 400 if user already has a bet in the game',
     async () => {
       const betsAtStart = await helper.betsInDb()
@@ -366,7 +366,7 @@ describe('addition of a new bet', () => {
     }
   )
 
-  test(
+  it(
     'fails with status code 400 and proper error message if data invalid',
     async () => {
       const betsAtStart = await helper.betsInDb()
@@ -397,7 +397,7 @@ describe('addition of a new bet', () => {
     }
   )
 
-  test(
+  it(
     `fails with status code 400 and proper error message 
     if game date is in the past`,
     async () => {
@@ -445,7 +445,7 @@ describe('deletion of a bet', () => {
     await Bet.deleteMany({})
   })
 
-  test('succeeds with status code 204 if id is valid', async () => {
+  it('succeeds with status code 204 if id is valid', async () => {
     const betsAtStart = await helper.betsInDb()
     const betToDelete = betsAtStart[0]
     const { admintoken } = values
@@ -463,7 +463,7 @@ describe('deletion of a bet', () => {
     assert.strictEqual(betsAtEnd.length, betsAtStart.length - 1)
   })
 
-  test(
+  it(
     'fails with status code 401 if user has no rights to delete this bet',
     async () => {
       const betsAtStart = await helper.betsInDb()
@@ -485,7 +485,7 @@ describe('deletion of a bet', () => {
     }
   )
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
     const betsAtStart = await helper.betsInDb()
     const betToDelete = betsAtStart[0]
 
@@ -503,7 +503,7 @@ describe('deletion of a bet', () => {
 
   })
 
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
     const betsAtStart = await helper.betsInDb()
     const betToDelete = betsAtStart[0]
 
@@ -524,7 +524,7 @@ describe('deletion of a bet', () => {
 
   })
 
-  test(
+  it(
     'fails with status code 400 if game already has an outcome',
     async () => {
       const betsAtStart = await helper.betsInDb()
@@ -575,7 +575,7 @@ describe('modification of a bet', () => {
     await Bet.deleteMany({})
   })
 
-  test('succeeds with status code 200 with valid data and id', async () => {
+  it('succeeds with status code 200 with valid data and id', async () => {
 
     const betsAtStart = await helper.betsInDb()
     const betToModify = betsAtStart[0]
@@ -608,7 +608,7 @@ describe('modification of a bet', () => {
     assert.strictEqual(betsAtEnd.length, betsAtStart.length)
   })
 
-  test(
+  it(
     `fails with status code 400 and proper message 
       if game already has an outcome`,
     async () => {
@@ -654,7 +654,7 @@ describe('modification of a bet', () => {
     }
   )
 
-  test('fails with status code 400 if data is invalid', async () => {
+  it('fails with status code 400 if data is invalid', async () => {
 
     const betsAtStart = await helper.betsInDb()
     const betToModify = betsAtStart[0]
@@ -677,7 +677,7 @@ describe('modification of a bet', () => {
 
   })
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
 
     const betsAtStart = await helper.betsInDb()
     const betToModify = betsAtStart[0]
@@ -702,7 +702,7 @@ describe('modification of a bet', () => {
     assert.strictEqual(betsAtEnd.length, betsAtStart.length)
 
   })
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
 
     const betsAtStart = await helper.betsInDb()
     const betToModify = betsAtStart[0]
@@ -730,7 +730,7 @@ describe('modification of a bet', () => {
     assert.strictEqual(betsAtEnd.length, betsAtStart.length)
   })
 
-  test(
+  it(
     'fails with status code 401 if user has no rights to edit this bet',
     async () => {
 
@@ -763,10 +763,12 @@ describe('modification of a bet', () => {
 
 
 after(async () => {
-  await Bet.deleteMany({})
-  await User.deleteMany({})
-  await Game.deleteMany({})
-  await Tournament.deleteMany({})
-  await Outcome.deleteMany({})
+  if (mongoose.connection.readyState === 1) {
+    await User.deleteMany({})
+    await Game.deleteMany({})
+    await Tournament.deleteMany({})
+    await Outcome.deleteMany({})
+    await Bet.deleteMany({})
+  }
   await mongoose.connection.close()
 })

@@ -1,5 +1,4 @@
 const assert = require('node:assert')
-const { test, after, describe, beforeEach, afterEach } = require('node:test')
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -112,20 +111,20 @@ describe('returning initial games', () => {
     await Tournament.deleteMany({})
   })
 
-  test('games are returned as json', async () => {
+  it('games are returned as json', async () => {
     await api
       .get('/api/games')
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
-  test('all games are returned', async () => {
+  it('all games are returned', async () => {
     const response = await api.get('/api/games')
 
     assert.strictEqual(response.body.length, helper.initialGames.length+1)
   })
 
-  test('a specific game is within the returned games', async () => {
+  it('a specific game is within the returned games', async () => {
     const response = await api.get('/api/games')
 
     const home_teams = response.body.map(game => game.home_team)
@@ -151,7 +150,7 @@ describe('viewing a specific game', () => {
     await Tournament.deleteMany({})
   })
 
-  test('succeeds with a valid id', async () => {
+  it('succeeds with a valid id', async () => {
     const gamesAtStart = await helper.gamesInDb()
 
     const gameToView = gamesAtStart[0]
@@ -165,7 +164,7 @@ describe('viewing a specific game', () => {
   })
 
 
-  test('fails with statuscode 404 if game does not exist', async () => {
+  it('fails with statuscode 404 if game does not exist', async () => {
     const validNonexistingId = await helper.nonExistingId()
 
     await api
@@ -173,7 +172,7 @@ describe('viewing a specific game', () => {
       .expect(404)
   })
 
-  test('fails with statuscode 400 if id is invalid', async () => {
+  it('fails with statuscode 400 if id is invalid', async () => {
     const invalidId = '5a3d5da59070081a82a3445'
 
     await api
@@ -195,7 +194,7 @@ describe('addition of a new game', () => {
     await Tournament.deleteMany({})
   })
 
-  test('succeeds with valid data and admin rights', async () => {
+  it('succeeds with valid data and admin rights', async () => {
 
     const { tournamentId, admintoken } = values
 
@@ -223,7 +222,7 @@ describe('addition of a new game', () => {
     assert(home_teams.includes('valid'))
   })
 
-  test(
+  it(
     'fails with status code 401 and proper message if token is invalid',
     async () => {
       const { tournamentId } = values
@@ -252,7 +251,7 @@ describe('addition of a new game', () => {
     }
   )
 
-  test(
+  it(
     'fails with status code 400 if token is missing',
     async () => {
       const { tournamentId } = values
@@ -278,7 +277,7 @@ describe('addition of a new game', () => {
     }
   )
 
-  test('fails with status code 400 if date is outside tournament time period',
+  it('fails with status code 400 if date is outside tournament time period',
     async () => {
       const { tournamentId, admintoken } = values
 
@@ -308,7 +307,7 @@ describe('addition of a new game', () => {
     }
   )
 
-  test('fails with status code 400 if date is in the past',
+  it('fails with status code 400 if date is in the past',
     async () => {
       const { tournamentId, admintoken } = values
 
@@ -338,7 +337,7 @@ describe('addition of a new game', () => {
     }
   )
 
-  test('fails with status code 400 if game already added',
+  it('fails with status code 400 if game already added',
     async () => {
       const { tournamentId, admintoken } = values
 
@@ -376,7 +375,7 @@ describe('addition of a new game', () => {
     }
   )
 
-  test(
+  it(
     'fails with status code 400 and proper error message if data invalid',
     async () => {
       const { tournamentId, admintoken } = values
@@ -405,7 +404,7 @@ describe('addition of a new game', () => {
     }
   )
 
-  test('fails with status code 400 if home_team = visitor_team', async () => {
+  it('fails with status code 400 if home_team = visitor_team', async () => {
 
     const { tournamentId, admintoken } = values
     const newGame = {
@@ -448,7 +447,7 @@ describe('deletion of a game', () => {
     await Tournament.deleteMany({})
   })
 
-  test('succeeds with status code 204 if id is valid', async () => {
+  it('succeeds with status code 204 if id is valid', async () => {
 
     const gamesAtStart = await helper.gamesInDb()
     const gameToDelete = gamesAtStart[0]
@@ -467,7 +466,7 @@ describe('deletion of a game', () => {
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length)
   })
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
     const gamesAtStart = await helper.gamesInDb()
     const gameToDelete = gamesAtStart[0]
 
@@ -483,7 +482,7 @@ describe('deletion of a game', () => {
 
   })
 
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
     const gamesAtStart = await helper.gamesInDb()
     const gameToDelete = gamesAtStart[0]
 
@@ -515,7 +514,7 @@ describe('modification of a game', () => {
     await Tournament.deleteMany({})
   })
 
-  test('succeeds with status code 200 with valid data and id', async () => {
+  it('succeeds with status code 200 with valid data and id', async () => {
 
     const { tournamentId, admintoken, initialGame } = values
 
@@ -547,7 +546,7 @@ describe('modification of a game', () => {
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
   })
 
-  test(
+  it(
     `fails with status code 400 and proper message 
     if date is outside tournament time period`,
     async () => {
@@ -579,7 +578,7 @@ describe('modification of a game', () => {
     }
   )
 
-  test('fails with status code 400 if data is invalid', async () => {
+  it('fails with status code 400 if data is invalid', async () => {
     const { tournamentId, admintoken, initialGame } = values
 
     const modifiedGame = {
@@ -600,7 +599,7 @@ describe('modification of a game', () => {
 
   })
 
-  test('fails with status code 400 if token is missing', async () => {
+  it('fails with status code 400 if token is missing', async () => {
     const { tournamentId, initialGame } = values
 
     const modifiedGame = {
@@ -623,7 +622,7 @@ describe('modification of a game', () => {
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
 
   })
-  test('fails with status code 400 if token is invalid', async () => {
+  it('fails with status code 400 if token is invalid', async () => {
     const { tournamentId, initialGame } = values
 
     const modifiedGame = {
@@ -648,7 +647,7 @@ describe('modification of a game', () => {
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
   })
 
-  test(
+  it(
     'succeeds with status code 200 when tournament is changed',
     async () => {
 
@@ -767,7 +766,7 @@ describe('operations without admin rights: ', () => {
     await Tournament.deleteMany({})
   })
 
-  test('addition fails with valid data', async () => {
+  it('addition fails with valid data', async () => {
     const { usertoken } = values
 
     const newGame = {
@@ -789,7 +788,7 @@ describe('operations without admin rights: ', () => {
 
   })
 
-  test('modification of a game fails with valid data and id', async () => {
+  it('modification of a game fails with valid data and id', async () => {
 
     const { usertoken } = values
     const gamesAtStart = await helper.gamesInDb()
@@ -811,7 +810,7 @@ describe('operations without admin rights: ', () => {
 
   })
 
-  test('deletion of a game fails with valid id', async () => {
+  it('deletion of a game fails with valid id', async () => {
     const gamesAtStart = await helper.gamesInDb()
     const gameToDelete = gamesAtStart[0]
     const { usertoken } = values
@@ -828,8 +827,10 @@ describe('operations without admin rights: ', () => {
 })
 
 after(async () => {
-  await User.deleteMany({})
-  await Game.deleteMany({})
-  await Tournament.deleteMany({})
+  if (mongoose.connection.readyState === 1) {
+    await User.deleteMany({})
+    await Game.deleteMany({})
+    await Tournament.deleteMany({})
+  }
   await mongoose.connection.close()
 })
