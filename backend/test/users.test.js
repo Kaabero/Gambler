@@ -143,6 +143,8 @@ describe('returning initial users', () => {
   })
 
   it('users are returned as json', async () => {
+
+    
     await api
       .get('/api/users')
       .expect(200)
@@ -151,8 +153,9 @@ describe('returning initial users', () => {
 
   it('all users are returned', async () => {
     const response = await api.get('/api/users')
+    const usersAtStart = await helper.usersInDb()
 
-    assert.strictEqual(response.body.length, 2)
+    assert.strictEqual(response.body.length, usersAtStart.length)
   })
 
   it('a specific user is within the returned users', async () => {
@@ -304,7 +307,7 @@ describe('modification of a user', () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
-    const admin = new User({ username: 'adminUser', passwordHash, admin: false })
+    const admin = new User({ username: 'adminUser', passwordHash, admin: true })
     const user = new User({ username: 'user', passwordHash, admin: false })
 
     await admin.save()
@@ -318,7 +321,7 @@ describe('modification of a user', () => {
   it('succeeds with status code 200 with valid data and id', async () => {
 
     const usersAtStart = await helper.usersInDb()
-    const userToModify = usersAtStart[0]
+    const userToModify = usersAtStart[1]
 
     const modifiedUser = {
       admin: true,
@@ -411,7 +414,7 @@ describe('modification of a user', () => {
   it('fails with status code 400 if token is missing', async () => {
 
     const usersAtStart = await helper.usersInDb()
-    const userToModify = usersAtStart[0]
+    const userToModify = usersAtStart[1]
 
     const modifiedUser = {
       admin: true,
@@ -435,7 +438,7 @@ describe('modification of a user', () => {
   it('fails with status code 400 if token is invalid', async () => {
 
     const usersAtStart = await helper.usersInDb()
-    const userToModify = usersAtStart[0]
+    const userToModify = usersAtStart[1]
 
     const modifiedUser = {
       admin: true,
@@ -464,10 +467,8 @@ describe('operations without admin rights: ', () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
-    const admin = new User({ username: 'adminUser', passwordHash })
     const user = new User({ username: 'user', passwordHash })
 
-    await admin.save()
     await user.save()
   })
 
@@ -528,6 +529,19 @@ describe('operations without admin rights: ', () => {
     const userresponse = await api
       .post('/api/login')
       .send(testUser)
+
+      const testAdmin = {
+        username: 'admin',
+        password: 'Password1!',
+        admin: true
+      }
+    
+      await api
+        .post('/api/users')
+        .send(testAdmin)
+     await api
+        .post('/api/login')
+        .send(testAdmin)
   
     const usertoken = userresponse.body.token
 

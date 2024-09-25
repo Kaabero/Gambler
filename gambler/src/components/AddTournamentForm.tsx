@@ -75,6 +75,7 @@ const AddTournamentForm: React.FC<AddTournamentFormProps> = ({
           From:
             <br />
             <input
+              data-testid='from'
               type='date'
               value={fromDate}
               onChange={({ target }) => setFromDate(target.value)}
@@ -85,6 +86,7 @@ const AddTournamentForm: React.FC<AddTournamentFormProps> = ({
           To:
             <br />
             <input
+              data-testid='to'
               type='date'
               value={toDate}
               onChange={({ target }) => setToDate(target.value)}
@@ -95,6 +97,7 @@ const AddTournamentForm: React.FC<AddTournamentFormProps> = ({
           Name:
             <br />
             <input
+              data-testid='tournamentname'
               value={name}
               onChange={({ target }) => setName(target.value)}
             />

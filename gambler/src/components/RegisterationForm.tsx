@@ -54,6 +54,7 @@ const RegisterationForm: React.FC<RegisterationProps> = ({
         <div>
           Username:
           <input
+            data-testid="username"
             type="text"
             value={username}
             name="Username"
@@ -63,6 +64,7 @@ const RegisterationForm: React.FC<RegisterationProps> = ({
         <div>
           Password:
           <input
+            data-testid="password"
             type="password"
             value={password}
             name="Password"
@@ -70,7 +72,7 @@ const RegisterationForm: React.FC<RegisterationProps> = ({
           />
         </div>
         <br />
-        <button type="submit">Create account</button>
+        <button id = "register-button" type="submit">Create account</button>
         <br />
         <br />
       </form>

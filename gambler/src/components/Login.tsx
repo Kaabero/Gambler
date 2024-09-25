@@ -76,6 +76,7 @@ const Login: React.FC<LoginFormProps> = ({
         <div>
           Username:
           <input
+            data-testid='username'
             type="text"
             value={username}
             name="Username"
@@ -85,6 +86,7 @@ const Login: React.FC<LoginFormProps> = ({
         <div>
           Password:
           <input
+            data-testid='password'
             type="password"
             value={password}
             name="Password"
@@ -92,7 +94,7 @@ const Login: React.FC<LoginFormProps> = ({
           />
         </div>
         <br />
-        <button type="submit">Login</button>
+        <button id="login-button" type="submit">Login</button>
         <br />
         <br />
       </form>
