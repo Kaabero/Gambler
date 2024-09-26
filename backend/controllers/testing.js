@@ -144,7 +144,7 @@ testRouter.post('/insert', async (request, response) => {
   await openBet.save()
 
 
-  response.status(204).end()
+  response.status(200).json({ tournamentId })
 })
 
 module.exports = testRouter

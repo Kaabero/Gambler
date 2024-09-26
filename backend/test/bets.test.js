@@ -132,7 +132,7 @@ const insertInitialData = async () => {
     goals_home: '3',
     goals_visitor: '2',
     game: gameThreeId,
-    user: adminId
+    user: userId
   }
 
   await Bet.insertMany([betOne, betTwo, betThree])
@@ -402,18 +402,18 @@ describe('addition of a new bet', () => {
     if game date is in the past`,
     async () => {
       const betsAtStart = await helper.betsInDb()
-      const { gameThreeId, userId, usertoken } = values
+      const { gameThreeId, adminId, admintoken } = values
 
       const newBet = {
         goals_home: '2',
         goals_visitor: '2',
         game: gameThreeId,
-        user: userId
+        user: adminId
       }
 
       const result = await api
         .post('/api/bets')
-        .set('Authorization', `Bearer ${usertoken}`)
+        .set('Authorization', `Bearer ${admintoken}`)
         .send(newBet)
         .expect(400)
         .expect('Content-Type', /application\/json/)
@@ -560,9 +560,11 @@ describe('deletion of a bet', () => {
       assert.strictEqual(betsAtEnd.length, betsAtStart.length)
     }
   )
+
+  
 })
 
-describe('modification of a bet', () => {
+describe.only('modification of a bet', () => {
   let values
   beforeEach(async () => {
     values = await insertInitialData()
@@ -610,7 +612,41 @@ describe('modification of a bet', () => {
 
   it(
     `fails with status code 400 and proper message 
-      if game already has an outcome`,
+      if game date is in the past and user has no admin rights`,
+    async () => {
+
+      const betsAtStart = await helper.betsInDb()
+      const betToModify = betsAtStart[2]
+      const { usertoken } = values
+
+
+      const modifiedBet = {
+        goals_visitor_team: '10',
+      }
+
+      const result = await api
+        .put(`/api/bets/${betToModify.id.toString()}`)
+        .set('Authorization', `Bearer ${usertoken}`)
+        .send(modifiedBet)
+        .expect(400)
+
+      const betsAtEnd = await helper.betsInDb()
+
+
+      assert(result.body.error.includes(
+        'Bet cannot be edited for past games'
+      ))
+
+      const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
+
+      assert(!visitor_goals.includes(modifiedBet.visitor_goals))
+      assert.strictEqual(betsAtEnd.length, betsAtStart.length)
+    }
+  )
+
+  it(
+    `fails with status code 400 and proper message 
+      if game already has an outcome and user is admin`,
     async () => {
 
       const betsAtStart = await helper.betsInDb()

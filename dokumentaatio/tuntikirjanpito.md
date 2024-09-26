@@ -37,4 +37,5 @@
 | 23.9.2024. | 5  | backendin testejä |
 | 24.9.2024. | 5  | backendin testejä ja ongelmia, vaihto mochaan |
 | 25.9.2024. | 5  | e2e ongelmia |
-| yht        | 147 |            | 
+| 26.9.2024. | 3  | e2e testejä |
+| yht        | 150 |            | 

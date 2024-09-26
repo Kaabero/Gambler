@@ -116,6 +116,7 @@ betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
       })
   }
 
+
   if ( bet.user.toString() === user.id.toString() || user.admin ) {
     await Bet.findByIdAndDelete(request.params.id)
     response.status(204).end()
@@ -139,12 +140,23 @@ betsRouter.put('/:id', middleware.userExtractor, async (request, response) =>
   const user = request.user
 
 
-  if (game.outcome) {
+  if (game.outcome && user.admin) {
     return response.status(400)
       .json({ error:
       'Editing bets is not allowed for games that have already been scored.'
       })
   }
+
+  const date = new Date(game.date)
+  const now = new Date()
+
+  if (date < now && !user.admin) {
+    return response.status(400)
+      .json({ error:
+      'Bet cannot be edited for past games'
+      })
+  }
+
   if ( bet.user.toString() === user.id.toString() || user.admin ) {
 
     const updatedBet =  await Bet.findByIdAndUpdate(
