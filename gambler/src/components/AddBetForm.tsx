@@ -42,12 +42,12 @@ const AddBetForm: React.FC<AddBetFormProps> = ({
 
     event.preventDefault();
 
-    if (game) {
+    if (game && gameId) {
       try {
         const newBet: NewBet = {
           goals_home: homeGoals,
           goals_visitor: visitorGoals,
-          game: game.id,
+          game: gameId,
         };
 
         await addBet(newBet);
@@ -90,6 +90,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({
           Goals for {game.home_team}:
               <br />
               <input
+                data-testid='home_goals'
                 type="number"
                 value={homeGoals}
                 onChange={({ target }) => setHomeGoals(target.value)}
@@ -101,6 +102,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({
           Goals for {game.visitor_team}:
               <br />
               <input
+                data-testid='visitor_goals'
                 type="number"
                 value={visitorGoals}
                 onChange={({ target }) => setVisitorGoals(target.value)}

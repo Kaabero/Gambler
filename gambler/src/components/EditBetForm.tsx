@@ -38,7 +38,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
   const betEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    if (bet) {
+    if (bet && betId) {
       const updatedBet: Bet = {
         ...bet,
         goals_home: homeGoals || bet.goals_home,
@@ -79,7 +79,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
     <div>
       <h2>Edit the bet</h2>
       <hr />
-      {bet ? (
+      {bet && betId ? (
         <div>
           <strong>Game: </strong><br />
           <p>Tournament: {bet.game.tournament?.name}</p>
@@ -97,6 +97,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
                 Goals for {bet.game.home_team}:
                 <br />
                 <input
+                  data-testid='home_goals'
                   type="number"
                   value={homeGoals}
                   onChange={({ target }) => setHomeGoals(target.value)}
@@ -108,6 +109,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
                  Goals for {bet.game.visitor_team}:
                 <br />
                 <input
+                  data-testid='visitor_goals'
                   type="number"
                   value={visitorGoals}
                   onChange={({ target }) => setVisitorGoals(target.value)}

@@ -14,11 +14,11 @@ describe('When admin has logged in to Gambler app', () => {
           }
         })
         await page.goto('http://localhost:5173/login')
-          await page.getByTestId('username').fill('admin')
-          await page.getByTestId('password').fill('Password1!')
-          await page.getByRole('button', { name: 'Login' }).click()
-          await expect(page.getByText('admin logged in')).toBeVisible()
-          await page.goto('http://localhost:5173')
+        await page.getByTestId('username').fill('admin')
+        await page.getByTestId('password').fill('Password1!')
+        await page.getByRole('button', { name: 'Login' }).click()
+        await expect(page.getByText('admin logged in')).toBeVisible()
+        await page.goto('http://localhost:5173')
     
     })
 

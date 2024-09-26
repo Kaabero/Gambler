@@ -86,7 +86,7 @@ describe('Registeration and login to Gambler app', () => {
         test('a home page can be opened', async ({ page }) => {
             await expect(page.getByText('Welcome to the Gambler app!')).toBeVisible()
             await expect(page.getByText('The current administrators are:')).toBeVisible()
-            page.getByRole('button', { name: 'Logout' }).toBeVisible()
+            await expect(page.getByRole('button', { name: 'Logout' })).toBeVisible()
 
         }) 
         

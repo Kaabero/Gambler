@@ -43,16 +43,14 @@ testRouter.post('/insert', async (request, response) => {
   const adminId = savedadmin._id
   const userId = saveduser._id
 
-  const currentDate = new Date()
 
 
   const fromDate =
-    new Date(currentDate.setFullYear(currentDate.getFullYear() -3))
+    new Date(new Date().setFullYear(new Date().getFullYear() - 3))
       .toISOString()
 
   const toDate =
-    new Date(new Date(fromDate)
-      .setFullYear(new Date(fromDate).getFullYear() + 2))
+    new Date(new Date().setFullYear(new Date().getFullYear() + 3))
       .toISOString()
 
   const tournament = new Tournament({
@@ -65,10 +63,11 @@ testRouter.post('/insert', async (request, response) => {
   const savedtournament = await tournament.save()
   const tournamentId = savedtournament._id
 
+
   const gameOne = new Game({
-    home_team: 'future',
+    home_team: 'upcoming',
     visitor_team: 'game',
-    date: new Date(currentDate.setFullYear(currentDate.getFullYear() +1))
+    date: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
       .toISOString(),
     tournament: tournamentId
   })
@@ -76,52 +75,10 @@ testRouter.post('/insert', async (request, response) => {
   const gameTwo = new Game({
     home_team: 'past',
     visitor_team: 'game',
-    date: new Date(new Date().setFullYear(new Date().getFullYear() -1))
+    date: new Date(new Date().setFullYear(new Date().getFullYear() - 1))
       .toISOString(),
     tournament: tournamentId
   })
-
-  const savedGameOne = await gameOne.save()
-  const gameOneId = savedGameOne._id
-  const savedGameTwo = await gameTwo.save()
-  const gameTwoId = savedGameTwo._id
-
-  const outcome = new Outcome ({
-    goals_home: 1,
-    goals_visitor: 1,
-    game: gameTwoId,
-  })
-
-  const savedOutcome = await outcome.save()
-  const outcomeId = savedOutcome._id
-
-  const newBet = new Bet ({
-    goals_home: 1,
-    goals_visitor: 1,
-    game: gameOneId,
-    user: userId
-  })
-
-  await newBet.save()
-
-  const pastBet = new Bet ({
-    goals_home: 2,
-    goals_visitor: 2,
-    game: gameTwoId,
-    user: adminId
-  })
-
-  await pastBet.save()
-
-
-  const scoresOne = new Scores({
-    points: 1,
-    user: adminId,
-    outcome: outcomeId
-  })
-
-
-  await scoresOne.save()
 
   const gameThree = new Game({
     home_team: 'without',
@@ -131,8 +88,72 @@ testRouter.post('/insert', async (request, response) => {
     tournament: tournamentId
   })
 
+
+  const savedGameOne = await gameOne.save()
+  const gameOneId = savedGameOne._id
+  const savedGameTwo = await gameTwo.save()
+  const gameTwoId = savedGameTwo._id
   const savedGameThree = await gameThree.save()
   const gameThreeId = savedGameThree._id
+
+
+  const tournamentWithGames = await Tournament.findById(tournamentId.toString())
+
+  tournamentWithGames.games = tournamentWithGames.games.concat(gameOneId)
+  tournamentWithGames.games = tournamentWithGames.games.concat(gameTwoId)
+  tournamentWithGames.games = tournamentWithGames.games.concat(gameThreeId)
+
+  await tournamentWithGames.save()
+
+  const outcome = new Outcome ({
+    goals_home: 1,
+    goals_visitor: 1,
+    game: gameTwoId,
+  })
+
+  const gameWithOutcome = await Game.findById(gameTwoId.toString())
+
+  const savedOutcome = await outcome.save()
+  const outcomeId = savedOutcome._id
+
+  gameWithOutcome.outcome = outcomeId
+
+  await gameWithOutcome.save()
+
+  const newBet = new Bet ({
+    goals_home: 1,
+    goals_visitor: 1,
+    game: gameOneId,
+    user: userId
+  })
+
+  const savedNewBet = await newBet.save()
+
+  const gameOneWithBet = await Game.findById(gameOneId.toString())
+
+  const user = await User.findById(userId.toString())
+
+  user.bets = user.bets.concat(savedNewBet._id)
+
+  gameOneWithBet.bets = gameOneWithBet.bets.concat(savedNewBet._id)
+
+
+  const pastBet = new Bet ({
+    goals_home: 2,
+    goals_visitor: 2,
+    game: gameTwoId,
+    user: adminId
+  })
+
+  const savedPastBet = await pastBet.save()
+
+  const gameTwoWithBet = await Game.findById(gameTwoId.toString())
+
+  gameTwoWithBet.bets = gameTwoWithBet.bets.concat(savedPastBet._id)
+
+  const admin = await User.findById(adminId.toString())
+
+  admin.bets = admin.bets.concat(savedPastBet._id)
 
   const openBet = new Bet ({
     goals_home: 1,
@@ -141,10 +162,40 @@ testRouter.post('/insert', async (request, response) => {
     user: userId
   })
 
-  await openBet.save()
+  const savedOpenBet = await openBet.save()
+
+  const gameThreeWithBet = await Game.findById(gameThreeId.toString())
+
+  gameThreeWithBet.bets = gameThreeWithBet.bets.concat(savedOpenBet._id)
+
+  user.bets = user.bets.concat(savedOpenBet._id)
+
+  await gameOneWithBet.save()
+  await gameTwoWithBet.save()
+  await gameThreeWithBet.save()
+  await user.save()
 
 
-  response.status(200).json({ tournamentId })
+  const scoresOne = new Scores({
+    points: 1,
+    user: adminId,
+    outcome: outcomeId
+  })
+
+
+  const savedScores = await scoresOne.save()
+
+  const outcomeWithScores = await Outcome.findById(outcomeId.toString())
+
+  outcomeWithScores.scores = outcomeWithScores.scores.concat(savedScores._id)
+
+  admin.scores = admin.scores.concat(savedScores._id)
+
+  await admin.save()
+  await outcomeWithScores.save()
+
+
+  response.status(200).json(tournamentId.toString())
 })
 
 module.exports = testRouter
