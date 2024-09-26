@@ -95,7 +95,6 @@ tournamentsRouter
       return response.status(400).json({ error: 'Check the dates.' })
     }
 
-
     const tournament = new Tournament({
       name: body.name,
       from_date: body.from_date,

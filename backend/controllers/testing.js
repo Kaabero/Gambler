@@ -43,12 +43,22 @@ testRouter.post('/insert', async (request, response) => {
   const adminId = savedadmin._id
   const userId = saveduser._id
 
+  const currentDate = new Date()
+
+
+  const fromDate =
+    new Date(currentDate.setFullYear(currentDate.getFullYear() -3))
+      .toISOString()
+
+  const toDate =
+    new Date(new Date(fromDate)
+      .setFullYear(new Date(fromDate).getFullYear() + 2))
+      .toISOString()
+
   const tournament = new Tournament({
     name: 'tournament',
-    from_date: new Date(new Date().setFullYear(new Date().getFullYear() -2))
-      .toISOString(),
-    to_date: new Date(new Date().setFullYear(new Date().getFullYear() + 2))
-      .toISOString()
+    from_date: fromDate,
+    to_date: toDate,
   })
 
 
@@ -56,16 +66,17 @@ testRouter.post('/insert', async (request, response) => {
   const tournamentId = savedtournament._id
 
   const gameOne = new Game({
-    home_team: 'game',
-    visitor_team: 'one',
-    date: '1.2.2024',
+    home_team: 'future',
+    visitor_team: 'game',
+    date: new Date(currentDate.setFullYear(currentDate.getFullYear() +1))
+      .toISOString(),
     tournament: tournamentId
   })
 
   const gameTwo = new Game({
-    home_team: 'game',
-    visitor_team: 'two',
-    date: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+    home_team: 'past',
+    visitor_team: 'game',
+    date: new Date(new Date().setFullYear(new Date().getFullYear() -1))
       .toISOString(),
     tournament: tournamentId
   })
@@ -78,19 +89,29 @@ testRouter.post('/insert', async (request, response) => {
   const outcome = new Outcome ({
     goals_home: 1,
     goals_visitor: 1,
-    game: gameOneId,
+    game: gameTwoId,
   })
 
   const savedOutcome = await outcome.save()
   const outcomeId = savedOutcome._id
 
-  const bet = new Bet ({
+  const newBet = new Bet ({
     goals_home: 1,
     goals_visitor: 1,
-    game: gameTwoId,
+    game: gameOneId,
+    user: userId
   })
 
-  await bet.save()
+  await newBet.save()
+
+  const pastBet = new Bet ({
+    goals_home: 2,
+    goals_visitor: 2,
+    game: gameTwoId,
+    user: adminId
+  })
+
+  await pastBet.save()
 
 
   const scoresOne = new Scores({
@@ -99,13 +120,29 @@ testRouter.post('/insert', async (request, response) => {
     outcome: outcomeId
   })
 
-  const scoresTwo = new Scores({
-    points: 2,
-    user: userId,
-    outcome: outcomeId
+
+  await scoresOne.save()
+
+  const gameThree = new Game({
+    home_team: 'without',
+    visitor_team: 'outcome',
+    date: new Date(new Date().setFullYear(new Date().getFullYear() -2))
+      .toISOString(),
+    tournament: tournamentId
   })
 
-  await Scores.insertMany([scoresOne, scoresTwo])
+  const savedGameThree = await gameThree.save()
+  const gameThreeId = savedGameThree._id
+
+  const openBet = new Bet ({
+    goals_home: 1,
+    goals_visitor: 1,
+    game: gameThreeId,
+    user: userId
+  })
+
+  await openBet.save()
+
 
   response.status(204).end()
 })

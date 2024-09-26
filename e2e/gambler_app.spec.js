@@ -4,7 +4,7 @@ const { test, describe, expect, beforeEach, afterEach } = require('@playwright/t
 describe('Gambler app', () => {
 
     beforeEach(async ({ page, request }) => {
-        
+
         await request.post('http://localhost:3001/api/testing/insert')
         await request.post('http://localhost:3001/api/users', {
           data: {
@@ -16,7 +16,9 @@ describe('Gambler app', () => {
     
     })
 
-
+    afterEach(async ({ page, request }) => {
+        await request.post('http:localhost:3001/api/testing/reset')
+    })
 
     test('login page can be opened', async ({ page }) => {
         await page.goto('http://localhost:5173/login')
