@@ -74,7 +74,11 @@ jobs:
 
       - name: Start Frontend
         run: npm run dev --prefix gambler &
-
+      
+      - name: Wait for Backend and Frontend
+        run: |
+          npx wait-on http://localhost:3001
+          npx wait-on http://localhost:5173
 
       - name: Run Playwright tests
         run: npx playwright test
