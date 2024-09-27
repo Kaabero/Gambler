@@ -61,6 +61,22 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(page.getByText('Tournament added successfully!')).toBeVisible()
       
     })
+
+    test('a tournament can be deleted', async ({ page }) => {
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
+        await expect(page.getByRole('radio', { name: `Don't show ended tournaments` })).toBeVisible()
+        await expect(page.getByRole('radio', { name: `Show all tournaments` })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show all tournaments' }).click()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('button', { name: 'Delete tournament' })).toBeVisible()
+        await page.getByRole('button', { name: 'Delete tournament' }).click()
+        await expect(page.getByText('Tournament deleted successfully!')).toBeVisible()
+        await expect(page.getByText('There are no tournaments')).toBeVisible()
+      
+    })
 })
 
 
