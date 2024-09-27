@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "build:ui": "rm -rf dist && npm run build && cp -r dist ../backend",
     "start:prod": "cd ../backend && npm run start",
+    "test:e2e": "cd ../backend && npm run test:e2e",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
