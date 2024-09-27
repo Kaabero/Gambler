@@ -77,6 +77,25 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(page.getByText('There are no tournaments')).toBeVisible()
       
     })
+
+    test('a tournament can be edited', async ({ page }) => {
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
+        await page.getByRole('radio', { name: 'Show all tournaments' }).click()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('button', { name: 'Edit tournament' })).toBeVisible()
+        await page.getByRole('button', { name: 'Edit tournament' }).click()
+        await expect(page.getByText('Edit the tournament')).toBeVisible()
+        await page.getByTestId('tournamentname').fill('Edited tournament')
+        const dateFromInput = page.locator('input[data-testid="from"]')
+        await expect(dateFromInput).toBeVisible()
+        const dateToInput = page.locator('input[data-testid="to"]')
+        await expect(dateToInput).toBeVisible()
+        await page.getByRole('button', { name: 'Save' }).click()
+        await expect(page.getByText('Tournament updated successfully!')).toBeVisible()
+        await expect(page.getByText('Edited tournament')).toBeVisible()
+      
+    })
 })
 
 
