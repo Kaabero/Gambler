@@ -71,12 +71,12 @@ jobs:
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
           SECRET: ${{ secrets.SECRET }}
         run: npm run test:e2e --prefix backend &    
-        
+
       - name: Start Frontend
         run: npm run dev --prefix gambler &
     
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npm run test
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
