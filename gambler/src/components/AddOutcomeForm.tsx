@@ -97,7 +97,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
         event: event
       });
 
-      setNotificationMessage('Outcome and scores added successfully!');
+      setNotificationMessage('Game result and scores added successfully!');
       setTimeout(() => {
         setNotificationMessage('');
       }, 3000);
@@ -133,6 +133,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
               Goals for {game.home_team}:
               <br />
               <input
+                data-testid='home_goals'
                 type="number"
                 value={homeGoals}
                 onChange={({ target }) => setHomeGoals(target.value)}
@@ -144,6 +145,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
               Goals for {game.visitor_team}:
               <br />
               <input
+                data-testid='visitor_goals'
                 type="number"
                 value={visitorGoals}
                 onChange={({ target }) => setVisitorGoals(target.value)}

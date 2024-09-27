@@ -32,13 +32,15 @@ jobs:
       - name: lint frontend
         working-directory: gambler 
         run: npm run lint
-      
+      - name: test backend
+        env:
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          SECRET: ${{ secrets.SECRET }}
+        working-directory: backend 
+        run: npm run test
       - name: build
         working-directory: gambler 
         run: npm run build:ui
-
-      
-
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ''), '#skip') }}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}

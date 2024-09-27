@@ -140,6 +140,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({
           Date:
               <br />
               <input
+                data-testid='date'
                 type='datetime-local'
                 value={date}
                 onChange={({ target }) => setDate(target.value)}
@@ -150,6 +151,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({
           Home team:
               <br />
               <input
+                data-testid='hometeam'
                 value={homeTeam}
                 onChange={({ target }) => setHomeTeam(target.value)}
               />
@@ -159,6 +161,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({
           Visitor team:
               <br />
               <input
+                data-testid='visitorteam'
                 value={visitorTeam}
                 onChange={({ target }) => setVisitorTeam(target.value)}
               />

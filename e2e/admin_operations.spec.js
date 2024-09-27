@@ -3,6 +3,8 @@ const { test, describe, expect, beforeEach, afterEach } = require('@playwright/t
 
 describe('When admin has logged in to Gambler app', () => {
 
+    let tournamentId
+
     beforeEach(async ({ page, request }) => {
 
         const response = await request.post('http://localhost:3001/api/testing/insert')
@@ -68,7 +70,7 @@ describe('When admin has logged in to Gambler app', () => {
       
     })
 
-    test('a tournament can be deleted', async ({ page }) => {
+    test.only('a tournament can be deleted', async ({ page }) => {
         await page.getByRole('link', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
         await expect(page.getByRole('radio', { name: `Don't show ended tournaments` })).toBeVisible()
@@ -78,6 +80,9 @@ describe('When admin has logged in to Gambler app', () => {
         await page.getByRole('radio', { name: 'Show all tournaments' }).click()
         await page.getByRole('radio', { name: 'Show admin tools' }).click()
         await expect(page.getByRole('button', { name: 'Delete tournament' })).toBeVisible()
+        page.on('dialog', async (dialog) => {
+            await dialog.accept()
+        })
         await page.getByRole('button', { name: 'Delete tournament' }).click()
         await expect(page.getByText('Tournament deleted successfully!')).toBeVisible()
         await expect(page.getByText('There are no tournaments')).toBeVisible()
@@ -120,11 +125,116 @@ describe('When admin has logged in to Gambler app', () => {
 
         await expect(dateInput).toBeVisible()
         await page.getByRole('button', { name: 'Add' }).click()
-        await expect(dateInput).toHaveValue('2100-01-01')
+        await expect(dateInput).toHaveValue('2100-01-01T15:30')
         await expect(page.getByText('Game added successfully!')).toBeVisible()
-        await page.getByRole('link', { name: 'Games' }).click()
+        await page.goto('http://localhost:5173/games')
         await expect(page.getByText('Home')).toBeVisible()
       
+    })
+
+    test('a game can be deleted', async ({ page }) => {
+        const dropdown = page.locator('#tournament-select')
+        await expect(dropdown).toBeVisible()
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(dropdown).toHaveValue(tournamentId)
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
+        await expect(page.getByText('upcoming')).toBeVisible()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('button', { name: 'Delete game' })).toBeVisible()
+        page.on('dialog', async (dialog) => {
+            await dialog.accept()
+        })
+        await page.getByRole('button', { name: 'Delete game' }).click()
+        await expect(page.getByText('Game deleted successfully!')).toBeVisible()
+        await expect(page.getByText('upcoming')).not.toBeVisible()
+      
+    })
+
+    test('a game can be edited', async ({ page }) => {
+        const dropdown = page.locator('#tournament-select')
+        await expect(dropdown).toBeVisible()
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(dropdown).toHaveValue(tournamentId)
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
+        await expect(page.getByText('upcoming')).toBeVisible()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('button', { name: 'Edit game' })).toBeVisible()
+        await page.getByRole('button', { name: 'Edit game' }).click()
+        await expect(page.getByText('Edit the game')).toBeVisible()
+        await page.getByTestId('hometeam').fill('EditedHome')
+        await page.getByRole('button', { name: 'Save' }).click()
+        await expect(page.getByText('Game updated successfully!')).toBeVisible()
+        await expect(page.getByText('EditedHome')).toBeVisible()
+          
+    })
+
+    test('a game result and scores can be added', async ({ page }) => {
+        const dropdown = page.locator('#tournament-select')
+        await expect(dropdown).toBeVisible()
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(dropdown).toHaveValue(tournamentId)
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show all games' }).click()
+        await expect(page.getByText('without')).toBeVisible()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('button', { name: 'Add result and points' })).toBeVisible()
+        await page.getByRole('button', { name: 'Add result and points' }).click()
+        await expect(page.getByText('Add result:')).toBeVisible()
+
+        const homeGoalsInput = page.locator('input[data-testid="home_goals"]')
+        await expect(homeGoalsInput).toBeVisible()
+        await homeGoalsInput.fill("1")
+                
+        const visitorGoalsInput = page.locator('input[data-testid="visitor_goals"]')
+        await expect(visitorGoalsInput).toBeVisible()
+        await visitorGoalsInput.fill("1")
+    
+        await page.getByRole('button', { name: 'Add result and points' }).click()
+        await expect(homeGoalsInput).toHaveValue("1")
+        await expect(visitorGoalsInput).toHaveValue("1")
+        await expect(page.getByText('Outcome and scores added successfully!')).toBeVisible()
+        await page.goto('http://localhost:5173/points')
+        await expect(page.getByText('1 - 1')).toBeVisible()
+        await expect(page.getByText('3')).toBeVisible()
+          
+    })
+
+    test.only('a game result and scores can be deleted', async ({ page }) => {
+        const dropdown = page.locator('#tournament-select')
+        await expect(dropdown).toBeVisible()
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(dropdown).toHaveValue(tournamentId)
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Delete game results and related scores' }).click()
+
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
+        await expect(page.getByText('past')).toBeVisible()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+
+
+        await expect(page.getByRole('button', { name: 'Delete the result and related scores' })).toBeVisible()
+        page.on('dialog', async (dialog) => {
+            await dialog.accept()
+        })
+        await page.getByRole('button', { name: 'Delete the result and related scores' }).click()
+
+        await expect(page.getByText('Result and related scores deleted successfully!')).toBeVisible()
+        await expect(page.getByText('past')).not.toBeVisible()
+          
     })
 })
 
