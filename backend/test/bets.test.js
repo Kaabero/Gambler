@@ -564,7 +564,7 @@ describe('deletion of a bet', () => {
   
 })
 
-describe.only('modification of a bet', () => {
+describe('modification of a bet', () => {
   let values
   beforeEach(async () => {
     values = await insertInitialData()

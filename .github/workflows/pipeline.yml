@@ -67,18 +67,14 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Start Backend
-        run: npm run start:test --prefix backend &
+        run: npm run test:e2e --prefix backend &
         env:
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
           SECRET: ${{ secrets.SECRET }}
 
       - name: Start Frontend
         run: npm run dev --prefix gambler &
-      
-      - name: Wait for Backend and Frontend
-        run: |
-          npx wait-on http://localhost:3001
-          npx wait-on http://localhost:5173
+
 
       - name: Run Playwright tests
         run: npx playwright test
