@@ -70,7 +70,7 @@ describe('When admin has logged in to Gambler app', () => {
       
     })
 
-    test.only('a tournament can be deleted', async ({ page }) => {
+    test('a tournament can be deleted', async ({ page }) => {
         await page.getByRole('link', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
         await expect(page.getByRole('radio', { name: `Don't show ended tournaments` })).toBeVisible()
@@ -211,7 +211,7 @@ describe('When admin has logged in to Gambler app', () => {
           
     })
 
-    test.only('a game result and scores can be deleted', async ({ page }) => {
+    test('a game result and scores can be deleted', async ({ page }) => {
         const dropdown = page.locator('#tournament-select')
         await expect(dropdown).toBeVisible()
         await dropdown.click()
@@ -237,7 +237,7 @@ describe('When admin has logged in to Gambler app', () => {
           
     })
 
-    test.only('points can be edited', async ({ page }) => {
+    test('points can be edited', async ({ page }) => {
         const dropdown = page.locator('#tournament-select')
         await expect(dropdown).toBeVisible()
         await dropdown.click()
@@ -267,6 +267,59 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(page.getByText('99')).toBeVisible()
            
         await expect(page.getByText('88')).not.toBeVisible()
+          
+    })
+
+    test('a user can be deleted', async ({ page }) => {
+        const dropdown = page.locator('#tournament-select')
+        await expect(dropdown).toBeVisible()
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(dropdown).toHaveValue(tournamentId)
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Remove users, add admin rights' }).click()
+
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('radio', { name: 'Show all users' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show all users' }).click()
+        await expect(page.getByText('testUser')).toBeVisible()
+        const button = page.getByRole('button', { name: 'Delete user' })
+        await expect(button).toBeVisible()
+        page.on('dialog', async (dialog) => {
+            await dialog.accept()
+        })
+        await button.click()
+        await expect(page.getByText('User deleted successfully!')).toBeVisible()
+        await expect(page.getByText('testUser')).not.toBeVisible()
+          
+    })
+
+    test('a user can be edited', async ({ page }) => {
+        const dropdown = page.locator('#tournament-select')
+        await expect(dropdown).toBeVisible()
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(dropdown).toHaveValue(tournamentId)
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Remove users, add admin rights' }).click()
+
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('radio', { name: 'Show all users' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show all users' }).click()
+        await expect(page.getByText('testUser')).toBeVisible()
+        const button = page.getByRole('button', { name: 'Give admin rights' })
+        await expect(button).toBeVisible()
+        await button.click()
+        await expect(page.getByText('User updated successfully!')).toBeVisible()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('radio', { name: 'Show all users' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show all users' }).click()
+        await expect(page.getByText('testUser')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Give admin rights' })).not.toBeVisible()
           
     })
 })
