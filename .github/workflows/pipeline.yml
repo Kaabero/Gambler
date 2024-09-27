@@ -57,11 +57,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install wait-on globally
-        run: npm install -g wait-on
       - name: Install backend dependencies
         working-directory: backend
-        run: npm install
+        run: npm ci
       - name: Install frontend dependencies
         working-directory: gambler
         run: npm install
@@ -73,6 +71,7 @@ jobs:
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
           SECRET: ${{ secrets.SECRET }}
         run: npm run test:e2e --prefix backend &    
+        
       - name: Start Frontend
         run: npm run dev --prefix gambler &
     
