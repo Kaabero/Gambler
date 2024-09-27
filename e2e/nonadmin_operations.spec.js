@@ -80,6 +80,29 @@ describe('When regular user has logged in to Gambler app', () => {
         await expect(page.getByText('upcoming')).toBeVisible()
     })
 
+    test('a users points page can be opened', async ({ page }) => {
+        await page.getByRole('link', { name: 'Check your points' }).click()
+        await expect(page.getByText('There are no points in the selected tournament for this user')).toBeVisible()
+
+    })
+
+    test('a results page can be opened', async ({ page }) => {
+        await page.getByRole('link', { name: 'Game results' }).click()
+        await expect(page.getByText('There are no game results added to selected tournament')).toBeVisible()
+
+    })
+
+    test('outcomes are rendered properly', async ({ page }) => {
+        await page.getByRole('link', { name: 'Game results' }).click()
+        const dropdown = page.locator('#tournament-select')
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).not.toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).not.toBeVisible()
+        await expect(page.getByText('past')).toBeVisible()
+        await expect(page.getByText('1 - 1')).toBeVisible()
+    })
+
     describe('Bet management', () => {
 
         beforeEach(async ({ page }) => {
@@ -202,5 +225,7 @@ describe('When regular user has logged in to Gambler app', () => {
         })
        
     })
+
+    
     
 })  

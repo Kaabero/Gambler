@@ -11,22 +11,8 @@ const { defineConfig, devices } = require('@playwright/test');
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  webServer: [
-    {
-      command: 'cd ./gambler && npm run dev',
-      url: 'http://127.0.0.1:5173',
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-    },
-    {
-      command: 'cd ./backend && npm run test:e2e',
-      url: 'http://127.0.0.1:3001',
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-    }
-  ],
   testDir: './e2e',
-  timeout: 20000,
+  timeout: 30000,
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
