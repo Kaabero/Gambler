@@ -72,20 +72,10 @@ jobs:
         env:
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
           SECRET: ${{ secrets.SECRET }}
-        run: |
-          npm run test:e2e --prefix backend &
-          sleep 5
-          curl http://localhost:3001 || echo "Backend not responding"
-          npx wait-on http://localhost:3001
-        
+        run: npm run test:e2e --prefix backend &    
       - name: Start Frontend
         run: npm run dev --prefix gambler &
-      
-      - name: Wait for Backend and Frontend
-        run: |
-          npx wait-on http://localhost:3001
-          npx wait-on http://localhost:5173
-
+    
       - name: Run Playwright tests
         run: npx playwright test
 

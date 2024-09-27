@@ -177,7 +177,7 @@ testRouter.post('/insert', async (request, response) => {
 
 
   const scoresOne = new Scores({
-    points: 1,
+    points: 88,
     user: adminId,
     outcome: outcomeId
   })
