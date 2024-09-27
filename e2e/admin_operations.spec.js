@@ -236,6 +236,39 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(page.getByText('past')).not.toBeVisible()
           
     })
+
+    test.only('points can be edited', async ({ page }) => {
+        const dropdown = page.locator('#tournament-select')
+        await expect(dropdown).toBeVisible()
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(dropdown).toHaveValue(tournamentId)
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Edit received points' }).click()
+
+        await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
+        await expect(page.getByText('88')).toBeVisible()
+        await page.getByRole('radio', { name: 'Show admin tools' }).click()
+        await expect(page.getByRole('button', { name: 'Edit points' })).toBeVisible()
+        await page.getByRole('button', { name: 'Edit points' }).click()
+        await expect(page.getByText('Edit the points')).toBeVisible()
+        await expect(page.getByText('88')).toBeVisible()
+
+        const editPointsInput = page.locator('input[data-testid="points"]')
+        await expect(editPointsInput).toBeVisible()
+        await editPointsInput.fill("99")
+           
+        await page.getByRole('button', { name: 'Save' }).click()
+        await expect(editPointsInput).toHaveValue("99")
+
+        await expect(page.getByText('Scores edited successfully!')).toBeVisible()
+        
+        await expect(page.getByText('99')).toBeVisible()
+           
+        await expect(page.getByText('88')).not.toBeVisible()
+          
+    })
 })
 
 

@@ -114,6 +114,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({
                 <strong>Edit the points:</strong> <br />
                 <br />
                 <input
+                  data-testid='points'
                   type="number"
                   value={points}
                   onChange={({ target }) => setPoints(target.value)}
