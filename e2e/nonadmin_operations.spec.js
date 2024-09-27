@@ -134,7 +134,7 @@ describe('When regular user has logged in to Gambler app', () => {
 
     })
 
-    test.only('users and points page can be opened', async ({ page }) => {
+    test('users and points page can be opened', async ({ page }) => {
         await page.getByRole('link', { name: 'Users and points' }).click()
         const dropdown = page.locator('#tournament-select')
         await dropdown.click()
@@ -166,7 +166,7 @@ describe('When regular user has logged in to Gambler app', () => {
      
     })
 
-    test.only('users points page can be opened from users and points page', async ({ page }) => {
+    test('users points page can be opened from users and points page', async ({ page }) => {
         await page.getByRole('link', { name: 'Users and points' }).click()
         const dropdown = page.locator('#tournament-select')
         await dropdown.click()
@@ -321,7 +321,7 @@ describe('When regular user has logged in to Gambler app', () => {
             await visitorGoalsInput.fill("322")
             await page.getByRole('button', { name: 'Add bet' }).click()
             await expect(page.getByText('Bet added successfully!')).toBeVisible()
-            await expect(page.getByRole('button', { name: 'Check bets' })).not.toBeVisible()
+            await expect(page.getByRole('button', { name: 'Check bets' })).toBeVisible()
             await page.getByRole('button', { name: 'Check bets' }).click()
             await expect(page.getByText('253 - 322')).toBeVisible()
 
