@@ -50,7 +50,7 @@ testRouter.post('/insert', async (request, response) => {
       .toISOString()
 
   const toDate =
-    new Date(new Date().setFullYear(new Date().getFullYear() + 3))
+    new Date(new Date().setFullYear(new Date().getFullYear() + 100))
       .toISOString()
 
   const tournament = new Tournament({

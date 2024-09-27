@@ -132,6 +132,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
           Date and time:
               <br />
               <input
+                data-testid='date'
                 type='datetime-local'
                 value={date}
                 onChange={({ target }) => setDate(target.value)}
@@ -142,6 +143,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
           Home team:
               <br />
               <input
+                data-testid='hometeam'
                 value={homeTeam}
                 onChange={({ target }) => setHomeTeam(target.value)}
               />
@@ -151,6 +153,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
           Visitor team:
               <br />
               <input
+                data-testid='visitorteam'
                 value={visitorTeam}
                 onChange={({ target }) => setVisitorTeam(target.value)}
               />

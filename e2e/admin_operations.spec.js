@@ -5,7 +5,13 @@ describe('When admin has logged in to Gambler app', () => {
 
     beforeEach(async ({ page, request }) => {
 
-        await request.post('http://localhost:3001/api/testing/insert')
+        const response = await request.post('http://localhost:3001/api/testing/insert')
+  
+
+        const id  = await response.json()
+        tournamentId = id.toString()
+        
+        
         await request.post('http://localhost:3001/api/users', {
           data: {
             username: 'admin',
@@ -94,6 +100,30 @@ describe('When admin has logged in to Gambler app', () => {
         await page.getByRole('button', { name: 'Save' }).click()
         await expect(page.getByText('Tournament updated successfully!')).toBeVisible()
         await expect(page.getByText('Edited tournament')).toBeVisible()
+      
+    })
+
+    test('a game can be added', async ({ page }) => {
+        const dropdown = page.locator('#tournament-select')
+        await expect(dropdown).toBeVisible()
+        await dropdown.click()
+        await dropdown.selectOption({ value: tournamentId })
+        await expect(dropdown).toHaveValue(tournamentId)
+        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('link', { name: 'Add a new game' }).click()
+        await expect(page.getByText('Add a new game')).toBeVisible()
+        const dateInput = page.locator('input[data-testid="date"]')
+        await expect(dateInput).toBeVisible()
+        await dateInput.fill('2100-01-01T15:30');
+        await page.getByTestId('hometeam').fill('Home')
+        await page.getByTestId('visitorteam').fill('Visitor')
+
+        await expect(dateInput).toBeVisible()
+        await page.getByRole('button', { name: 'Add' }).click()
+        await expect(dateInput).toHaveValue('2100-01-01')
+        await expect(page.getByText('Game added successfully!')).toBeVisible()
+        await page.getByRole('link', { name: 'Games' }).click()
+        await expect(page.getByText('Home')).toBeVisible()
       
     })
 })
