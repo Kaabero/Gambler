@@ -53,15 +53,24 @@ testRouter.post('/insert', async (request, response) => {
     new Date(new Date().setFullYear(new Date().getFullYear() + 100))
       .toISOString()
 
-  const tournament = new Tournament({
+  const tournamentOne = new Tournament({
     name: 'tournament',
     from_date: fromDate,
     to_date: toDate,
   })
 
+  const tournamentTwo = new Tournament({
+    name: 'tournamentTwo',
+    from_date: fromDate,
+    to_date: new Date(new Date().setFullYear(new Date().getFullYear() -2))
+      .toISOString(),
+  })
 
-  const savedtournament = await tournament.save()
+
+  const savedtournament = await tournamentOne.save()
   const tournamentId = savedtournament._id
+
+  await tournamentTwo.save()
 
 
   const gameOne = new Game({

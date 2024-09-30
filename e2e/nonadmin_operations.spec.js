@@ -94,6 +94,12 @@ describe('When regular user has logged in to Gambler app', () => {
 
     })
 
+    test('a bets page can be opened', async ({ page }) => {
+        await page.getByRole('link', { name: 'All bets' }).click()
+        await expect(page.getByText('There are no bets added to selected tournament')).toBeVisible()
+
+    })
+
     test('outcomes are rendered properly', async ({ page }) => {
         await page.getByRole('link', { name: 'Game results' }).click()
         const dropdown = page.locator('#tournament-select')
@@ -136,6 +142,7 @@ describe('When regular user has logged in to Gambler app', () => {
 
     test('users and points page can be opened', async ({ page }) => {
         await page.getByRole('link', { name: 'Users and points' }).click()
+        await expect(page.getByText('There are no users with bets in selected tournament')).toBeVisible()
         const dropdown = page.locator('#tournament-select')
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
@@ -166,7 +173,7 @@ describe('When regular user has logged in to Gambler app', () => {
      
     })
 
-    test('users points page can be opened from users and points page', async ({ page }) => {
+    test('userspoints page can be opened from users and points page', async ({ page }) => {
         await page.getByRole('link', { name: 'Users and points' }).click()
         const dropdown = page.locator('#tournament-select')
         await dropdown.click()
@@ -255,7 +262,7 @@ describe('When regular user has logged in to Gambler app', () => {
           
         })
 
-        test('a bet without an outcome can be deleted', async ({ page }) => {
+        test('a bet without a game outcome can be deleted', async ({ page }) => {
         
             await page.getByRole('button', { name: 'Add bet' }).click()
             const homeGoalsInput = page.locator('input[data-testid="home_goals"]')

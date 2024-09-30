@@ -546,6 +546,35 @@ describe('modification of a game', () => {
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
   })
 
+  it('fails with status code 400 if home_team = visitor_team', async () => {
+
+    const { tournamentId, admintoken, initialGame } = values
+
+    const modifiedGame = {
+      visitor_team: 'modified',
+      home_team: 'modified',
+      tournament: tournamentId
+    }
+
+    const result = await api
+        .put(`/api/games/${initialGame.id}`)
+        .set('Authorization', `Bearer ${admintoken}`)
+        .send(modifiedGame)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+      const gamesAtEnd = await helper.gamesInDb()
+
+      const visitor_teams = gamesAtEnd.map(game => game.visitor_team)
+      const home_teams = gamesAtEnd.map(game => game.home_team)
+      assert(result.body.error.includes(
+        'Home team and visitor team must be different'
+      ))
+      assert(!visitor_teams.includes(modifiedGame.visitor_team))
+      assert(!home_teams.includes(modifiedGame.home_team))
+      assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
+  })
+
   it(
     `fails with status code 400 and proper message 
     if date is outside tournament time period`,

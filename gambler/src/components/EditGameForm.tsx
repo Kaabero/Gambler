@@ -51,13 +51,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({
   const gameEdition = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    if (homeTeam.trim().toLowerCase() === visitorTeam.trim().toLowerCase()) {
-      setErrorMessage('Home team and visitor team cannot be the same.');
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 3000);
-      return;
-    }
+
 
     if (game) {
       const updatedGame: NewGame = {

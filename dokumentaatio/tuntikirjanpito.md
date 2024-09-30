@@ -39,4 +39,5 @@
 | 25.9.2024. | 5  | e2e ongelmia |
 | 26.9.2024. | 5  | e2e testejä |
 | 26.9.2024. | 5  | e2e testejä ja workflow ongelmia |
-| yht        | 157 |            | 
+| 26.9.2024. | 5  | e2e testejä ja workflow toimimaan |
+| yht        | 162 |            | 

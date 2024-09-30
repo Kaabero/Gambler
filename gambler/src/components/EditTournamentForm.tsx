@@ -129,7 +129,7 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
             From:
               <br />
               <input
-                data-testid='to'
+                data-testid='from'
                 type='date'
                 value={fromDate}
                 onChange={({ target }) => setFromDate(target.value)}
@@ -140,7 +140,7 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
             To:
               <br />
               <input
-                data-testid='from'
+                data-testid='to'
                 type='date'
                 value={toDate}
                 onChange={({ target }) => setToDate(target.value)}

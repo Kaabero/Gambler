@@ -190,12 +190,20 @@ gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
       })
   }
 
+  if (visitor_team === home_team) {
+    return response.status(400)
+      .json({ error:
+      'Home team and visitor team must be different'
+      })
+  }
+
 
   const updatedGame = await Game.findByIdAndUpdate(
     request.params.id,
     { home_team, visitor_team, date, tournament },
     { new: true, runValidators: true, context: 'query' }
   )
+
 
   if (newTournament._id.equals(initialGame.tournament)) {
     response.status(200).json(updatedGame)
