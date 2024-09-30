@@ -118,7 +118,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
   return (
     <div>
       <h2>Add result:  </h2>
-      { game && (
+      { game && gameId && (
         <div>
           <strong> Tournament: </strong>
           {game.tournament?.name}<br />
@@ -160,7 +160,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
           </form>
         </div>
       )}
-      {!game && (
+      {!gameId && (
         <>
           <br />
           <p> No game selected. </p>

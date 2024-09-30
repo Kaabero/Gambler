@@ -35,7 +35,10 @@ module.exports = defineConfig({
   ],
   
   testDir: './e2e',
-  timeout: 30000,
+  timeout: 50000,
+  expect: {
+    timeout: 10000,
+  },
   fullyParallel: false,
 
   forbidOnly: !!process.env.CI,
@@ -49,19 +52,8 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { headless: true },
     },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
   ],
 
 

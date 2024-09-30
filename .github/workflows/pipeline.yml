@@ -32,7 +32,12 @@ jobs:
       - name: lint frontend
         working-directory: gambler 
         run: npm run lint
-      
+      - name: test backend
+        env:
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          SECRET: ${{ secrets.SECRET }}
+        working-directory: backend 
+        run: npm run test      
       - name: build
         working-directory: gambler 
         run: npm run build:ui

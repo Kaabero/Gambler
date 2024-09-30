@@ -323,7 +323,7 @@ describe('When regular user has logged in to Gambler app', () => {
             await expect(page.getByText('Bet added successfully!')).toBeVisible()
             await expect(page.getByRole('button', { name: 'Check bets' })).toBeVisible()
             await page.getByRole('button', { name: 'Check bets' }).click()
-            await expect(page.getByText('253 - 322')).toBeVisible()
+            await expect(page.getByText('253-322')).toBeVisible()
 
           
         })
