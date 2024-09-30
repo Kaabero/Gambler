@@ -48,6 +48,9 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
+    env:
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          SECRET: ${{ secrets.SECRET }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -57,9 +60,6 @@ jobs:
         run: npm install
       - name: Install backend dependencies
         working-directory: backend
-        env:
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          SECRET: ${{ secrets.SECRET }}
         run: npm ci
       - name: Install frontend dependencies
         working-directory: gambler

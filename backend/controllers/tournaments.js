@@ -174,6 +174,8 @@ tournamentsRouter
       { new: true, runValidators: true, context: 'query' }
     )
 
+    console.log('hep')
+
     response.status(200).json(updatedTournament)
 
   })

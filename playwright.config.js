@@ -23,7 +23,7 @@ module.exports = defineConfig({
     
     },
     {
-      command: 'cd ./backend && npm run test:e2e',
+      command: 'cd ./backend && npm run start:test',
       port: 3001,
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,

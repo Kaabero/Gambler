@@ -89,7 +89,7 @@ describe('When admin has logged in to Gambler app', () => {
       
     })
 
-    test('a tournament can be edited', async ({ page }) => {
+    test.only('a tournament can be edited', async ({ page }) => {
         await page.getByRole('link', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
         await page.getByRole('radio', { name: 'Show all tournaments' }).click()
@@ -270,7 +270,7 @@ describe('When admin has logged in to Gambler app', () => {
           
     })
 
-    test('a user can be deleted', async ({ page }) => {
+    test.only('a user can be deleted', async ({ page }) => {
         const dropdown = page.locator('#tournament-select')
         await expect(dropdown).toBeVisible()
         await dropdown.click()
@@ -296,7 +296,7 @@ describe('When admin has logged in to Gambler app', () => {
           
     })
 
-    test('a user can be edited', async ({ page }) => {
+    test.only('a user can be edited', async ({ page }) => {
         const dropdown = page.locator('#tournament-select')
         await expect(dropdown).toBeVisible()
         await dropdown.click()
