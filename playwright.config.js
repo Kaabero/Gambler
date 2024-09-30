@@ -1,11 +1,14 @@
-// @ts-check
+// @ts-nocheck
 const { defineConfig, devices } = require('@playwright/test');
+const dotenv = require('dotenv');
+const path = require('path');
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
 // require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, 'backend', '.env') });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -17,12 +20,17 @@ module.exports = defineConfig({
       port: 5173,
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
+    
     },
     {
       command: 'cd ./backend && npm run test:e2e',
       port: 3001,
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
+      env: {
+        TEST_MONGODB_URI: process.env.TEST_MONGODB_URI,
+        SECRET: process.env.SECRET,
+      },
     }
   ],
   
