@@ -190,7 +190,7 @@ gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
       })
   }
 
-  if (visitor_team === home_team) {
+  if (visitor_team.toLowerCase() === home_team.toLowerCase()) {
     return response.status(400)
       .json({ error:
       'Home team and visitor team must be different'

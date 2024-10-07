@@ -48,7 +48,7 @@ const Login: React.FC<LoginFormProps> = ({
       setPassword('');
       setTimeout(() => {
         setErrorMessage('');
-      }, 5000);
+      }, 3000);
     }
   };
   return (
@@ -58,13 +58,13 @@ const Login: React.FC<LoginFormProps> = ({
         <h2>Welcome to the Gambler app!</h2>
 
         <div>
-          You can now compete with your betting group&nbsp;
+          You can now compete with your betting group
           for the title of the best score predictor! <br />
           <br />
-          Log in to select your preferred tournament from the menu,&nbsp;
+          Log in to select your preferred tournament from the menu,
           view the tournament's games, and add your predictions. <br />
           <br />
-          If you haven't registered yet,&nbsp;
+          If you haven't registered yet,
           create an account to get started! <br />
           <br />
           <hr />
@@ -74,7 +74,7 @@ const Login: React.FC<LoginFormProps> = ({
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>
-          Username:
+          <p>Username: </p>
           <input
             data-testid='username'
             type="text"
@@ -84,7 +84,7 @@ const Login: React.FC<LoginFormProps> = ({
           />
         </div>
         <div>
-          Password:
+          <p>Password:</p>
           <input
             data-testid='password'
             type="password"
@@ -98,6 +98,7 @@ const Login: React.FC<LoginFormProps> = ({
         <br />
         <br />
       </form>
+      <hr />
     </div>
   );
 };

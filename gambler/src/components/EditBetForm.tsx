@@ -77,7 +77,6 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
 
   return (
     <div>
-      <h2>Edit the bet</h2>
       <hr />
       {bet && betId ? (
         <div>
@@ -85,11 +84,11 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
           <p>Tournament: {bet.game.tournament?.name}</p>
           <div>
             {formatDate(new Date(bet.game.date))}<br />
+            <br />
             {bet.game.home_team}-{bet.game.visitor_team} <br />
             <hr />
-            <p>Initial bet: {bet.goals_home}-{bet.goals_visitor} </p>
-            <hr />
-
+            <h2>Edit the bet</h2>
+            <p>Initial bet: {bet.goals_home} - {bet.goals_visitor} </p>
 
             <form onSubmit={betEdition}>
               <br />
@@ -132,7 +131,6 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
-      <hr />
     </div>
   );
 };

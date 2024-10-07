@@ -40,4 +40,5 @@
 | 26.9.2024. | 5  | e2e testejä |
 | 26.9.2024. | 5  | e2e testejä ja workflow ongelmia |
 | 26.9.2024. | 5  | e2e testejä ja workflow toimimaan |
-| yht        | 162 |            | 
+| 4,10.2024. | 4  | css |
+| yht        | 166 |            | 

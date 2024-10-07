@@ -145,9 +145,11 @@ const Games: React.FC<GamesProps> = ({
       <hr />
       {filteredGames.length > 0 && (
         <>
-          {loggedUser.admin && (
-            <>
-              <div>
+          <h2>Games in tournament {tournament.name}</h2>
+
+          <div>
+            {loggedUser.admin && (
+              <div className="radio-group">
                 <label>
                   <input
                     type="radio"
@@ -157,8 +159,7 @@ const Games: React.FC<GamesProps> = ({
                   />
                 Hide admin tools
                 </label>
-              </div>
-              <div>
+
                 <label>
                   <input
                     type="radio"
@@ -168,13 +169,10 @@ const Games: React.FC<GamesProps> = ({
                   />
                 Show admin tools
                 </label>
+
               </div>
-              <hr />
-            </>
-          )}
-          <h2>Games in tournament {tournament.name}</h2>
-          <div>
-            <div>
+            )}
+            <div className="radio-group">
               <label>
                 <input
                   type="radio"
@@ -184,8 +182,6 @@ const Games: React.FC<GamesProps> = ({
                 />
                 Show only future games
               </label>
-            </div>
-            <div>
               <label>
                 <input
                   type="radio"
@@ -196,12 +192,12 @@ const Games: React.FC<GamesProps> = ({
                 Show all games
               </label>
             </div>
+            <hr />
 
             <>
               <ul>
                 {gamesToShow.map(game =>
                   <li key={game.id}>
-                    <hr />
                     <strong>{formatDate(new Date(game.date))}</strong><br />
                     <br />
                   Home Team: {game.home_team} <br />
@@ -231,11 +227,11 @@ const Games: React.FC<GamesProps> = ({
                     )}
                     {loggedUser.admin && showAdminTools && (
                       <>
-                        <button onClick={() =>
+                        <button className= 'admin-button' onClick={() =>
                           handleRemoveGame(game.id)}>
                             Delete game
                         </button>
-                        <button onClick={() =>
+                        <button className= 'admin-button' onClick={() =>
                           handleEditGameClick(game)}>
                             Edit game
                         </button>
@@ -246,7 +242,7 @@ const Games: React.FC<GamesProps> = ({
                     new Date(game.date) < new Date() &&
                     showAdminTools &&(
                       <>
-                        <button onClick={() =>
+                        <button className= 'admin-button' onClick={() =>
                           handleAddResultClick(game)}>
                             Add result and points
                         </button>
@@ -267,7 +263,6 @@ const Games: React.FC<GamesProps> = ({
         </>
       )}
       <hr />
-      <br />
       <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );

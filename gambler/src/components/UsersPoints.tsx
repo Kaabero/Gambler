@@ -84,7 +84,7 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
       .find((bet) =>
         bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
       );
-    return `${bet?.goals_home}-${bet?.goals_visitor}`;
+    return `${bet?.goals_home} - ${bet?.goals_visitor}`;
   };
 
   return (
@@ -96,7 +96,6 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
           <h2>{user.username}'s points in tournament {tournament.name}</h2>
           <ul>
             {tournamentScores.map(score => <li key={score.id}>
-              <hr />
               <strong>Game: </strong><br />
               <br />
               {formatDate(new Date(score.outcome.game.date))}<br />
@@ -105,8 +104,7 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
               {score.outcome.game.visitor_team} <br />
               <br />
               <strong>Result: </strong>
-              {score.outcome.goals_home}-
-              {score.outcome.goals_visitor} <br />
+              {score.outcome.goals_home} - {score.outcome.goals_visitor} <br />
               <br />
 
               <strong>Bet:</strong> {usersBet(score.user, score.outcome)}<br />
@@ -124,7 +122,6 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
         </>
       )}
       <hr />
-      <br />
       <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );

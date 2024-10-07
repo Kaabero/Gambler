@@ -1,5 +1,12 @@
 import React from 'react';
-import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
+import {
+  Routes,
+  Route, Link,
+  Navigate,
+  useLocation,
+  useNavigate
+} from 'react-router-dom';
+
 
 import { Credentials, Tournament } from '../types';
 import { formatSimpleDate } from '../utils/dateUtils';
@@ -57,6 +64,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
   setTournaments
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
 
   const padding = {
@@ -84,9 +92,12 @@ const MainComponent: React.FC<MainComponentProps> = ({
     user && !hideTournamentSelectionPaths.some((path) =>
       location.pathname.startsWith(path));
 
+  const handleAdminToolsClick = () => {
+    navigate('/admintools');
+  };
 
   return (
-    <div>
+    <div className="container">
       {shouldShowTournamentSelection && (
         <>
           <strong>Tournament:</strong>
@@ -295,9 +306,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
             <br />
             <hr />
             <p>
-              {user.username} logged in&nbsp;
-              {user.admin && <Link style={padding} to="/adminTools">
-              Admin tools</Link>}
+              {user.username} logged in
               <br />
               <br />
               <Logout
@@ -305,6 +314,9 @@ const MainComponent: React.FC<MainComponentProps> = ({
                 setUser={setUser}
                 setNotificationMessage={setNotificationMessage}
               />
+              {user.admin && <button onClick={handleAdminToolsClick}>
+              Admin tools</button>}
+
             </p>
           </>
         ) : (

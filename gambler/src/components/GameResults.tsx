@@ -106,9 +106,10 @@ const GameResults: React.FC<GameResultsProps> = ({
       <hr />
       {filteredOutcomes && filteredOutcomes?.length > 0 && (
         <>
+          <h2>Results in tournament {tournament.name}</h2>
           {loggedUser.admin && (
             <>
-              <div>
+              <div className="radio-group">
                 <label>
                   <input
                     type="radio"
@@ -118,8 +119,6 @@ const GameResults: React.FC<GameResultsProps> = ({
                   />
               Hide admin tools
                 </label>
-              </div>
-              <div>
                 <label>
                   <input
                     type="radio"
@@ -133,11 +132,9 @@ const GameResults: React.FC<GameResultsProps> = ({
               <hr />
             </>
           )}
-          <h2>Results in tournament {tournament.name}</h2>
           <ul>
             {filteredOutcomes.map(outcome =>
               <li key={outcome.id}>
-                <hr />
                 <strong>Game: </strong><br />
                 <br />
                 <div>
@@ -154,7 +151,7 @@ const GameResults: React.FC<GameResultsProps> = ({
                 </button>
                 {loggedUser.admin && showAdminTools && (
                   <>
-                    <button onClick={() =>
+                    <button className= 'admin-button' onClick={() =>
                       handleRemoveResultClick(outcome.id)}>
                         Delete the result and related scores
                     </button>
@@ -172,7 +169,6 @@ const GameResults: React.FC<GameResultsProps> = ({
         </>
       )}
       <hr />
-      <br />
       <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );

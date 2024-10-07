@@ -75,16 +75,14 @@ const AddBetForm: React.FC<AddBetFormProps> = ({
   return (
     <div>
       <h2>Add a new bet </h2>
+      <hr />
       { game && (
         <div>
-          <strong> Tournament: </strong>
-          {game.tournament?.name}<br />
-          <br />
           <strong> Game: </strong> <br />
-          <br />
+          <p> Tournament: {game.tournament?.name}</p>
           {game.home_team}-{game.visitor_team}<br />
           {formatDate(new Date(game.date))} <br />
-          <br />
+          <hr />
           <form onSubmit={betCreation}>
             <div>
           Goals for {game.home_team}:

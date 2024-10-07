@@ -118,16 +118,14 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
   return (
     <div>
       <h2>Add result:  </h2>
+      <hr />
       { game && gameId && (
         <div>
-          <strong> Tournament: </strong>
-          {game.tournament?.name}<br />
-          <br />
           <strong> Game: </strong> <br />
-          <br />
+          <p> Tournament: {game.tournament?.name}</p>
           {game.home_team}-{game.visitor_team}<br />
           {formatDate(new Date(game.date))} <br />
-          <br />
+          <hr />
           <form onSubmit={outcomeCreation}>
             <div>
               Goals for {game.home_team}:

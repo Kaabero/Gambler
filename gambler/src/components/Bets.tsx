@@ -113,36 +113,33 @@ const Bets: React.FC<BetsProps> = ({
 
       {gamesWithBets.length > 0 && (
         <>
-          {loggedUser.admin && (
-            <>
-              <div>
-                <label>
-                  <input
-                    type="radio"
-                    value="hideadmin"
-                    checked={!showAdminTools}
-                    onChange={handleRadioChangeAdmin}
-                  />
-                Hide admin tools
-                </label>
-              </div>
-              <div>
-                <label>
-                  <input
-                    type="radio"
-                    value="showadmin"
-                    checked={showAdminTools}
-                    onChange={handleRadioChangeAdmin}
-                  />
-                Show admin tools
-                </label>
-              </div>
-              <hr />
-            </>
-          )}
           <h2>Bets for tournament {tournament.name}</h2>
           <div>
-            <div>
+            {loggedUser.admin && (
+              <>
+                <div className="radio-group">
+                  <label>
+                    <input
+                      type="radio"
+                      value="hideadmin"
+                      checked={!showAdminTools}
+                      onChange={handleRadioChangeAdmin}
+                    />
+                Hide admin tools
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      value="showadmin"
+                      checked={showAdminTools}
+                      onChange={handleRadioChangeAdmin}
+                    />
+                Show admin tools
+                  </label>
+                </div>
+              </>
+            )}
+            <div  className="radio-group">
               <label>
                 <input
                   type="radio"
@@ -152,8 +149,6 @@ const Bets: React.FC<BetsProps> = ({
                 />
                 Show only future games
               </label>
-            </div>
-            <div>
               <label>
                 <input
                   type="radio"
@@ -168,7 +163,6 @@ const Bets: React.FC<BetsProps> = ({
               <ul>
                 {gamesToShow.map((game) => (
                   <li key={game.id}>
-                    <hr />
                     <strong>Game: </strong><br />
                     <br />
                     <div>
@@ -181,23 +175,21 @@ const Bets: React.FC<BetsProps> = ({
                     <ul>
                       {game.bets?.map((bet) => (
                         <li key={bet.id}>
-                          <strong>Bet from user {bet.user.username}: </strong>
-                          {bet.goals_home} - {bet.goals_visitor}
-                          <br />
-                          <br />
+                          <p>Bet from user {bet.user.username}:&nbsp;
+                            {bet.goals_home} - {bet.goals_visitor}</p>
+
                           {loggedUser.admin &&
                           !game.outcome &&
                           showAdminTools && (
                             <>
-                              <button onClick={() =>
+                              <button className= 'admin-button' onClick={() =>
                                 handleRemoveBetClick(bet.id)}>
                                 Delete bet
                               </button>
-                              <button onClick={() =>
+                              <button className= 'admin-button' onClick={() =>
                                 handleEditBetClick(bet)}>
                                   Edit bet
                               </button><br />
-                              <br />
                             </>
                           )}
                         </li>
@@ -217,7 +209,6 @@ const Bets: React.FC<BetsProps> = ({
         </>
       )}
       <hr />
-      <br />
       <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );

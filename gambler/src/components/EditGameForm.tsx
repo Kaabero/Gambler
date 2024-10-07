@@ -108,6 +108,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({
           <form onSubmit={gameEdition}>
             Tournament: <br />
             <select
+              className='select-in-form'
               id="tournament-select"
               value={newTournament}
               onChange={({ target }) => setNewTournament(target.value)}
@@ -175,7 +176,6 @@ const EditGameForm: React.FC<EditGameFormProps> = ({
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
-      <hr />
     </div>
   );
 };

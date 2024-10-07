@@ -94,7 +94,7 @@ const AddTournamentForm: React.FC<AddTournamentFormProps> = ({
           </div>
           <br />
           <div>
-          Name:
+          Tournament name:
             <br />
             <input
               data-testid='tournamentname'

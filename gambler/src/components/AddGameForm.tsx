@@ -98,8 +98,9 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
         <div>
           <h2>Add a new game</h2>
           <form onSubmit={gameCreation}>
-            <p>Choose a tournament</p>
+            <p>Choose a tournament: </p>
             <select
+              className='select-in-form'
               id="tournament-select"
               value={addToTournament}
               onChange={({ target }) => setTournament(target.value)}

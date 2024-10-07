@@ -16,16 +16,20 @@ const Notification = ({
 
   if (errormessage) {
     return (
-      <div className="error">
-        {errormessage}
+      <div className="notificationcontainer">
+        <div className="error">
+          {errormessage}
+        </div>
       </div>
     );
   }
 
   if (notificationmessage) {
     return (
-      <div className="notification">
-        {notificationmessage}
+      <div className="notificationcontainer">
+        <div className="notification">
+          {notificationmessage}
+        </div>
       </div>
     );
   }

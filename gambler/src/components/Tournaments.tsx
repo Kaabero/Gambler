@@ -116,37 +116,37 @@ const Tournaments: React.FC<TournamentsProps> = ({
   return (
     <div>
       <hr />
-      {loggedUser.admin && (
-        <>
-          <div>
-            <label>
-              <input
-                type="radio"
-                value="hideadmin"
-                checked={!showAdminTools}
-                onChange={handleRadioChangeAdmin}
-              />
-                Hide admin tools
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="radio"
-                value="showadmin"
-                checked={showAdminTools}
-                onChange={handleRadioChangeAdmin}
-              />
-                Show admin tools
-            </label>
-          </div>
-          <hr />
-        </>
-      )}
+
       <h2>Tournaments </h2>
+      {loggedUser.admin && (
+        <div className="radio-group">
+
+          <label>
+            <input
+              type="radio"
+              value="hideadmin"
+              checked={!showAdminTools}
+              onChange={handleRadioChangeAdmin}
+            />
+                Hide admin tools
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="showadmin"
+              checked={showAdminTools}
+              onChange={handleRadioChangeAdmin}
+            />
+                Show admin tools
+          </label>
+
+        </div>
+      )}
       {sortedTournaments.length > 0 && (
+
         <>
-          <div>
+          <div className="radio-group">
+
             <label>
               <input
                 type="radio"
@@ -156,8 +156,7 @@ const Tournaments: React.FC<TournamentsProps> = ({
               />
                 Don't show ended tournaments
             </label>
-          </div>
-          <div>
+
             <label>
               <input
                 type="radio"
@@ -167,25 +166,26 @@ const Tournaments: React.FC<TournamentsProps> = ({
               />
                 Show all tournaments
             </label>
+
           </div>
 
           <>
             <ul>
               {tournamentsToShow.map(tournament =>
                 <li key={tournament.id}>
-                  <hr />
                   {tournament.name} <br />
                   {formatSimpleDate(new Date(tournament.from_date))}-
                   {formatSimpleDate(new Date(tournament.to_date))}<br />
-                  Games: {tournament.games?.length}
-                  <br />
+                  Games: {tournament.games?.length} <br />
+
                   {loggedUser.admin && showAdminTools && (
                     <>
-                      <button onClick={() =>
+                      <br />
+                      <button className= 'admin-button' onClick={() =>
                         handleRemoveTournament(tournament.id)}>
                           Delete tournament
                       </button>
-                      <button onClick={() =>
+                      <button className= 'admin-button' onClick={() =>
                         handleEditTournamentClick(tournament)}>
                           Edit tournament
                       </button> <br />

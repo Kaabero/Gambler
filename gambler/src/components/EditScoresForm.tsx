@@ -86,7 +86,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({
       (bet) =>
         bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
     );
-    return `${bet?.goals_home}-${bet?.goals_visitor}`;
+    return `${bet?.goals_home} - ${bet?.goals_visitor}`;
   };
 
   return (
@@ -102,7 +102,7 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({
             {scores.outcome.game.home_team}
             -{scores.outcome.game.visitor_team} <br />
             <p>Game result:&nbsp;
-              {scores.outcome.goals_home}-{scores.outcome.goals_visitor} </p>
+              {scores.outcome.goals_home} - {scores.outcome.goals_visitor} </p>
             <hr />
             <p>User: {scores.user.username}</p>
             <p>Bet: {usersBet(scores.user, scores.outcome)} </p>
@@ -138,7 +138,6 @@ const EditScoresForm: React.FC<EditScoresFormProps> = ({
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
-      <hr />
     </div>
   );
 };

@@ -50,9 +50,10 @@ const RegisterationForm: React.FC<RegisterationProps> = ({
   return (
     <div>
       <h2>Create account</h2>
+      <hr />
       <form onSubmit={handleRegisteration}>
         <div>
-          Username:
+          <p>Username:</p>
           <input
             data-testid="username"
             type="text"
@@ -62,7 +63,7 @@ const RegisterationForm: React.FC<RegisterationProps> = ({
           />
         </div>
         <div>
-          Password:
+          <p>Password:</p>
           <input
             data-testid="password"
             type="password"
@@ -76,6 +77,7 @@ const RegisterationForm: React.FC<RegisterationProps> = ({
         <br />
         <br />
       </form>
+      <hr />
     </div>
   );
 };

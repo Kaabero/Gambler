@@ -44,16 +44,18 @@ const GameResult = () => {
           <strong>Tournament: </strong>{game.tournament?.name}<br />
           <br />
           <strong>Game: </strong><br />
+          <br />
           {game.home_team}-{game.visitor_team}<br />
           {formatDate(new Date(game.date))}<br />
           <br />
-          <strong>Result:</strong>
-          {game.outcome.goals_home}-{game.outcome.goals_visitor}<br />
+          <p>Result:&nbsp;
+            {game.outcome.goals_home}  - {game.outcome.goals_visitor}</p>
           <br />
           <button onClick={() =>
             game.outcome && handleCheckPoints(game.outcome)}>
             Check received points
-          </button>
+          </button><br />
+          <br />
         </div>
       )}
       {!game.outcome && (
@@ -63,7 +65,6 @@ const GameResult = () => {
         </>
       )}
       <hr />
-      <br />
       <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );

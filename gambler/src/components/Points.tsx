@@ -71,7 +71,7 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
       .find((bet) =>
         bet.user && bet.user.id === user.id && bet.game.id === outcome.game.id
       );
-    return `${bet?.goals_home}-${bet?.goals_visitor}`;
+    return `${bet?.goals_home} - ${bet?.goals_visitor}`;
   };
 
   const handleRadioChangeAdmin = (
@@ -87,9 +87,10 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
       <hr />
       {filteredOutcomes.length > 0 && (
         <>
+          <h2>Received points in tournament {tournament.name}</h2>
           {loggedUser.admin && (
             <>
-              <div>
+              <div className="radio-group">
                 <label>
                   <input
                     type="radio"
@@ -99,8 +100,6 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
                   />
               Hide admin tools
                 </label>
-              </div>
-              <div>
                 <label>
                   <input
                     type="radio"
@@ -114,11 +113,9 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
               <hr />
             </>
           )}
-          <h2>Received points in tournament {tournament.name}</h2>
           <ul>
             {filteredOutcomes.map((outcome) => (
               <li key={outcome.id}>
-                <hr />
                 <strong>Game: </strong> <br />
                 <br />
                 {formatDate(new Date(outcome.game.date))}
@@ -133,15 +130,13 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
 
                   {outcome.scores?.map((score) => (
                     <li key={score.id}>
-                      <strong>Points to user {score.user.username}: </strong>
-                      {score.points}
-                      <br />
-                      <strong>Users bet: </strong>
-                      {usersBet(score.user, outcome)} <br />
-                      <br />
+                      <p>Points to user {score.user.username}:&nbsp;
+                        {score.points}</p>
+                      <p>Users bet:&nbsp;
+                        {usersBet(score.user, outcome)} </p>
                       { loggedUser.admin && showAdminTools && (
                         <>
-                          <button onClick={() =>
+                          <button className= 'admin-button' onClick={() =>
                             handleEditPointsClick(score)}>
                               Edit points
                           </button><br />
@@ -163,7 +158,6 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
         </>
       )}
       <hr />
-      <br />
       <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );

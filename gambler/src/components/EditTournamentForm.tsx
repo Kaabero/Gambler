@@ -117,9 +117,9 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
       { tournament && (
         <div>
           <strong> Initial tournament information: </strong> <br />
-          <p> Name: {tournament.name}</p>
-          <p> {formatSimpleDate(new Date(tournament.from_date))}</p>
-          <p> {formatSimpleDate(new Date(tournament.to_date))}</p>
+          <p> {tournament.name}</p>
+          <p> {formatSimpleDate(new Date(tournament.from_date))} -&nbsp;
+            {formatSimpleDate(new Date(tournament.to_date))}</p>
 
           <hr />
           <strong> Edit tournament information: </strong> <br />
@@ -171,7 +171,6 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
-      <hr />
     </div>
   );
 };

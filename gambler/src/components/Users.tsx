@@ -207,9 +207,10 @@ const Users: React.FC<UsersProps> = ({
   return (
     <div>
       <hr />
+      <h2>Users</h2>
       {loggedUser.admin && (
         <>
-          <div>
+          <div className="radio-group">
             <label>
               <input
                 type="radio"
@@ -219,8 +220,6 @@ const Users: React.FC<UsersProps> = ({
               />
               Hide admin tools
             </label>
-          </div>
-          <div>
             <label>
               <input
                 type="radio"
@@ -231,11 +230,9 @@ const Users: React.FC<UsersProps> = ({
               Show admin tools
             </label>
           </div>
-          <hr />
         </>
       )}
-      <h2>Users</h2>
-      <div>
+      <div className="radio-group">
         <label>
           <input
             type="radio"
@@ -245,8 +242,6 @@ const Users: React.FC<UsersProps> = ({
           />
                 Show only users with bets in selected tournament
         </label>
-      </div>
-      <div>
         <label>
           <input
             type="radio"
@@ -257,12 +252,12 @@ const Users: React.FC<UsersProps> = ({
                 Show all users
         </label>
       </div>
+      <hr />
 
       {filteredUsers.length > 0 ? (
         <ul>
           {filteredUsers.map(user => (
             <li key={user.id}>
-              <hr />
               <strong>Username: </strong>{user.username}<br />
               <br />
               {tournament.id!=='1' &&(
@@ -291,11 +286,11 @@ const Users: React.FC<UsersProps> = ({
               </button>
               {loggedUser.admin && !user.admin && showAdminTools &&(
                 <>
-                  <button onClick={() =>
+                  <button className= 'admin-button' onClick={() =>
                     handleRemoveUserClick(user.id)}>
                       Delete user
-                  </button> <br />
-                  <button onClick={() =>
+                  </button>
+                  <button className= 'admin-button' onClick={() =>
                     handleManageAdminRightsClick(user.id, 'makeadmin')}>
                       Give admin rights
                   </button> <br />
@@ -305,7 +300,7 @@ const Users: React.FC<UsersProps> = ({
               )}
               {loggedUser.admin && user.admin && showAdminTools &&(
                 <>
-                  <button onClick={() =>
+                  <button className= 'admin-button' onClick={() =>
                     handleManageAdminRightsClick(user.id, 'removeadmin')}>
                       Remove admin rights
                   </button> <br />
@@ -323,7 +318,6 @@ const Users: React.FC<UsersProps> = ({
         </>
       )}
       <hr />
-      <br />
       <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );

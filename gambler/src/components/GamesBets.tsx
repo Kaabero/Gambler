@@ -43,7 +43,6 @@ const GamesBets = () => {
 
   return (
     <div>
-      <hr />
       <strong>Tournament: </strong>{game.tournament?.name}<br />
       <br />
       <strong>Game: </strong><br />
@@ -51,19 +50,16 @@ const GamesBets = () => {
       {formatDate(new Date(game.date))}<br />
       {game.home_team}-{game.visitor_team} <br />
       <br />
+      <hr />
       <h2>Bets: </h2>
       <div>
         {game.bets && game.bets?.length > 0 && (
           <>
-            <ul>
+            <ul className= 'ul-small'>
               {bets.map(bet =>
-                <li key={bet.id}>
-                  <hr />
-                  <strong>User:</strong> {bet.user.username}<br />
-                  <br />
-                  <strong>Bet: </strong>
-                  {bet.goals_home}-{bet.goals_visitor}<br />
-                  <br />
+                <li className= 'li-small' key={bet.id}>
+                  <p>User: {bet.user.username}</p>
+                  <p>Bet: {bet.goals_home}-{bet.goals_visitor}</p>
                 </li>
               )}
             </ul>
@@ -76,7 +72,6 @@ const GamesBets = () => {
         </>
       )}
       <hr />
-      <br />
       <button type="button" onClick={handleGoBackClick}>Go back</button>
     </div>
   );

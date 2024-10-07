@@ -26,27 +26,28 @@ const Home = () => {
       <h2>Welcome to the Gambler app!</h2>
 
       <div>
-        You can now compete with your betting group for&nbsp;
+        You can now compete with your betting group for
         the title of the best score predictor! <br />
         <br />
-        Select your preferred tournament from the menu,&nbsp;
+        Select your preferred tournament from the menu,
         view the tournament's games, and add your own predictions. <br />
         <br />
-        If you guess the correct result, you will earn three points.&nbsp;
-        If you guess the correct winner or predict a draw,&nbsp;
+        If you guess the correct result, you will earn three points.
+        If you guess the correct winner or predict a draw,
         you will receive one point. <br />
         <br />
-        You can also view the game results, your own and others' bets,&nbsp;
+        You can also view the game results, your own and others' bets,
         as well as your own and others' point balances. <br />
         <br />
-        Administrators can manage tournaments, games, results,&nbsp;
+        Administrators can manage tournaments, games, results,
         points, bets and users within the app. <br />
         <br />
-        The current administrators are:
-        <ul>
+        The current administrators are:<br />
+        <br />
+        <ul className= 'ul-home'>
           {admins.map(admin =>
-            <li key={admin.id}>
-              <>{admin.username}</><br />
+            <li className= 'li-home' key={admin.id}>
+              - {admin.username}
             </li>
           )}
         </ul>
