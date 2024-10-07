@@ -516,12 +516,9 @@ describe('modification of a game', () => {
 
   it('succeeds with status code 200 with valid data and id', async () => {
 
-    const { tournamentId, admintoken, initialGame } = values
+    const { admintoken, initialGame } = values
 
-    const modifiedGame = {
-      visitor_team: 'modified visitor_team',
-      tournament: tournamentId
-    }
+    const modifiedGame = { ...initialGame, visitor_team: 'modified visitor_team' }
 
     const resultGame = await api
       .put(`/api/games/${initialGame.id}`)
@@ -548,13 +545,9 @@ describe('modification of a game', () => {
 
   it('fails with status code 400 if home_team = visitor_team', async () => {
 
-    const { tournamentId, admintoken, initialGame } = values
+    const { admintoken, initialGame } = values
 
-    const modifiedGame = {
-      visitor_team: 'modified',
-      home_team: 'modified',
-      tournament: tournamentId
-    }
+    const modifiedGame = { ...initialGame, visitor_team: 'modified', home_team: 'MODIfied' }
 
     const result = await api
         .put(`/api/games/${initialGame.id}`)
@@ -580,14 +573,10 @@ describe('modification of a game', () => {
     if date is outside tournament time period`,
     async () => {
 
-      const { tournamentId, admintoken, initialGame } = values
-      const modifiedGame = {
-        visitor_team: 'improper date',
-        date:
-        new Date(new Date().setFullYear(new Date().getFullYear() + 4))
-          .toISOString(),
-        tournament: tournamentId
-      }
+      const { admintoken, initialGame } = values
+  
+      const modifiedGame = { ...initialGame, visitor_team: 'invalid date', date:  new Date(new Date().setFullYear(new Date().getFullYear() + 4))
+        .toISOString() }
 
       const result = await api
         .put(`/api/games/${initialGame.id}`)
@@ -608,13 +597,11 @@ describe('modification of a game', () => {
   )
 
   it('fails with status code 400 if data is invalid', async () => {
-    const { tournamentId, admintoken, initialGame } = values
+    const { admintoken, initialGame } = values
 
-    const modifiedGame = {
-      visitor_team: 1,
-      tournament: tournamentId
-    }
-    await api
+
+    const modifiedGame = { ...initialGame, visitor_team: "a" }
+    const result = await api
       .put(`/api/games/${initialGame.id}`)
       .set('Authorization', `Bearer ${admintoken}`)
       .send(modifiedGame)
@@ -625,16 +612,17 @@ describe('modification of a game', () => {
     const visitor_teams = gamesAtEnd.map(game => game.visitor_team)
     assert(!visitor_teams.includes(modifiedGame.visitor_team))
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
+    assert(result.body.error.includes(
+      'Validation failed: visitor_team: Path `visitor_team` (`a`) is shorter than the minimum allowed length (3).'
+    ))
 
   })
 
   it('fails with status code 400 if token is missing', async () => {
-    const { tournamentId, initialGame } = values
+    const { initialGame } = values
 
-    const modifiedGame = {
-      visitor_team: 'token missing',
-      tournament: tournamentId
-    }
+    const modifiedGame = { ...initialGame, visitor_team: 'token missing' }
+
     const result = await api
       .put(`/api/games/${initialGame.id}`)
       .send(modifiedGame)
@@ -652,12 +640,10 @@ describe('modification of a game', () => {
 
   })
   it('fails with status code 400 if token is invalid', async () => {
-    const { tournamentId, initialGame } = values
+    const { initialGame } = values
 
-    const modifiedGame = {
-      visitor_team: 'invalid token',
-      tournament: tournamentId
-    }
+  
+    const modifiedGame = { ...initialGame, visitor_team: 'invalid token' }
 
     const invalidToken = 'invalidtoken'
 
@@ -733,10 +719,8 @@ describe('modification of a game', () => {
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-      const modifiedGame = {
-        visitor_team: 'modified visitor_team and tournament',
-        tournament: newtournamentresponse.body.id
-      }
+
+      const modifiedGame = { ...newGame, visitor_team: 'modified visitor_team and tournament', tournament: newtournamentresponse.body.id }
 
       const resultGame = await api
         .put(`/api/games/${newgameresponse.body.id}`)
@@ -824,9 +808,9 @@ describe('operations without admin rights: ', () => {
 
     const gameToModify = gamesAtStart[0]
 
-    const modifiedGame = {
-      visitor_team: 'modified visitor_team',
-    }
+ 
+    const modifiedGame = { ...gameToModify, visitor_team: 'modified visitor_team' }
+
 
     const resultGame = await api
       .put(`/api/games/${gameToModify.id}`)

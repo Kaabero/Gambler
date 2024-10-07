@@ -47,13 +47,13 @@ describe('When admin has logged in to Gambler app', () => {
     })
         
     test('admin tools can be opened', async ({ page }) => {
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await expect(page.getByText('Add a new tournament')).toBeVisible()
         page.getByRole('button', { name: 'Go back' })
     })
         
     test('new tournament can be added', async ({ page }) => {
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Add a new tournament' }).click()
         await page.getByTestId('tournamentname').fill('testTournament')
         const dateFromInput = page.locator('input[data-testid="from"]')
@@ -71,7 +71,7 @@ describe('When admin has logged in to Gambler app', () => {
     })
 
     test('a tournament can be deleted', async ({ page }) => {
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
         await expect(page.getByRole('radio', { name: `Don't show ended tournaments` })).toBeVisible()
         await expect(page.getByRole('radio', { name: `Show all tournaments` })).toBeVisible()
@@ -90,7 +90,7 @@ describe('When admin has logged in to Gambler app', () => {
     })
 
     test('a tournament can be edited', async ({ page }) => {
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
         await page.getByRole('radio', { name: `Don't show ended tournaments` }).click()
         await page.getByRole('radio', { name: 'Show admin tools' }).click()
@@ -112,7 +112,7 @@ describe('When admin has logged in to Gambler app', () => {
     })
 
     test('a tournament edition fails if tournament name already exists', async ({ page }) => {
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
         await page.getByRole('radio', { name: `Don't show ended tournaments` }).click()
         await page.getByRole('radio', { name: 'Show admin tools' }).click()
@@ -134,7 +134,7 @@ describe('When admin has logged in to Gambler app', () => {
     })
 
     test('a tournament edition fails if from_date>to_date', async ({ page }) => {
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
         await page.getByRole('radio', { name: `Show all tournaments` }).click()
         await page.getByRole('radio', { name: 'Show admin tools' }).click()
@@ -158,7 +158,7 @@ describe('When admin has logged in to Gambler app', () => {
     })
 
     test('a tournament edition fails if from_date=to_date', async ({ page }) => {
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove tournaments' }).click()
         await page.getByRole('radio', { name: `Show all tournaments` }).click()
         await page.getByRole('radio', { name: 'Show admin tools' }).click()
@@ -187,7 +187,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Add a new game' }).click()
         await expect(page.getByText('Add a new game')).toBeVisible()
         const dateInput = page.locator('input[data-testid="date"]')
@@ -211,7 +211,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Add a new game' }).click()
         await expect(page.getByText('Add a new game')).toBeVisible()
         const InitialdateInput = page.locator('input[data-testid="date"]')
@@ -223,7 +223,7 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(InitialdateInput).toHaveValue('2100-01-01T15:30')
         await expect(page.getByText('Game added successfully!')).toBeVisible()
 
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Add a new game' }).click()
         await expect(page.getByText('Add a new game')).toBeVisible()
         const dateInput = page.locator('input[data-testid="date"]')
@@ -243,7 +243,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Add a new game' }).click()
         await expect(page.getByText('Add a new game')).toBeVisible()
         const dateInput = page.locator('input[data-testid="date"]')
@@ -265,7 +265,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Add a new game' }).click()
         await expect(page.getByText('Add a new game')).toBeVisible()
         const dateInput = page.locator('input[data-testid="date"]')
@@ -287,7 +287,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Add a new game' }).click()
         await expect(page.getByText('Add a new game')).toBeVisible()
         const dateInput = page.locator('input[data-testid="date"]')
@@ -309,7 +309,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Add a new game' }).click()
         await expect(page.getByText('Add a new game')).toBeVisible()
         const dateInput = page.locator('input[data-testid="date"]')
@@ -331,7 +331,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
@@ -353,7 +353,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
@@ -375,7 +375,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
@@ -400,7 +400,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
@@ -422,7 +422,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
@@ -451,7 +451,7 @@ describe('When admin has logged in to Gambler app', () => {
         await page.getByRole('link', { name: 'Received points' }).click()
         await page.waitForTimeout(10000)
         await expect(page.getByText('88')).toBeVisible()
-        await expect(page.getByText('2-2')).toBeVisible()
+        await expect(page.getByText('2 - 2')).toBeVisible()
         await expect(page.getByText('without - outcome')).toBeVisible()
         await expect(page.getByText('1-1')).toBeVisible()
           
@@ -463,7 +463,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove games, add game results' }).click()
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
@@ -494,7 +494,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Delete game results and related scores' }).click()
 
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
@@ -520,7 +520,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit received points' }).click()
 
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
@@ -553,7 +553,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Remove users, add admin rights' }).click()
 
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
@@ -580,7 +580,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Remove users, add admin rights' }).click()
 
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
@@ -607,7 +607,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove bets' }).click()
 
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
@@ -626,7 +626,7 @@ describe('When admin has logged in to Gambler app', () => {
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(dropdown).toHaveValue(tournamentId)
-        await page.getByRole('link', { name: 'Admin tools' }).click()
+        await page.getByRole('button', { name: 'Admin tools' }).click()
         await page.getByRole('link', { name: 'Edit and remove bets' }).click()
 
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()

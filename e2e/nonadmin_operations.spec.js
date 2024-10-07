@@ -53,7 +53,7 @@ describe('When regular user has logged in to Gambler app', () => {
     })
         
     test('admin tools are not visible', async ({ page }) => {
-        await expect(page.getByRole('link', { name: 'Admin tools' })).not.toBeVisible()
+        await expect(page.getByRole('button', { name: 'Admin tools' })).not.toBeVisible()
     })
         
     test('a games page can be opened', async ({ page }) => {
@@ -125,7 +125,7 @@ describe('When regular user has logged in to Gambler app', () => {
         await expect(page.getByText('past-game')).toBeVisible()
     })
 
-    test('from games page, it is possible to navigate to see the game result page', async ({ page }) => {
+    test('from games page, it is possible to navigate to the game result page', async ({ page }) => {
         await page.getByRole('link', { name: 'Games' }).click()
         const dropdown = page.locator('#tournament-select')
         await dropdown.click()
@@ -135,7 +135,7 @@ describe('When regular user has logged in to Gambler app', () => {
         await expect(page.getByRole('button', { name: 'Check result' })).toBeVisible()
         await page.getByRole('button', { name: 'Check result' }).click()
         await expect(page.getByText('past-game')).toBeVisible()
-        await expect(page.getByText('1-1')).toBeVisible()
+        await expect(page.getByText('1 - 1')).toBeVisible()
         await expect(page.getByRole('button', { name: 'Check received points' })).toBeVisible()
 
     })
@@ -168,7 +168,7 @@ describe('When regular user has logged in to Gambler app', () => {
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).not.toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).not.toBeVisible()
         await expect(page.getByText('88')).toBeVisible()
-        await expect(page.getByText('2-2')).toBeVisible()
+        await expect(page.getByText('2 - 2')).toBeVisible()
         
      
     })
