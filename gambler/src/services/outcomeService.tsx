@@ -6,17 +6,17 @@ import { token } from '../utils/setToken';
 const baseUrl = '/api/outcomes';
 
 
-export const getAllOutcomes = () => {
-  return axios
-    .get<Outcome[]>(baseUrl)
-    .then(response => response.data);
+export const getAllOutcomes = async () => {
+  const response = await axios
+    .get<Outcome[]>(baseUrl);
+  return response.data;
 
 };
 
-export const getOutcomeById = (id: string) => {
-  return axios
-    .get<Outcome>(`${ baseUrl }/${id}`)
-    .then(response => response.data);
+export const getOutcomeById = async (id: string) => {
+  const response = await axios
+    .get<Outcome>(`${baseUrl}/${id}`);
+  return response.data;
 
 };
 
@@ -29,11 +29,12 @@ export const addOutcome = async (newObject: NewOutcome) => {
 };
 
 
-export const removeOutcome = (id: string) => {
+export const removeOutcome = async (id: string) => {
   const config = {
     headers: { Authorization: token },
   };
 
   const request = axios.delete(`${ baseUrl }/${id}`, config);
-  return request.then(response => response.data);
+  const response = await request;
+  return response.data;
 };

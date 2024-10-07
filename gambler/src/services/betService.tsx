@@ -5,17 +5,17 @@ import { token } from '../utils/setToken';
 const baseUrl = '/api/bets';
 
 
-export const getAllBets = () => {
-  return axios
-    .get<Bet[]>(baseUrl)
-    .then(response => response.data);
+export const getAllBets = async () => {
+  const response = await axios
+    .get<Bet[]>(baseUrl);
+  return response.data;
 
 };
 
-export const getBetById = (id: string) => {
-  return axios
-    .get<Bet>(`${ baseUrl }/${id}`)
-    .then(response => response.data);
+export const getBetById = async (id: string) => {
+  const response = await axios
+    .get<Bet>(`${baseUrl}/${id}`);
+  return response.data;
 
 };
 
@@ -29,21 +29,23 @@ export const addBet = async (newObject: NewBet) => {
 };
 
 
-export const removeBet = (id: string) => {
+export const removeBet = async (id: string) => {
   const config = {
     headers: { Authorization: token },
   };
 
   const request = axios.delete(`${ baseUrl }/${id}`, config);
-  return request.then(response => response.data);
+  const response = await request;
+  return response.data;
 };
 
 
-export const editBet = (id: string, newObject: Bet) => {
+export const editBet = async (id: string, newObject: Bet) => {
   const config = {
     headers: { Authorization: token },
   };
 
   const request = axios.put(`${baseUrl}/${id}`, newObject, config);
-  return request.then(response => response.data);
+  const response = await request;
+  return response.data;
 };

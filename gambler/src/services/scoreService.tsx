@@ -5,17 +5,17 @@ import { token } from '../utils/setToken';
 const baseUrl = '/api/scores';
 
 
-export const getAllScores = () => {
-  return axios
-    .get<Scores[]>(baseUrl)
-    .then(response => response.data);
+export const getAllScores = async () => {
+  const response = await axios
+    .get<Scores[]>(baseUrl);
+  return response.data;
 
 };
 
-export const getScoresById = (id: string) => {
-  return axios
-    .get<Scores>(`${ baseUrl }/${id}`)
-    .then(response => response.data);
+export const getScoresById = async (id: string) => {
+  const response = await axios
+    .get<Scores>(`${baseUrl}/${id}`);
+  return response.data;
 
 };
 
@@ -30,11 +30,12 @@ export const addScores = async (newObject: NewScores) => {
 
 
 
-export const editScores = (id: string, newObject: Scores) => {
+export const editScores = async (id: string, newObject: Scores) => {
   const config = {
     headers: { Authorization: token },
   };
 
   const request = axios.put(`${baseUrl}/${id}`, newObject, config);
-  return request.then(response => response.data);
+  const response = await request;
+  return response.data;
 };

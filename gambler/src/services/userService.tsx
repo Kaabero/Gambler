@@ -7,17 +7,17 @@ const baseUrl = '/api/users';
 
 
 
-export const getAllUsers = () => {
-  return axios
-    .get<User[]>(baseUrl)
-    .then(response => response.data);
+export const getAllUsers = async () => {
+  const response = await axios
+    .get<User[]>(baseUrl);
+  return response.data;
 
 };
 
-export const getUserById = (id: string) => {
-  return axios
-    .get<User>(`${ baseUrl }/${id}`)
-    .then(response => response.data);
+export const getUserById = async (id: string) => {
+  const response = await axios
+    .get<User>(`${baseUrl}/${id}`);
+  return response.data;
 
 };
 
@@ -27,20 +27,22 @@ export const createUser = async (newObject: NewUser) => {
 
 };
 
-export const removeUser = (id: string) => {
+export const removeUser = async (id: string) => {
   const config = {
     headers: { Authorization: token },
   };
   const request = axios.delete(`${ baseUrl }/${id}`, config);
-  return request.then(response => response.data);
+  const response = await request;
+  return response.data;
 };
 
-export const editUser = (id: string, newObject: User) => {
+export const editUser = async (id: string, newObject: User) => {
   const config = {
     headers: { Authorization: token },
   };
 
   const request = axios.put(`${baseUrl}/${id}`, newObject, config);
-  return request.then(response => response.data);
+  const response = await request;
+  return response.data;
 };
 

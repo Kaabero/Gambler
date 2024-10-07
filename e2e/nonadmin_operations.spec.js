@@ -140,7 +140,7 @@ describe('When regular user has logged in to Gambler app', () => {
 
     })
 
-    test.only('users and their points page can be opened', async ({ page }) => {
+    test('users and their points page can be opened', async ({ page }) => {
         await page.getByRole('link', { name: 'Users and their points' }).click()
         await expect(page.getByText('There are no users with bets in the selected tournament.')).toBeVisible()
         const dropdown = page.locator('#tournament-select')
