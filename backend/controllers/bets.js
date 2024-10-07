@@ -57,7 +57,7 @@ betsRouter.post('/', middleware.userExtractor, async (request, response) => {
   if (date < now) {
     return response.status(400)
       .json({ error:
-      'Bet cannot be added for past games'
+      'Bet cannot be placed on past games.'
       })
   }
 
@@ -66,14 +66,14 @@ betsRouter.post('/', middleware.userExtractor, async (request, response) => {
   if (existingBet) {
     return response.status(400)
       .json({ error:
-      'User has already placed a bet on this game'
+      'You have already placed a bet on this game.'
       })
   }
 
   if (body.goals_home === '' || body.goals_visitor === '') {
     return response.status(400)
       .json({ error:
-      'Some of the required fields are missing'
+      'Both home and visitor goals must be specified.'
       })
   }
 
@@ -112,7 +112,7 @@ betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
   if (game.outcome) {
     return response.status(400)
       .json({ error:
-      'Deleting bets is not allowed for games that have already been scored.'
+      'Bets cannot be deleted for games that have already been scored.'
       })
   }
 
@@ -121,7 +121,7 @@ betsRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
     await Bet.findByIdAndDelete(request.params.id)
     response.status(204).end()
   } else {
-    response.status(401).json({ error: 'Authorization failed' })
+    response.status(401).json({ error: 'Authorization failed.' })
   }
 }
 )
@@ -143,7 +143,7 @@ betsRouter.put('/:id', middleware.userExtractor, async (request, response) =>
   if (game.outcome && user.admin) {
     return response.status(400)
       .json({ error:
-      'Editing bets is not allowed for games that have already been scored.'
+      'Bets cannot be edited for games that have already been scored.'
       })
   }
 
@@ -153,7 +153,7 @@ betsRouter.put('/:id', middleware.userExtractor, async (request, response) =>
   if (date < now && !user.admin) {
     return response.status(400)
       .json({ error:
-      'Bet cannot be edited for past games'
+      'Bets cannot be edited for past games.'
       })
   }
 
@@ -168,7 +168,7 @@ betsRouter.put('/:id', middleware.userExtractor, async (request, response) =>
     response.status(200).json(updatedBet)
 
   } else {
-    response.status(401).json({ error: 'Authorization failed' })
+    response.status(401).json({ error: 'Authorization failed.' })
   }
 })
 

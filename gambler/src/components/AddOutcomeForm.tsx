@@ -106,7 +106,8 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
 
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
+        setErrorMessage(`${error.response?.data.error ||
+          'An error occurred while adding the outcome.'}`);
         setTimeout(() => {
           setErrorMessage('');
         }, 3000);
@@ -161,7 +162,7 @@ const AddOutcomeForm: React.FC<AddOutcomeFormProps> = ({
       {!gameId && (
         <>
           <br />
-          <p> No game selected. </p>
+          <p>No game selected. </p>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}

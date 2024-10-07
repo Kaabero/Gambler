@@ -66,7 +66,7 @@ describe('when there is initially one user at db', () => {
         .expect('Content-Type', /application\/json/)
 
       const usersAtEnd = await helper.usersInDb()
-      assert(result.body.error.includes('Username already taken'))
+      assert(result.body.error.includes('Username already taken.'))
 
       assert.strictEqual(usersAtEnd.length, usersAtStart.length)
     }
@@ -92,7 +92,7 @@ describe('when there is initially one user at db', () => {
 
       const usersAtEnd = await helper.usersInDb()
       assert(result.body.error.includes(
-        `Invalid username or password`
+        `Invalid username or password.`
       ))
 
       assert.strictEqual(usersAtEnd.length, usersAtStart.length)
@@ -117,8 +117,8 @@ describe('when there is initially one user at db', () => {
   
       const usersAtEnd = await helper.usersInDb()
       assert(result.body.error.includes(
-        `Password must be at least 8 characters long and include uppercase, 
-      lowercase, number, and special character`
+        `Password must be at least 8 characters long and include an uppercase 
+      letter, a lowercase letter, a number, and a special character.`
       ))
   
       assert.strictEqual(usersAtEnd.length, usersAtStart.length)
@@ -276,7 +276,7 @@ describe('deletion of a user', () => {
 
     const usersAtEnd = await helper.usersInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
 
   })
@@ -295,7 +295,7 @@ describe('deletion of a user', () => {
 
     const usersAtEnd = await helper.usersInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
 
   })
@@ -428,7 +428,7 @@ describe('modification of a user', () => {
     const usersAtEnd = await helper.usersInDb()
 
     assert(result.body.error.includes(
-      'Token missing or invalid'
+      'Token missing or invalid.'
     ))
 
     assert.strictEqual(userToModify.admin, false)

@@ -128,8 +128,8 @@ describe('When admin has logged in to Gambler app', () => {
             await dialog.accept()
         })
         await page.getByRole('button', { name: 'Save' }).click()
-        await expect(page.getByText(`Tournament tournamentTwo already added. 
-      Choose another name for the tournament.`)).toBeVisible()
+        await expect(page.getByText(`Tournament tournamentTwo already exists. 
+          Please choose a different name.`)).toBeVisible()
       
     })
 
@@ -153,7 +153,7 @@ describe('When admin has logged in to Gambler app', () => {
         await page.getByRole('button', { name: 'Save' }).click()
         await expect(dateFromInput).toHaveValue('2101-01-01')
         await expect(dateToInput).toHaveValue('2100-01-01')
-        await expect(page.getByText(`Check the dates!`)).toBeVisible()
+        await expect(page.getByText(`The end date must be after the start date.`)).toBeVisible()
       
     })
 
@@ -177,7 +177,7 @@ describe('When admin has logged in to Gambler app', () => {
         await page.getByRole('button', { name: 'Save' }).click()
         await expect(dateFromInput).toHaveValue('2101-01-01')
         await expect(dateToInput).toHaveValue('2101-01-01')
-        await expect(page.getByText(`Check the dates!`)).toBeVisible()
+        await expect(page.getByText(`The end date must be after the start date.`)).toBeVisible()
       
     })
 
@@ -277,7 +277,7 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(dateInput).toBeVisible()
         await page.getByRole('button', { name: 'Add' }).click()
         await expect(dateInput).toHaveValue('2223-01-01T15:30')
-        await expect(page.getByText('Set the date inside tournament time period')).toBeVisible()
+        await expect(page.getByText('Set the date within the tournament period.')).toBeVisible()
       
     })
 
@@ -299,7 +299,7 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(dateInput).toBeVisible()
         await page.getByRole('button', { name: 'Add' }).click()
         await expect(dateInput).toHaveValue('2100-01-01T15:30')
-        await expect(page.getByText('Home team and visitor team must be different')).toBeVisible()
+        await expect(page.getByText('Home and visitor teams must be different.')).toBeVisible()
       
     })
 
@@ -321,7 +321,7 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(dateInput).toBeVisible()
         await page.getByRole('button', { name: 'Add' }).click()
         await expect(dateInput).toHaveValue('2100-01-01T15:30')
-        await expect(page.getByText('Some of the required fields are missing')).toBeVisible()
+        await expect(page.getByText('Some required fields are missing.')).toBeVisible()
       
     })
 
@@ -390,7 +390,7 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(dateInput).toBeVisible()
         await page.getByRole('button', { name: 'Save' }).click()
         await expect(dateInput).toHaveValue('2223-01-01T15:30')
-        await expect(page.getByText('Set the game date inside tournament time period')).toBeVisible()
+        await expect(page.getByText('Set the game date within the tournament period.')).toBeVisible()
           
     })
 
@@ -412,7 +412,7 @@ describe('When admin has logged in to Gambler app', () => {
         await page.getByTestId('hometeam').fill('Edited')
         await page.getByTestId('visitorteam').fill('Edited')
         await page.getByRole('button', { name: 'Save' }).click()
-        await expect(page.getByText('Home team and visitor team must be different')).toBeVisible()
+        await expect(page.getByText('Home and visitor teams must be different.')).toBeVisible()
           
     })
 
@@ -453,7 +453,7 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(page.getByText('88')).toBeVisible()
         await expect(page.getByText('2 - 2')).toBeVisible()
         await expect(page.getByText('without - outcome')).toBeVisible()
-        await expect(page.getByText('1-1')).toBeVisible()
+        await expect(page.getByText('Points to user testUser: 3')).toBeVisible()
           
     })
 
@@ -484,7 +484,7 @@ describe('When admin has logged in to Gambler app', () => {
         await visitorGoalsInput.fill("1")
     
         await page.getByRole('button', { name: 'Add result and points' }).click()
-        await expect(page.getByText('Some of the required fields are missing')).toBeVisible()
+        await expect(page.getByText('Some required fields are missing.')).toBeVisible()
           
     })
 
@@ -559,8 +559,8 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
         await page.getByRole('radio', { name: 'Show admin tools' }).click()
-        await expect(page.getByRole('radio', { name: 'Show only users with bets in selected tournament' })).toBeVisible()
-        await page.getByRole('radio', { name: 'Show only users with bets in selected tournament' }).click()
+        await expect(page.getByRole('radio', { name: 'Show only users with bets in the selected tournament' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show only users with bets in the selected tournament' }).click()
         await expect(page.getByText('testAdmin')).toBeVisible()
         const button = page.getByRole('button', { name: 'Delete user' })
         await expect(button).toBeVisible()
@@ -586,8 +586,8 @@ describe('When admin has logged in to Gambler app', () => {
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).toBeVisible()
         await page.getByRole('radio', { name: 'Show admin tools' }).click()
-        await expect(page.getByRole('radio', { name: 'Show only users with bets in selected tournament' })).toBeVisible()
-        await page.getByRole('radio', { name: 'Show only users with bets in selected tournament' }).click()
+        await expect(page.getByRole('radio', { name: 'Show only users with bets in the selected tournament' })).toBeVisible()
+        await page.getByRole('radio', { name: 'Show only users with bets in the selected tournament' }).click()
         await expect(page.getByText('testAdmin')).toBeVisible()
         const button = page.getByRole('button', { name: 'Give admin rights' })
         await expect(button).toBeVisible()

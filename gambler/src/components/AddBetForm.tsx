@@ -59,7 +59,9 @@ const AddBetForm: React.FC<AddBetFormProps> = ({
         navigate('/games');
       } catch (error) {
         if (error instanceof AxiosError) {
-          setErrorMessage(`${error.response?.data.error}`);
+          setErrorMessage(
+            `${error.response?.data.error || 'An error occurred.'}`
+          );
           setTimeout(() => {
             setErrorMessage('');
           }, 3000);
@@ -80,7 +82,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({
         <div>
           <strong> Game: </strong> <br />
           <p> Tournament: {game.tournament?.name}</p>
-          {game.home_team}-{game.visitor_team}<br />
+          {game.home_team} - {game.visitor_team}<br />
           {formatDate(new Date(game.date))} <br />
           <hr />
           <form onSubmit={betCreation}>
@@ -118,7 +120,7 @@ const AddBetForm: React.FC<AddBetFormProps> = ({
       {!game && (
         <>
           <br />
-          <p> No game selected for betting. </p>
+          <p> No game selected for betting.</p>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}

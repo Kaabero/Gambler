@@ -48,7 +48,8 @@ const AddTournamentForm: React.FC<AddTournamentFormProps> = ({
       navigate('/adminTools');
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
+        setErrorMessage(`${error.response?.data.error ||
+           'An error occurred while adding the tournament.'}`);
         setTimeout(() => {
           setErrorMessage('');
         }, 3000);

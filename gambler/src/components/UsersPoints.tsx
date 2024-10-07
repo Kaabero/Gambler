@@ -118,7 +118,7 @@ const UsersPoints: React.FC<UsersPointsProps> = ( { selectedTournament }) => {
       ) : (
         <>
           <h2>User's points</h2>
-          <p>There are no points in the selected tournament for this user</p>
+          <p>There are no points in the selected tournament for this user.</p>
         </>
       )}
       <hr />

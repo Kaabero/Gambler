@@ -53,13 +53,13 @@ const GamesBets = () => {
       <hr />
       <h2>Bets: </h2>
       <div>
-        {game.bets && game.bets?.length > 0 && (
+        {game.bets && game.bets.length > 0 && (
           <>
             <ul className= 'ul-small'>
               {bets.map(bet =>
                 <li className= 'li-small' key={bet.id}>
                   <p>User: {bet.user.username}</p>
-                  <p>Bet: {bet.goals_home}-{bet.goals_visitor}</p>
+                  <p>Bet: {bet.goals_home} - {bet.goals_visitor}</p>
                 </li>
               )}
             </ul>
@@ -68,7 +68,7 @@ const GamesBets = () => {
       </div>
       {!game.bets || game.bets?.length === 0 && (
         <>
-          <p> There are no bets for this game </p>
+          <p>There are no bets for this game.</p>
         </>
       )}
       <hr />

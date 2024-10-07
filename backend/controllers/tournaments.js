@@ -61,7 +61,7 @@ tournamentsRouter
     if (body.name === '' || !body.from_date || !body.to_date) {
       return response.status(400)
         .json({ error:
-        'Some of the required fields are missing'
+        'Some required fields are missing.'
         })
     }
 
@@ -71,14 +71,17 @@ tournamentsRouter
 
     if (existingTournament) {
       return response.status(400)
-        .json({ error: `Tournament ${body.name} already added. 
-          Choose another name for the tournament.`
+        .json({ error: `Tournament ${body.name} already exists. 
+          Please choose a different name.`
         })
     }
 
     if (body.to_date === body.from_date) {
-      return response.status(400).json({ error: 'Check the dates.' })
+      return response.status(400).json({ error:
+        'The start and end dates cannot be the same.'
+      })
     }
+
 
     const from = new Date(body.from_date)
     const to = new Date(body.to_date)
@@ -88,11 +91,15 @@ tournamentsRouter
 
 
     if (from <= now) {
-      return response.status(400).json({ error: 'Set a future starting date.' })
+      return response.status(400).json({ error:
+        'Please set a future starting date.'
+      })
     }
 
     if (from === to || from > to) {
-      return response.status(400).json({ error: 'Check the dates.' })
+      return response.status(400).json({ error:
+        'The end date must be after the start date.'
+      })
     }
 
     const tournament = new Tournament({
@@ -152,7 +159,9 @@ tournamentsRouter
 
 
     if (from === to || from > to) {
-      return response.status(400).json({ error: 'Check the dates.' })
+      return response.status(400).json({ error:
+        'The end date must be after the start date.'
+      })
     }
 
     const existingTournament = await Tournament.findOne({
@@ -163,8 +172,7 @@ tournamentsRouter
     if (existingTournament && existingTournament.id !== initialTournament.id) {
       return response.status(400)
         .json({ error:
-      `Tournament ${name} already added. 
-      Choose another name for the tournament.`
+      `Tournament ${name} already exists. Please choose a different name.`
         })
     }
 

@@ -70,14 +70,14 @@ usersRouter.post('/', async (request, response) => {
   const existingUser = await User.findOne({ username })
 
   if (existingUser) {
-    return response.status(400).json({ error: 'Username already taken' })
+    return response.status(400).json({ error: 'Username already taken.' })
   }
 
   if (!validatePassword(password)) {
     return response.status(400)
       .json({ error:
-      `Password must be at least 8 characters long and include uppercase, 
-      lowercase, number, and special character`
+      `Password must be at least 8 characters long and include an uppercase 
+      letter, a lowercase letter, a number, and a special character.`
       })
   }
 

@@ -222,7 +222,7 @@ describe('addition of a new tournament', () => {
 
       const tournamentsAtEnd = await helper.tournamentsInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
     }
   )
@@ -250,7 +250,7 @@ describe('addition of a new tournament', () => {
 
       const tournamentsAtEnd = await helper.tournamentsInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
     }
   )
@@ -281,7 +281,7 @@ describe('addition of a new tournament', () => {
       const tournamentsAtEnd = await helper.tournamentsInDb()
 
       assert(result.body.error.includes(
-        'Set a future starting date.'
+        'Please set a future starting date.'
       ))
       assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
     }
@@ -313,7 +313,7 @@ describe('addition of a new tournament', () => {
       const tournamentsAtEnd = await helper.tournamentsInDb()
 
       assert(result.body.error.includes(
-        'Choose another name for the tournament.'
+        'Please choose a different name.'
       ))
       assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
     }
@@ -348,7 +348,7 @@ describe('addition of a new tournament', () => {
       const tournamentsAtEnd = await helper.tournamentsInDb()
 
       assert(result.body.error.includes(
-        'Check the dates.'
+        'The start and end dates cannot be the same.'
       ))
       assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
     }
@@ -384,7 +384,7 @@ describe('addition of a new tournament', () => {
       assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
 
       assert(result.body.error.includes(
-        'Some of the required fields are missing'
+        'Some required fields are missing.'
       ))
     }
   )
@@ -415,7 +415,7 @@ describe('addition of a new tournament', () => {
     const tournamentsAtEnd = await helper.tournamentsInDb()
 
     assert(result.body.error.includes(
-      'Check the dates.'
+      'The end date must be after the start date.'
     ))
 
     assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
@@ -465,7 +465,7 @@ describe('deletion of a tournament', () => {
 
     const tournamentsAtEnd = await helper.tournamentsInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
 
   })
@@ -484,7 +484,7 @@ describe('deletion of a tournament', () => {
 
     const tournamentsAtEnd = await helper.tournamentsInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(tournamentsAtEnd.length, tournamentsAtStart.length)
 
   })
@@ -560,7 +560,7 @@ describe('modification of a tournament', () => {
 
 
       assert(result.body.error.includes(
-        'Choose another name for the tournament.'
+        'Please choose a different name.'
       ))
       const names = tournamentsAtEnd.map(t => t.names)
       assert(!names.includes(modifiedTournament.name))
@@ -598,7 +598,7 @@ describe('modification of a tournament', () => {
 
 
       assert(result.body.error.includes(
-        'Check the dates.'
+        'The end date must be after the start date.'
       ))
       const names = tournamentsAtEnd.map(t => t.names)
       assert(!names.includes(modifiedTournament.name))
@@ -647,7 +647,7 @@ describe('modification of a tournament', () => {
     const tournamentsAtEnd = await helper.tournamentsInDb()
 
     assert(result.body.error.includes(
-      'Token missing or invalid'
+      'Token missing or invalid.'
     ))
 
     const names = tournamentsAtEnd.map(t => t.names)
@@ -674,7 +674,7 @@ describe('modification of a tournament', () => {
 
     const tournamentsAtEnd = await helper.tournamentsInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
 
     const names = tournamentsAtEnd.map(t => t.names)
     assert(!names.includes(modifiedTournament.name))

@@ -37,13 +37,3 @@ export const removeOutcome = (id: string) => {
   const request = axios.delete(`${ baseUrl }/${id}`, config);
   return request.then(response => response.data);
 };
-
-
-export const editOutcome = (id: string, newObject: Outcome) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-
-  const request = axios.put(`${baseUrl}/${id}`, newObject, config);
-  return request.then(response => response.data);
-};

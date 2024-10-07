@@ -60,7 +60,7 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
       }
     }
     if (fromDate === toDate || new Date(fromDate) >= new Date(toDate)) {
-      setErrorMessage('Check the dates!');
+      setErrorMessage('The end date must be after the start date.');
       setTimeout(() => {
         setErrorMessage('');
       }, 3000);
@@ -167,7 +167,7 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
       {!tournament && (
         <>
           <br />
-          <p> No tournament selected for editing. </p>
+          <p>No tournament selected for editing.</p>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}

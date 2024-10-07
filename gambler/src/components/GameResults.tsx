@@ -53,7 +53,7 @@ const GameResults: React.FC<GameResultsProps> = ({
   }, []);
 
   const handleRemoveResultClick = async (id: string) => {
-    if (confirm('Deleting game result will also remove related scores!')) {
+    if (confirm('Deleting the game result will also remove related scores!')) {
       try {
         await removeOutcome(id);
         setOutcomes(outcomes.filter(outcome => outcome.id !== id));
@@ -165,7 +165,7 @@ const GameResults: React.FC<GameResultsProps> = ({
       {!filteredOutcomes || filteredOutcomes?.length === 0 && (
         <>
           <h2>Results</h2>
-          <p> There are no game results added to selected tournament</p>
+          <p>There are no game results added to selected tournament.</p>
         </>
       )}
       <hr />

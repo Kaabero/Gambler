@@ -85,7 +85,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
           <div>
             {formatDate(new Date(bet.game.date))}<br />
             <br />
-            {bet.game.home_team}-{bet.game.visitor_team} <br />
+            {bet.game.home_team} - {bet.game.visitor_team} <br />
             <hr />
             <h2>Edit the bet</h2>
             <p>Initial bet: {bet.goals_home} - {bet.goals_visitor} </p>
@@ -126,7 +126,7 @@ const EditBetForm: React.FC<EditBetFormProps> = ({
 
       ) : (
         <>
-          <p> No bet selected for edition. </p>
+          <p>No bet selected for editing.</p>
           <br />
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>

@@ -5,6 +5,7 @@ set -e
 
 echo "Install script"
 
+npm install
 
 cd ./backend 
 npm install

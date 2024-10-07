@@ -43,7 +43,7 @@ const Tournaments: React.FC<TournamentsProps> = ({
     try {
 
       if (confirm(
-        `Deleting tournament will also remove all 
+        `Deleting this tournament will also remove all 
       related games, bets, game results and scores!`
       )) {
         removeTournament(id).then(() => {
@@ -117,7 +117,7 @@ const Tournaments: React.FC<TournamentsProps> = ({
     <div>
       <hr />
 
-      <h2>Tournaments </h2>
+      <h2>Tournaments</h2>
       {loggedUser.admin && (
         <div className="radio-group">
 
@@ -174,8 +174,8 @@ const Tournaments: React.FC<TournamentsProps> = ({
               {tournamentsToShow.map(tournament =>
                 <li key={tournament.id}>
                   {tournament.name} <br />
-                  {formatSimpleDate(new Date(tournament.from_date))}-
-                  {formatSimpleDate(new Date(tournament.to_date))}<br />
+                  {formatSimpleDate(new Date(tournament.from_date))} -
+                  &nbsp;{formatSimpleDate(new Date(tournament.to_date))}<br />
                   Games: {tournament.games?.length} <br />
 
                   {loggedUser.admin && showAdminTools && (
@@ -204,7 +204,7 @@ const Tournaments: React.FC<TournamentsProps> = ({
 
       {sortedTournaments.length === 0 && (
         <>
-          <p> There are no tournaments </p>
+          <p>There are no tournaments.</p>
           <button type="button" onClick={handleAddTournamentClick}>
             Add a tournament
           </button>

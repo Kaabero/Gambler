@@ -20,7 +20,7 @@ const errorHandler = (error, request, response, next) => {
   logger.error(error.message)
 
   if (error.name === 'CastError') {
-    response.status(400).json({ error: 'Malformatted id' })
+    response.status(400).json({ error: 'Malformatted id.' })
   } else if (error.name === 'ValidationError') {
     response.status(400).json({ error: error.message })
   } else if (
@@ -29,13 +29,13 @@ const errorHandler = (error, request, response, next) => {
     ))
   {
     response.status(400)
-      .json({ error: 'Some of the fields is required to be unique' })
+      .json({ error: 'Some of the fields is required to be unique.' })
   } else if (error.name === 'JsonWebTokenError') {
-    response.status(400).json({ error: 'Token missing or invalid' })
+    response.status(400).json({ error: 'Token missing or invalid.' })
   } else if (error.name === 'TokenExpiredError') {
-    response.status(401).json({ error: 'Token expired' })
+    response.status(401).json({ error: 'Token expired.' })
   } else {
-    response.status(500).json({ error: 'An unexpected error occurred' })
+    response.status(500).json({ error: 'An unexpected error occurred.' })
   }
   next(error)
 }

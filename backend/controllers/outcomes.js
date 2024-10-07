@@ -104,14 +104,14 @@ outcomesRouter.post('/', middleware.userExtractor, async (request, response) =>
   if (date > now) {
     return response.status(400)
       .json({ error:
-      'Outcome can not be added for future games'
+      'Game result cannot be added for future games.'
       })
   }
 
   if (body.goals_home === '' || body.goals_visitor === '') {
     return response.status(400)
       .json({ error:
-      'Some of the required fields are missing'
+      'Some required fields are missing.'
       })
   }
 

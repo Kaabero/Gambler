@@ -23,7 +23,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ loggedUser }) => {
   return (
     <div>
       <hr />
-      <h2>Admin tools </h2>
+      <h2>Admin tools</h2>
       {loggedUser.admin && (
         <>
           <strong>Manage tournaments:</strong><br />
@@ -57,7 +57,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ loggedUser }) => {
       )}
       {!loggedUser.admin && (
         <>
-          <p> You need the admin rights to see the tools. </p>
+          <p>You need admin rights to access these tools.</p>
         </>
       )}
       <hr />

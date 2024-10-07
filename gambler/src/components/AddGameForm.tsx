@@ -72,7 +72,10 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
       navigate('/adminTools');
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
+        setErrorMessage(
+          `${error.response?.data.error ||
+            'An error occurred while adding the game.'}`
+        );
         setTimeout(() => {
           setErrorMessage('');
         }, 3000);
@@ -98,7 +101,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
         <div>
           <h2>Add a new game</h2>
           <form onSubmit={gameCreation}>
-            <p>Choose a tournament: </p>
+            <p>Select a tournament: </p>
             <select
               className='select-in-form'
               id="tournament-select"
@@ -108,7 +111,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
             >
               {!defaultTournament && (
                 <option value="" disabled>
-            -- Choose a tournament --
+            -- Select a tournament --
                 </option>
               )}
               {defaultTournament && (
@@ -169,7 +172,7 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
       )}
       {tournaments.length === 0 && (
         <>
-          <p> There isn't any tournaments where you can add a game </p>
+          <p>There are no tournaments available to which you can add a game.</p>
           <br />
           <button type="button" onClick={handleAddTournamentClick}>
             Add a tournament</button>

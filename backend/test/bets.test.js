@@ -306,7 +306,7 @@ describe('addition of a new bet', () => {
 
       const betsAtEnd = await helper.betsInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(betsAtEnd.length, betsAtStart.length)
     }
   )
@@ -332,7 +332,7 @@ describe('addition of a new bet', () => {
 
       const betsAtEnd = await helper.betsInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(betsAtEnd.length, betsAtStart.length)
     }
   )
@@ -360,7 +360,7 @@ describe('addition of a new bet', () => {
       const betsAtEnd = await helper.betsInDb()
 
       assert(result.body.error.includes(
-        'User has already placed a bet on this game'
+        'You have already placed a bet on this game.'
       ))
       assert.strictEqual(betsAtEnd.length, betsAtStart.length)
     }
@@ -392,7 +392,7 @@ describe('addition of a new bet', () => {
       assert.strictEqual(betsAtEnd.length, betsAtStart.length)
 
       assert(result.body.error.includes(
-        'Some of the required fields are missing'
+        'Both home and visitor goals must be specified.'
       ))
     }
   )
@@ -424,7 +424,7 @@ describe('addition of a new bet', () => {
       assert.strictEqual(betsAtEnd.length, betsAtStart.length)
 
       assert(result.body.error.includes(
-        'Bet cannot be added for past games'
+        'Bet cannot be placed on past games.'
       ))
     }
   )
@@ -480,7 +480,7 @@ describe('deletion of a bet', () => {
       const ids = betsAtEnd.map(bet => bet.id)
       assert(ids.includes(betToDelete.id))
 
-      assert(result.body.error.includes('Authorization failed'))
+      assert(result.body.error.includes('Authorization failed.'))
       assert.strictEqual(betsAtEnd.length, betsAtStart.length)
     }
   )
@@ -498,7 +498,7 @@ describe('deletion of a bet', () => {
     const ids = betsAtEnd.map(bet => bet.id)
     assert(ids.includes(betToDelete.id))
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(betsAtEnd.length, betsAtStart.length)
 
   })
@@ -519,7 +519,7 @@ describe('deletion of a bet', () => {
     const ids = betsAtEnd.map(bet => bet.id)
     assert(ids.includes(betToDelete.id))
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(betsAtEnd.length, betsAtStart.length)
 
   })
@@ -555,7 +555,7 @@ describe('deletion of a bet', () => {
       assert(ids.includes(betToDelete.id))
 
       assert(result.body.error.includes(
-        'Deleting bets is not allowed for games that have already been scored.'
+        'Bets cannot be deleted for games that have already been scored.'
       ))
       assert.strictEqual(betsAtEnd.length, betsAtStart.length)
     }
@@ -634,7 +634,7 @@ describe('modification of a bet', () => {
 
 
       assert(result.body.error.includes(
-        'Bet cannot be edited for past games'
+        'Bets cannot be edited for past games.'
       ))
 
       const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
@@ -680,7 +680,7 @@ describe('modification of a bet', () => {
 
 
       assert(result.body.error.includes(
-        'Editing bets is not allowed for games that have already been scored.'
+        'Bets cannot be edited for games that have already been scored.'
       ))
 
       const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
@@ -730,7 +730,7 @@ describe('modification of a bet', () => {
     const betsAtEnd = await helper.betsInDb()
 
     assert(result.body.error.includes(
-      'Token missing or invalid'
+      'Token missing or invalid.'
     ))
 
     const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
@@ -758,7 +758,7 @@ describe('modification of a bet', () => {
     const betsAtEnd = await helper.betsInDb()
 
     assert(result.body.error.includes(
-      'Token missing or invalid'
+      'Token missing or invalid.'
     ))
 
     const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
@@ -787,7 +787,7 @@ describe('modification of a bet', () => {
 
       const betsAtEnd = await helper.betsInDb()
 
-      assert(result.body.error.includes('Authorization failed'))
+      assert(result.body.error.includes('Authorization failed.'))
 
       const visitor_goals = betsAtEnd.map(bet => bet.goals_visitor)
       assert(!visitor_goals.includes(modifiedBet.visitor_goals))

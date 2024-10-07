@@ -205,7 +205,7 @@ const Bets: React.FC<BetsProps> = ({
       {gamesWithBets.length === 0 && (
         <>
           <h2>Bets </h2>
-          <p> There are no bets added to selected tournament </p>
+          <p>There are no bets added to the selected tournament.</p>
         </>
       )}
       <hr />

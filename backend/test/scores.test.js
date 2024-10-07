@@ -329,7 +329,7 @@ describe('addition of a new scores', () => {
 
       const scoresAtEnd = await helper.scoresInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
     }
   )
@@ -354,7 +354,7 @@ describe('addition of a new scores', () => {
 
       const scoresAtEnd = await helper.scoresInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
     }
   )
@@ -384,7 +384,7 @@ describe('addition of a new scores', () => {
 
       assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
       assert(result.body.error.includes(
-        'Some of the required fields are missing'
+        'Some required fields are missing.'
       ))
     }
   )
@@ -416,106 +416,10 @@ describe('addition of a new scores', () => {
       assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
 
       assert(result.body.error.includes(
-        'User has already received points for this outcome'
+        'User has already received points for this game.'
       ))
     }
   )
-
-})
-
-describe('deletion of a score', () => {
-  let values
-
-  beforeEach(async () => {
-    values = await insertInitialData()
-  })
-
-  afterEach(async () => {
-    await Game.deleteMany({})
-    await User.deleteMany({})
-    await Tournament.deleteMany({})
-    await Outcome.deleteMany({})
-    await Scores.deleteMany({})
-  })
-
-  it('succeeds with status code 204 if id is valid', async () => {
-    const scoresAtStart = await helper.scoresInDb()
-    const scoreToDelete = scoresAtStart[0]
-    const { admintoken } = values
-
-    await api
-      .delete(`/api/scores/${scoreToDelete.id}`)
-      .set('Authorization', `Bearer ${admintoken}`)
-      .expect(204)
-
-    const scoresAtEnd = await helper.scoresInDb()
-
-    const ids = scoresAtEnd.map(score => score.id)
-    assert(!ids.includes(scoreToDelete.id))
-
-    assert.strictEqual(scoresAtEnd.length, scoresAtStart.length - 1)
-  })
-
-  it(
-    'fails with status code 401 if user has no rights to delete scores',
-    async () => {
-      const scoresAtStart = await helper.scoresInDb()
-      const scoreToDelete = scoresAtStart[0]
-      const { usertoken } = values
-
-      const result = await api
-        .delete(`/api/scores/${scoreToDelete.id}`)
-        .set('Authorization', `Bearer ${usertoken}`)
-        .expect(400)
-
-      const scoresAtEnd = await helper.scoresInDb()
-
-      const ids = scoresAtEnd.map(score => score.id)
-      assert(ids.includes(scoreToDelete.id))
-
-      assert(result.body.error.includes('This operation is for admins only.'))
-      assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
-    }
-  )
-
-  it('fails with status code 400 if token is missing', async () => {
-    const scoresAtStart = await helper.scoresInDb()
-    const scoreToDelete = scoresAtStart[0]
-
-    const result = await api
-      .delete(`/api/scores/${scoreToDelete.id}`)
-      .expect(400)
-
-    const scoresAtEnd = await helper.scoresInDb()
-
-    const ids = scoresAtEnd.map(score => score.id)
-    assert(ids.includes(scoreToDelete.id))
-
-    assert(result.body.error.includes('Token missing or invalid'))
-    assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
-
-  })
-
-  it('fails with status code 400 if token is invalid', async () => {
-    const scoresAtStart = await helper.scoresInDb()
-    const scoreToDelete = scoresAtStart[0]
-
-    const invalidToken = 'invalidtoken'
-
-    const result = await api
-      .delete(`/api/scores/${scoreToDelete.id}`)
-      .set('Authorization', `Bearer ${invalidToken}`)
-      .expect(400)
-
-    const scoresAtEnd = await helper.scoresInDb()
-
-    const ids = scoresAtEnd.map(score => score.id)
-    assert(ids.includes(scoreToDelete.id))
-
-    assert(result.body.error.includes('Token missing or invalid'))
-    assert.strictEqual(scoresAtEnd.length, scoresAtStart.length)
-
-  })
 
 })
 
@@ -640,7 +544,7 @@ describe('modification of a score', () => {
     const scoresAtEnd = await helper.scoresInDb()
 
     assert(result.body.error.includes(
-      'Token missing or invalid'
+      'Token missing or invalid.'
     ))
 
     const points = scoresAtEnd.map(s => s.points)
@@ -669,7 +573,7 @@ describe('modification of a score', () => {
 
     const scoresAtEnd = await helper.scoresInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
 
     const points = scoresAtEnd.map(s => s.points)
     assert(!points.includes(modifiedScores.points))

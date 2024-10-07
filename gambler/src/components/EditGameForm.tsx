@@ -97,13 +97,13 @@ const EditGameForm: React.FC<EditGameFormProps> = ({
       <hr />
       { game && game.tournament && (
         <div>
-          <strong> Initial game information: </strong> <br />
+          <strong> Initial game information:</strong> <br />
           <p> Tournament: {game.tournament?.name}</p>
           <p> Home team: {game.home_team}</p>
           <p> Visitor team: {game.visitor_team}</p>
           <p> Date: {formatDate(new Date(game.date))} </p>
           <hr />
-          <strong> Edit game information: </strong> <br />
+          <strong> Edit game information:</strong> <br />
           <br />
           <form onSubmit={gameEdition}>
             Tournament: <br />
@@ -172,7 +172,7 @@ const EditGameForm: React.FC<EditGameFormProps> = ({
       {!game && (
         <>
           <br />
-          <p> No game selected for editing. </p>
+          <p>No game selected for editing.</p>
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}

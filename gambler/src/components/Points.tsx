@@ -132,7 +132,7 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
                     <li key={score.id}>
                       <p>Points to user {score.user.username}:&nbsp;
                         {score.points}</p>
-                      <p>Users bet:&nbsp;
+                      <p>User's bet:&nbsp;
                         {usersBet(score.user, outcome)} </p>
                       { loggedUser.admin && showAdminTools && (
                         <>
@@ -154,7 +154,7 @@ const Points: React.FC<PointsProps> = ( { selectedTournament, loggedUser }) => {
       {filteredOutcomes.length === 0 && (
         <>
           <h2>Received points</h2>
-          <p> There are no points received from selected tournament</p>
+          <p>There are no points received from the selected tournament.</p>
         </>
       )}
       <hr />

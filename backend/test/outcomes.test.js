@@ -295,7 +295,7 @@ describe('addition of a new outcome', () => {
 
       const outcomesAtEnd = await helper.outcomesInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(outcomesAtEnd.length, outcomesAtStart.length)
     }
   )
@@ -321,7 +321,7 @@ describe('addition of a new outcome', () => {
 
       const outcomesAtEnd = await helper.outcomesInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(outcomesAtEnd.length, outcomesAtStart.length)
     }
   )
@@ -352,7 +352,7 @@ describe('addition of a new outcome', () => {
       assert.strictEqual(outcomesAtEnd.length, outcomesAtStart.length)
 
       assert(result.body.error.includes(
-        'Some of the required fields are missing'
+        'Some required fields are missing.'
       ))
     }
   )
@@ -400,7 +400,7 @@ describe('addition of a new outcome', () => {
       assert.strictEqual(outcomesAtEnd.length, outcomesAtStart.length)
 
       assert(result.body.error.includes(
-        'Outcome can not be added for future games'
+        'Game result cannot be added for future games.'
       ))
     }
   )
@@ -473,7 +473,7 @@ describe('deletion of a outcome', () => {
     const ids = outcomesAtEnd.map(outcome => outcome.id)
     assert(ids.includes(outcomeToDelete.id))
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(outcomesAtEnd.length, outcomesAtStart.length)
 
   })
@@ -494,7 +494,7 @@ describe('deletion of a outcome', () => {
     const ids = outcomesAtEnd.map(outcome => outcome.id)
     assert(ids.includes(outcomeToDelete.id))
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(outcomesAtEnd.length, outcomesAtStart.length)
 
   })

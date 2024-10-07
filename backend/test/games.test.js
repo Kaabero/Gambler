@@ -246,7 +246,7 @@ describe('addition of a new game', () => {
 
       const gamesAtEnd = await helper.gamesInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
     }
   )
@@ -272,7 +272,7 @@ describe('addition of a new game', () => {
 
       const gamesAtEnd = await helper.gamesInDb()
 
-      assert(result.body.error.includes('Token missing or invalid'))
+      assert(result.body.error.includes('Token missing or invalid.'))
       assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
     }
   )
@@ -301,7 +301,7 @@ describe('addition of a new game', () => {
       const gamesAtEnd = await helper.gamesInDb()
 
       assert(result.body.error.includes(
-        'Set the date inside tournament time period'
+        'Set the date within the tournament period.'
       ))
       assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
     }
@@ -331,7 +331,7 @@ describe('addition of a new game', () => {
       const gamesAtEnd = await helper.gamesInDb()
 
       assert(result.body.error.includes(
-        'Set a future date'
+        'Set a future date.'
       ))
       assert.strictEqual(gamesAtEnd.length, helper.initialGames.length +1)
     }
@@ -399,7 +399,7 @@ describe('addition of a new game', () => {
       assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
 
       assert(result.body.error.includes(
-        'Some of the required fields are missing'
+        'Some required fields are missing.'
       ))
     }
   )
@@ -427,7 +427,7 @@ describe('addition of a new game', () => {
     const gamesAtEnd = await helper.gamesInDb()
 
     assert(result.body.error.includes(
-      'Home team and visitor team must be different'
+      'Home and visitor teams must be different.'
     ))
 
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
@@ -477,7 +477,7 @@ describe('deletion of a game', () => {
 
     const gamesAtEnd = await helper.gamesInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
 
   })
@@ -496,7 +496,7 @@ describe('deletion of a game', () => {
 
     const gamesAtEnd = await helper.gamesInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
     assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
 
   })
@@ -561,7 +561,7 @@ describe('modification of a game', () => {
       const visitor_teams = gamesAtEnd.map(game => game.visitor_team)
       const home_teams = gamesAtEnd.map(game => game.home_team)
       assert(result.body.error.includes(
-        'Home team and visitor team must be different'
+        'Home and visitor teams must be different.'
       ))
       assert(!visitor_teams.includes(modifiedGame.visitor_team))
       assert(!home_teams.includes(modifiedGame.home_team))
@@ -589,7 +589,7 @@ describe('modification of a game', () => {
 
       const visitor_teams = gamesAtEnd.map(game => game.visitor_team)
       assert(result.body.error.includes(
-        'Set the game date inside tournament time period'
+        'Set the game date within the tournament period.'
       ))
       assert(!visitor_teams.includes(modifiedGame.visitor_team))
       assert.strictEqual(gamesAtEnd.length, helper.initialGames.length + 1)
@@ -631,7 +631,7 @@ describe('modification of a game', () => {
     const gamesAtEnd = await helper.gamesInDb()
 
     assert(result.body.error.includes(
-      'Token missing or invalid'
+      'Token missing or invalid.'
     ))
 
     const visitor_teams = gamesAtEnd.map(game => game.visitor_team)
@@ -655,7 +655,7 @@ describe('modification of a game', () => {
 
     const gamesAtEnd = await helper.gamesInDb()
 
-    assert(result.body.error.includes('Token missing or invalid'))
+    assert(result.body.error.includes('Token missing or invalid.'))
 
     const visitor_teams = gamesAtEnd.map(game => game.visitor_team)
     assert(!visitor_teams.includes(modifiedGame.visitor_team))

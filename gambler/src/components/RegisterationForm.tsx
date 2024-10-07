@@ -38,7 +38,7 @@ const RegisterationForm: React.FC<RegisterationProps> = ({
       if (error instanceof AxiosError) {
         setErrorMessage(`${error.response?.data.error}`);
       } else {
-        setErrorMessage('An unknown error occurred');
+        setErrorMessage('An unknown error occurred.');
       }
       setUsername('');
       setPassword('');

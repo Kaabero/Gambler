@@ -23,7 +23,7 @@ const Home = () => {
   return (
     <div>
       <hr />
-      <h2>Welcome to the Gambler app!</h2>
+      <h2>Welcome to the Gambler App!</h2>
 
       <div>
         You can now compete with your betting group for
@@ -40,7 +40,7 @@ const Home = () => {
         as well as your own and others' point balances. <br />
         <br />
         Administrators can manage tournaments, games, results,
-        points, bets and users within the app. <br />
+        points, bets, and users within the app. <br />
         <br />
         The current administrators are:<br />
         <br />

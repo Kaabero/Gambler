@@ -1,3 +1,30 @@
+/*
+Settings in Mongo when creating a new Trigger:
+
+Trigger Details:
+Trigger Type: Database
+Watch Against: Collection
+Cluster Name: Select the right cluster
+Database Name: Select the right Database
+
+Collection Name: tournaments
+Operation Type: Delete Document, Update Document
+
+Full Document: On
+Document Pre-Image: On
+
+Trigger Configurations:
+Auto-Resume: Off
+Event Ordering: On
+Skip Events on Re-Enable: Off
+
+Event Type:
+
+Select An Event Type: Function
+
+Function: Copy the code below
+*/
+
 exports = async function(changeEvent) {
     const document = changeEvent.fullDocumentBeforeChange
   

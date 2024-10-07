@@ -76,7 +76,7 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   if (!body.home_team || !body.visitor_team || !body.date) {
     return response.status(400)
       .json({ error:
-      'Some of the required fields are missing'
+      'Some required fields are missing.'
       })
   }
 
@@ -84,7 +84,7 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   if (body.home_team.toLowerCase() === body.visitor_team.toLowerCase()) {
     return response.status(400)
       .json({ error:
-      'Home team and visitor team must be different'
+      'Home and visitor teams must be different.'
       })
   }
 
@@ -96,13 +96,13 @@ gamesRouter.post('/', middleware.userExtractor, async (request, response) => {
   now.setHours(0, 0, 0, 0)
 
   if (date <= now) {
-    return response.status(400).json({ error: 'Set a future date' })
+    return response.status(400).json({ error: 'Set a future date.' })
   }
 
   if ( tournamentFrom > date || tournamentTo < date) {
     return response.status(400)
       .json({ error:
-      'Set the date inside tournament time period'
+      'Set the date within the tournament period.'
       })
   }
 
@@ -186,14 +186,14 @@ gamesRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   if ( tournamentFrom > newDate || tournamentTo < newDate) {
     return response.status(400)
       .json({ error:
-      'Set the game date inside tournament time period'
+      'Set the game date within the tournament period.'
       })
   }
 
   if (visitor_team.toLowerCase() === home_team.toLowerCase()) {
     return response.status(400)
       .json({ error:
-      'Home team and visitor team must be different'
+      'Home and visitor teams must be different.'
       })
   }
 

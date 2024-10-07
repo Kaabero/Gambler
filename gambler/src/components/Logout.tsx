@@ -21,7 +21,7 @@ const Logout: React.FC<LogoutProps> = ({
     setUser(null);
     setToken('');
     window.localStorage.clear();
-    setNotificationMessage('You are logged out');
+    setNotificationMessage('You are logged out.');
     setTimeout(() => {
       setNotificationMessage('');
     }, 3000);

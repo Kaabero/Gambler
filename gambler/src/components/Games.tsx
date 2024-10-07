@@ -51,7 +51,8 @@ const Games: React.FC<GamesProps> = ({
     try {
 
       if (confirm(
-        'Deleting game will also remove related bets, game results and scores!'
+        `Deleting this game will also remove related bets, 
+        game results and scores!`
       )) {
         removeGame(id).then(() => {
           setGames(games.filter(game => game.id !== id));
@@ -259,7 +260,7 @@ const Games: React.FC<GamesProps> = ({
       {filteredGames.length === 0 && (
         <>
           <h2>Games </h2>
-          <p> There are no games added to selected tournament </p>
+          <p>There are no games added to the selected tournament.</p>
         </>
       )}
       <hr />

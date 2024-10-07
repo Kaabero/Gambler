@@ -110,7 +110,7 @@ const MainComponent: React.FC<MainComponentProps> = ({
             required
           >
             <option value="" disabled>
-              -- Choose a tournament --
+              -- Select a tournament --
             </option>
             {tournaments.map((tournament) => (
               <option key={tournament.id} value={tournament.id}>
@@ -297,11 +297,11 @@ const MainComponent: React.FC<MainComponentProps> = ({
             <Link style={padding} to="/games">Games</Link>
             <Link style={padding} to="/bets">All bets</Link>
             <Link style={padding} to={`/bets/${user.id}`}>
-            Check and manage your own bets</Link>
+            View and manage your bets</Link>
             <Link style={padding} to={`/points/${user.id}`}>
-            Check your points</Link>
+            View your points</Link>
             <Link style={padding} to="/results">Game results</Link>
-            <Link style={padding} to="/users">Users and points</Link>
+            <Link style={padding} to="/users">Users and their points</Link>
             <Link style={padding} to="/points">Received points</Link>
             <br />
             <hr />

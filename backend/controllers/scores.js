@@ -83,7 +83,7 @@ scoresRouter.post('/', middleware.userExtractor, async (request, response) => {
   if (!body.outcome || !body.user || body.points === '') {
     return response.status(400)
       .json({ error:
-      'Some of the required fields are missing'
+      'Some required fields are missing.'
       })
   }
 
@@ -91,7 +91,7 @@ scoresRouter.post('/', middleware.userExtractor, async (request, response) => {
 
 
   if (!outcome) {
-    return response.status(400).json({ error: 'Outcome not found' })
+    return response.status(400).json({ error: 'Game result not found.' })
   }
 
   const existingScores = await Scores
@@ -100,7 +100,7 @@ scoresRouter.post('/', middleware.userExtractor, async (request, response) => {
   if (existingScores) {
     return response.status(400)
       .json({ error:
-      'User has already received points for this outcome' })
+      'User has already received points for this game.' })
   }
 
   const scores = new Scores({
@@ -122,24 +122,6 @@ scoresRouter.post('/', middleware.userExtractor, async (request, response) => {
 
 })
 
-scoresRouter
-  .delete('/:id', middleware.userExtractor, async (request, response) => {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(400).end()
-    }
-    const user = request.user
-
-    if (!user.admin) {
-      return response.status(400)
-        .json({ error:
-      'This operation is for admins only.'
-        })
-    }
-
-    await Scores.findByIdAndDelete(request.params.id)
-    response.status(204).end()
-  })
 
 scoresRouter.put('/:id', middleware.userExtractor, async (request, response) =>
 {

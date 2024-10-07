@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "install:all": "npm install && npm install --prefix backend && npm install --prefix gambler",
+    "start:prod": "cd ./backend && npm run start",
+    "build:ui": "cd ./frontend && rm -rf dist && npm run build && cp -r dist ../backend"
   },
   "author": "",
   "license": "ISC",

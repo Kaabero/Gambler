@@ -67,13 +67,13 @@ const GamesPoints = () => {
       <strong>Game: </strong><br />
       <br />
       {formatDate(new Date(outcome.game.date))}<br />
-      {outcome.game.home_team}-{outcome.game.visitor_team} <br />
+      {outcome.game.home_team} - {outcome.game.visitor_team} <br />
       <br />
       Result: {outcome.goals_home} - {outcome.goals_visitor}
       <hr />
       <h2>Points: </h2>
       <div>
-        {outcome.scores && outcome.scores?.length > 0 && (
+        {outcome.scores && outcome.scores.length > 0 && (
           <>
             <ul className= 'ul-small'>
               {scores.map(score =>
@@ -82,7 +82,7 @@ const GamesPoints = () => {
                   <br />
                   <strong>Points: </strong> {score.points}<br />
                   <br />
-                  <strong>Users bet:</strong> {usersBet(score.user, outcome)}
+                  <strong>User's bet:</strong> {usersBet(score.user, outcome)}
                 </li>
               )}
             </ul>
@@ -91,7 +91,7 @@ const GamesPoints = () => {
       </div>
       {!outcome.scores || outcome.scores?.length === 0 && (
         <>
-          <p> There are no points received from this game </p>
+          <p>There are no points received from this game.</p>
         </>
       )}
       <hr />

@@ -82,7 +82,7 @@ const Users: React.FC<UsersProps> = ({
 
   const handleRemoveUserClick = async (id: string) => {
     if (confirm(
-      `Deleting user will also remove
+      `Deleting this user will also remove
       related bets and scores in all tournaments!`
     )) {
       try {
@@ -240,7 +240,7 @@ const Users: React.FC<UsersProps> = ({
             checked={showOnlyUsersWithBets}
             onChange={handleRadioChangeBets}
           />
-                Show only users with bets in selected tournament
+                Show only users with bets in the selected tournament
         </label>
         <label>
           <input
@@ -314,7 +314,7 @@ const Users: React.FC<UsersProps> = ({
       ) : (
         <>
           <hr />
-          <p> There are no users with bets in selected tournament </p>
+          <p>There are no users with bets in the selected tournament.</p>
         </>
       )}
       <hr />

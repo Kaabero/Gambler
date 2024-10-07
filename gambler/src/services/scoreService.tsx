@@ -29,15 +29,6 @@ export const addScores = async (newObject: NewScores) => {
 };
 
 
-export const removeScores = (id: string) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-
-  const request = axios.delete(`${ baseUrl }/${id}`, config);
-  return request.then(response => response.data);
-};
-
 
 export const editScores = (id: string, newObject: Scores) => {
   const config = {

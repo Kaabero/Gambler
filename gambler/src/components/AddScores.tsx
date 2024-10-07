@@ -38,7 +38,8 @@ export const handleAddScores = async ({
 
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
+        setErrorMessage(`${error.response?.data.error ||
+          'An error occurred while adding points.'}`);
         setTimeout(() => {
           setErrorMessage('');
         }, 3000);
@@ -62,7 +63,8 @@ export const handleAddScores = async ({
 
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErrorMessage(`${error.response?.data.error}`);
+        setErrorMessage(`${error.response?.data.error ||
+          'An error occurred while adding points.'}`);
         setTimeout(() => {
           setErrorMessage('');
         }, 3000);

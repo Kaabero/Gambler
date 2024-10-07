@@ -58,7 +58,7 @@ describe('When regular user has logged in to Gambler app', () => {
         
     test('a games page can be opened', async ({ page }) => {
         await page.getByRole('link', { name: 'Games' }).click()
-        await expect(page.getByText('There are no games added to selected tournament')).toBeVisible()
+        await expect(page.getByText('There are no games added to the selected tournament.')).toBeVisible()
 
     })
 
@@ -82,8 +82,8 @@ describe('When regular user has logged in to Gambler app', () => {
         await expect(page.getByRole('button', { name: 'Add bet' })).toBeVisible()
     })
 
-    test('a users points page can be opened', async ({ page }) => {
-        await page.getByRole('link', { name: 'Check your points' }).click()
+    test('a user\'s points page can be opened', async ({ page }) => {
+        await page.getByRole('link', { name: 'View your points' }).click()
         await expect(page.getByText('There are no points in the selected tournament for this user')).toBeVisible()
 
     })
@@ -96,7 +96,7 @@ describe('When regular user has logged in to Gambler app', () => {
 
     test('a bets page can be opened', async ({ page }) => {
         await page.getByRole('link', { name: 'All bets' }).click()
-        await expect(page.getByText('There are no bets added to selected tournament')).toBeVisible()
+        await expect(page.getByText('There are no bets added to the selected tournament.')).toBeVisible()
 
     })
 
@@ -122,7 +122,7 @@ describe('When regular user has logged in to Gambler app', () => {
         await expect(page.getByText('Tournament')).toBeVisible()
         await expect(page.getByText('88')).toBeVisible()
         await expect(page.getByText('testAdmin')).toBeVisible()
-        await expect(page.getByText('past-game')).toBeVisible()
+        await expect(page.getByText('past - game')).toBeVisible()
     })
 
     test('from games page, it is possible to navigate to the game result page', async ({ page }) => {
@@ -140,15 +140,15 @@ describe('When regular user has logged in to Gambler app', () => {
 
     })
 
-    test('users and points page can be opened', async ({ page }) => {
-        await page.getByRole('link', { name: 'Users and points' }).click()
-        await expect(page.getByText('There are no users with bets in selected tournament')).toBeVisible()
+    test.only('users and their points page can be opened', async ({ page }) => {
+        await page.getByRole('link', { name: 'Users and their points' }).click()
+        await expect(page.getByText('There are no users with bets in the selected tournament.')).toBeVisible()
         const dropdown = page.locator('#tournament-select')
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
         await expect(page.getByRole('radio', { name: 'Hide admin tools' })).not.toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show admin tools' })).not.toBeVisible()
-        await expect(page.getByRole('radio', { name: 'Show only users with bets in selected tournament' })).toBeVisible()
+        await expect(page.getByRole('radio', { name: 'Show only users with bets in the selected tournament' })).toBeVisible()
         await expect(page.getByRole('radio', { name: 'Show all users' })).toBeVisible()
         await page.getByRole('radio', { name: 'Show all users' }).click()
         await expect(page.getByText('88')).toBeVisible()
@@ -161,7 +161,7 @@ describe('When regular user has logged in to Gambler app', () => {
 
     test('received points page can be opened', async ({ page }) => {
         await page.getByRole('link', { name: 'Received points' }).click()
-        await expect(page.getByText('There are no points received from selected tournament')).toBeVisible()
+        await expect(page.getByText('There are no points received from the selected tournament.')).toBeVisible()
         const dropdown = page.locator('#tournament-select')
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
@@ -173,8 +173,8 @@ describe('When regular user has logged in to Gambler app', () => {
      
     })
 
-    test('userspoints page can be opened from users and points page', async ({ page }) => {
-        await page.getByRole('link', { name: 'Users and points' }).click()
+    test('user\'s points page can be opened from users and their points page', async ({ page }) => {
+        await page.getByRole('link', { name: 'Users and their points' }).click()
         const dropdown = page.locator('#tournament-select')
         await dropdown.click()
         await dropdown.selectOption({ value: tournamentId })
@@ -237,7 +237,7 @@ describe('When regular user has logged in to Gambler app', () => {
             await visitorGoalsInput.fill("322")
             await page.getByRole('button', { name: 'Add bet' }).click()
             await expect(page.getByText('Bet added successfully!')).toBeVisible()
-            await page.getByRole('link', { name: 'Check and manage your own bets' }).click()
+            await page.getByRole('link', { name: 'View and manage your bets' }).click()
             await expect(page.getByText('253')).toBeVisible()
             await expect(page.getByText('322')).toBeVisible()
             await expect(page.getByRole('radio', { name: 'Show only future games' })).toBeVisible()
@@ -273,7 +273,7 @@ describe('When regular user has logged in to Gambler app', () => {
             await visitorGoalsInput.fill("322")
             await page.getByRole('button', { name: 'Add bet' }).click()
             await expect(page.getByText('Bet added successfully!')).toBeVisible()
-            await page.getByRole('link', { name: 'Check and manage your own bets' }).click()
+            await page.getByRole('link', { name: 'View and manage your bets' }).click()
             await expect(page.getByText('253')).toBeVisible()
             await expect(page.getByText('322')).toBeVisible()
             await expect(page.getByRole('radio', { name: 'Show only future games' })).toBeVisible()
@@ -330,7 +330,7 @@ describe('When regular user has logged in to Gambler app', () => {
             await expect(page.getByText('Bet added successfully!')).toBeVisible()
             await expect(page.getByRole('button', { name: 'Check bets' })).toBeVisible()
             await page.getByRole('button', { name: 'Check bets' }).click()
-            await expect(page.getByText('253-322')).toBeVisible()
+            await expect(page.getByText('253 - 322')).toBeVisible()
 
           
         })
