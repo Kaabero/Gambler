@@ -228,6 +228,8 @@ const Games: React.FC<GamesProps> = ({
                     )}
                     {loggedUser.admin && showAdminTools && (
                       <>
+                        <br />
+                        <br />
                         <button className= 'admin-button' onClick={() =>
                           handleRemoveGame(game.id)}>
                             Delete game

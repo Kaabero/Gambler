@@ -42,5 +42,5 @@
 | 26.9.2024. | 5  | e2e testejä ja workflow toimimaan |
 | 4.10.2024. | 4  | css |
 | 7.10.2024. | 5  | kielentarkistusta, testien korjauksia, trigger asetukset |
-| 8.10.2024. | 2  | käynnistysohjeet, Render -version testausta ja pieniä korjauksia |
-| yht        | 173 |            | 
+| 8.10.2024. | 4  | käynnistysohjeet, Render -version testausta ja pieniä korjauksia |
+| yht        | 175 |            | 
