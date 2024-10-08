@@ -26,7 +26,7 @@ Ylläpitäjä voi lisäksi:
 * lisätä sovellukseen sarjoja tulevaisuuteen.
 * lisätä sovellukseen veikkauskohteita tulevaisuuteen.
 * lisätä menneille peleille lopputulokset ja pisteyttää pelit.
-* tietyin ehdoin poistaa sarjoja, pelejä, käyttäjiä, vetoja ja lopputuloksia.
+* tietyin ehdoin poistaa sarjoja, pelejä, käyttäjiä, vetoja, lopputuloksia ja pisteytyksiä.
 * tietyin ehdoin muokata sarjoja, pelejä, vetoja ja pisteytyksiä.
 * tietyin ehdoin hallinnoida käyttäjien ylläpitäjän oikeuksia.
 
