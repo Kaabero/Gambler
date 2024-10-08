@@ -179,7 +179,6 @@ const AddGameForm: React.FC<AddGameFormProps> = ({
           <button type="button" onClick={handleGoBackClick}>Go back</button>
         </>
       )}
-      <hr />
     </div>
   );
 };

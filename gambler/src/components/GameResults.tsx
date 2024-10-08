@@ -165,7 +165,7 @@ const GameResults: React.FC<GameResultsProps> = ({
       {!filteredOutcomes || filteredOutcomes?.length === 0 && (
         <>
           <h2>Results</h2>
-          <p>There are no game results added to selected tournament.</p>
+          <p>There are no game results added to the selected tournament.</p>
         </>
       )}
       <hr />

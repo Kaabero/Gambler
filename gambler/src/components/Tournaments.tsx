@@ -180,8 +180,8 @@ const Tournaments: React.FC<TournamentsProps> = ({
               {tournamentsToShow.map(tournament =>
                 <li key={tournament.id}>
                   {tournament.name} <br />
-                  {formatSimpleDate(new Date(tournament.from_date))} -
-                  &nbsp;{formatSimpleDate(new Date(tournament.to_date))}<br />
+                  {formatSimpleDate(new Date(tournament.from_date))} -&nbsp;
+                  {formatSimpleDate(new Date(tournament.to_date))}<br />
                   Games: {tournament.games?.length} <br />
 
                   {loggedUser.admin && showAdminTools && (

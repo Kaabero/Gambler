@@ -313,7 +313,6 @@ const Users: React.FC<UsersProps> = ({
         </ul>
       ) : (
         <>
-          <hr />
           <p>There are no users with bets in the selected tournament.</p>
         </>
       )}
