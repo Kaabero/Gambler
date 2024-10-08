@@ -11,7 +11,7 @@ Sovelluksessa peruskäyttäjä voi:
 * valita, minkä sarja tietoja haluaa tarkastella.
 * nähdä menneet ja tulevat pelit.
 * lisätä veikkauksen tuleville peleille.
-* poistaa oman veikkauksensa, kunnes veikkaukset on pisteytetty.
+* poistaa oman veikkauksensa tuleville peleille.
 * muokata omaa veikkaustansa tuleville peleille.
 * tarkastella kaikkia annettuja veikkauksia.
 * tarkastella kaikkien pelien lopputuloksia. 
@@ -47,7 +47,7 @@ Ylläpitäjä voi lisäksi:
 
 - Lisää .env -tiedostoon tietokannan osoite: *MONGODB_URI=tietokannan osoite*
 
-- Lisää .env -tiedostoon portti: *PORT=portti*
+- Lisää .env -tiedostoon portti, esimerkiksi 3001: *PORT=3001*
 
 - Sovelluksessa on käytössä MongoDB -tietokanta. Osa sovelluksen vaatimista tietokantatoiminnoista on toteutettu MongoDB:n sisällä. Lisää tietokannan triggereihin projektin juurihakemiston kansiosta mongodb_triggers löytyvät asetukset ja triggerit. Lisätietoa triggereistä: https://www.mongodb.com/docs/atlas/app-services/triggers/database-triggers/ 
 
@@ -55,15 +55,15 @@ Ylläpitäjä voi lisäksi:
 
 - Käynnistä sovellus juurihakemistosta komennolla: *npm run start:prod*
 
-- Sovellus on käynnissä .env -tiedostossa määrittelemässäsi portissa *http://localhost:portti/*
+- Sovellus on käynnissä .env -tiedostossa määrittelemässäsi portissa *http://localhost:3001/*
 
 ## Ohjeet ylläpitäjän toimintojen testaamiseksi:  
 
 - Kirjaudu sovelluseen sisään seuraavilla tunnuksilla
 
-  - käyttäjätunnus *admin*
+  - käyttäjätunnus: *admin*
 
-  - salasana *admin*
+  - salasana: *admin*
 
 ## Ohjeet testaukseen:
 
