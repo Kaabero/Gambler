@@ -243,6 +243,8 @@ const Games: React.FC<GamesProps> = ({
                     new Date(game.date) < new Date() &&
                     showAdminTools &&(
                       <>
+                        <br />
+                        <br />
                         <button className= 'admin-button' onClick={() =>
                           handleAddResultClick(game)}>
                             Add result and points
