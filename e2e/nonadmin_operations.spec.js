@@ -90,7 +90,7 @@ describe('When regular user has logged in to Gambler app', () => {
 
     test('a game results page can be opened', async ({ page }) => {
         await page.getByRole('link', { name: 'Game results' }).click()
-        await expect(page.getByText('There are no game results added to selected tournament')).toBeVisible()
+        await expect(page.getByText('There are no game results added to the selected tournament')).toBeVisible()
 
     })
 
