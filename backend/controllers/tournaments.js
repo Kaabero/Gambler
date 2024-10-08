@@ -90,7 +90,7 @@ tournamentsRouter
 
 
 
-    if (from <= now) {
+    if (from < now) {
       return response.status(400).json({ error:
         'Please set a future starting date.'
       })

@@ -44,7 +44,7 @@ const Tournaments: React.FC<TournamentsProps> = ({
 
       if (confirm(
         `Deleting this tournament will also remove all 
-      related games, bets, game results and scores!`
+        related games, bets, game results and scores!`
       )) {
         removeTournament(id).then(() => {
           setTournamnets(tournaments
@@ -118,33 +118,39 @@ const Tournaments: React.FC<TournamentsProps> = ({
       <hr />
 
       <h2>Tournaments</h2>
-      {loggedUser.admin && (
-        <div className="radio-group">
 
-          <label>
-            <input
-              type="radio"
-              value="hideadmin"
-              checked={!showAdminTools}
-              onChange={handleRadioChangeAdmin}
-            />
-                Hide admin tools
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="showadmin"
-              checked={showAdminTools}
-              onChange={handleRadioChangeAdmin}
-            />
-                Show admin tools
-          </label>
-
-        </div>
-      )}
       {sortedTournaments.length > 0 && (
-
         <>
+          <div>
+            {loggedUser.admin && (
+              <div className="radio-group">
+
+                <label>
+                  <input
+                    type="radio"
+                    value="hideadmin"
+                    checked={!showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+                Hide admin tools
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    value="showadmin"
+                    checked={showAdminTools}
+                    onChange={handleRadioChangeAdmin}
+                  />
+                Show admin tools
+                </label>
+
+              </div>
+            )}
+
+
+          </div>
+
+
           <div className="radio-group">
 
             <label>
