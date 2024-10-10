@@ -38,8 +38,8 @@
 | 24.9.2024. | 5  | backendin testejä ja ongelmia, vaihto mochaan |
 | 25.9.2024. | 5  | e2e ongelmia |
 | 26.9.2024. | 5  | e2e testejä |
-| 26.9.2024. | 5  | e2e testejä ja workflow ongelmia |
-| 26.9.2024. | 5  | e2e testejä ja workflow toimimaan |
+| 27.9.2024. | 5  | e2e testejä ja workflow ongelmia |
+| 30.9.2024. | 5  | e2e testejä ja workflow toimimaan |
 | 4.10.2024. | 4  | css |
 | 7.10.2024. | 5  | kielentarkistusta, testien korjauksia, trigger asetukset |
 | 8.10.2024. | 4  | käynnistysohjeet, Render -version testausta ja pieniä korjauksia |
