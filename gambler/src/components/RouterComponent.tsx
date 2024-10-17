@@ -1,15 +1,12 @@
 import React from 'react';
 import {
   Routes,
-  Route, Link,
+  Route,
   Navigate,
-  useLocation,
-  useNavigate
 } from 'react-router-dom';
 
 
 import { Credentials, Tournament } from '../types';
-import { formatSimpleDate } from '../utils/dateUtils';
 
 import AddBetForm from './AddBetForm';
 import AddGameForm from './AddGameForm';
@@ -27,7 +24,6 @@ import Games from './Games';
 import GamesBets from './GamesBets';
 import GamesPoints from './GamesPoints';
 import Login from './Login';
-import Logout from './Logout';
 import Points from './Points';
 import CreateAccount from './RegisterationForm';
 import Tournaments from './Tournaments';
@@ -40,7 +36,7 @@ import Home from './WelcomePage';
 
 
 
-interface MainComponentProps {
+interface RouterComponentProps {
   errormessage: string;
   notificationmessage: string;
   user: Credentials | null | undefined;
@@ -53,75 +49,18 @@ interface MainComponentProps {
   setTournaments: React.Dispatch<React.SetStateAction<Tournament[]>>;
 }
 
-const MainComponent: React.FC<MainComponentProps> = ({
+const RouterComponent: React.FC<RouterComponentProps> = ({
   user,
   setUser,
-  tournaments,
   selectedTournament,
   setSelectedTournament,
   setErrorMessage,
   setNotificationMessage,
   setTournaments
 }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-
-  const padding = {
-    padding: 5,
-  };
-
-  const hideTournamentSelectionPaths = [
-    '/login',
-    '/editTournament',
-    '/tournaments',
-    '/addTournament',
-    '/register',
-    '/addBet/',
-    '/gamesbets/',
-    '/gamespoints/',
-    '/addBet/',
-    '/editGame/',
-    '/editScores/',
-    '/editBet/',
-    '/addResult/',
-    '/result/'
-  ];
-
-  const shouldShowTournamentSelection =
-    user && !hideTournamentSelectionPaths.some((path) =>
-      location.pathname.startsWith(path));
-
-  const handleAdminToolsClick = () => {
-    navigate('/admintools');
-  };
 
   return (
-    <div className="container">
-      {shouldShowTournamentSelection && (
-        <>
-          <strong>Tournament:</strong>
-          <br />
-          <br />
-          <select
-            id="tournament-select"
-            value={selectedTournament}
-            onChange={({ target }) => setSelectedTournament(target.value)}
-            required
-          >
-            <option value="" disabled>
-              -- Select a tournament --
-            </option>
-            {tournaments.map((tournament) => (
-              <option key={tournament.id} value={tournament.id}>
-                {tournament.name}:&nbsp;
-                {formatSimpleDate(new Date(tournament.from_date))}-
-                {formatSimpleDate(new Date(tournament.to_date))}
-              </option>
-            ))}
-          </select>
-        </>
-      )}
+    <div>
       <Routes>
         <Route path="/" element={user ?
           <Home />
@@ -289,45 +228,8 @@ const MainComponent: React.FC<MainComponentProps> = ({
           : <Navigate replace to="/login" />}
         />
       </Routes>
-      <div>
-        {user ? (
-          <>
-            <hr />
-            <Link style={padding} to="/">Home</Link>
-            <Link style={padding} to="/games">Games</Link>
-            <Link style={padding} to="/bets">All bets</Link>
-            <Link style={padding} to={`/bets/${user.id}`}>
-            View and manage your bets</Link>
-            <Link style={padding} to={`/points/${user.id}`}>
-            View your points</Link>
-            <Link style={padding} to="/results">Game results</Link>
-            <Link style={padding} to="/users">Users and their points</Link>
-            <Link style={padding} to="/points">Received points</Link>
-            <br />
-            <hr />
-            <p>
-              {user.username} logged in
-              <br />
-              <br />
-              <Logout
-                setSelectedTournament={setSelectedTournament}
-                setUser={setUser}
-                setNotificationMessage={setNotificationMessage}
-              />
-              {user.admin && <button onClick={handleAdminToolsClick}>
-              Admin tools</button>}
-
-            </p>
-          </>
-        ) : (
-          <>
-            <Link style={padding} to="/login">Login</Link>
-            <Link style={padding} to="/register">Create account</Link>
-          </>
-        )}
-      </div>
     </div>
   );
 };
 
-export default MainComponent;
+export default RouterComponent;

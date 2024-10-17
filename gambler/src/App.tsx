@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import MainComponent from './components/MainComponent';
+import Base from './components/Base';
 import Notification from './components/Notification';
 import { getAllTournaments } from './services/tournamentService';
 import { Credentials, Tournament } from './types';
@@ -35,7 +35,7 @@ const App = () => {
         errormessage={errormessage}
         notificationmessage={notificationmessage}
       />
-      <MainComponent
+      <Base
         setTournaments={setTournaments}
         errormessage={errormessage}
         notificationmessage={notificationmessage}
